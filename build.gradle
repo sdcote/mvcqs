@@ -1,0 +1,58 @@
+apply plugin: 'war'
+apply plugin: 'jetty'
+
+repositories {
+    maven{ url 'http://maven.springframework.org/release'}
+    maven{ url 'http://maven.springframework.org/milestone'}
+    maven{ url 'http://maven.springframework.org/snapshot'}
+    mavenCentral()
+}
+
+configurations {
+    all*.exclude group: 'commons-logging', module: 'commons-logging'
+}
+
+ext.cglibVersion = '2.2'
+ext.logbackVersion = '1.0.12'
+ext.javaxInjectVersion = '1' 
+ext.jspVersion = '2.1'
+ext.servletVersion = '2.5'
+ext.slf4jVersion = '1.7.6'
+ext.springVersion = '4.0.3.RELEASE'
+ext.h2Version = '1.4.177'
+
+dependencies {
+    compile "cglib:cglib-nodep:$cglibVersion"
+    compile "com.h2database:h2:$h2Version"
+    compile "ch.qos.logback:logback-classic:$logbackVersion"
+    compile "org.slf4j:jcl-over-slf4j:$slf4jVersion"
+    compile "org.springframework:spring-context:$springVersion"
+    compile "org.springframework:spring-webmvc:$springVersion"
+    compile "org.springframework:spring-jdbc:$springVersion"
+    compile "javax.inject:javax.inject:$javaxInjectVersion"
+
+    // TODO: currently forced to comment these provided dependencies out;
+    //   as adding Gradle classpath container to deployment assembly copies them
+    //   to /WEB-INF/lib which causes conflicts
+    providedCompile "javax.servlet:servlet-api:$servletVersion"
+    //providedCompile "javax.servlet.jsp:jsp-api:$jspVersion" 	
+}
+
+
+sourceSets {
+    main {
+        resources {
+            srcDirs = ['src/main/java']
+        }
+    }
+    test {
+        resources {
+            srcDirs = ['src/test/java']
+        }
+    }
+}
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.11'
+}
