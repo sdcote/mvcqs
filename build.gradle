@@ -1,5 +1,10 @@
-apply plugin: 'war'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'eclipse-wtp'
+apply plugin: 'idea'
 apply plugin: 'jetty'
+apply plugin: 'war'
+
 
 repositories {
     maven{ url 'http://maven.springframework.org/release'}
