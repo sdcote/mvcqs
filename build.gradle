@@ -40,7 +40,7 @@ dependencies {
     //   as adding Gradle classpath container to deployment assembly copies them
     //   to /WEB-INF/lib which causes conflicts
     providedCompile "javax.servlet:servlet-api:$servletVersion"
-    //providedCompile "javax.servlet.jsp:jsp-api:$jspVersion" 	
+    providedCompile "javax.servlet.jsp:jsp-api:$jspVersion" 	
 }
 
 
