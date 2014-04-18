@@ -40,7 +40,7 @@ public class SampleController
     LOG.info( "Handling request..." );
     LOG.info( "data store = "+_dataStore );
     m.addAttribute( "name", "World" );
-    LOG.info( "Request habdled." );
+    LOG.info( "Request handled." );
     return "home";
   }
 }
