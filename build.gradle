@@ -13,9 +13,11 @@ repositories {
     mavenCentral()
 }
 
+
 configurations {
     all*.exclude group: 'commons-logging', module: 'commons-logging'
 }
+
 
 ext.cglibVersion = '2.2'
 ext.logbackVersion = '1.0.12'
