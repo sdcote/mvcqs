@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
+	<!-- The DispatcherServlet looks for this context parameter to determine 
+		 which class to use as its we application context. This one uses
+		 annotations on classes in the contextConfigLocation location. -->
 	<context-param>
 		<param-name>contextClass</param-name>
 		<param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
 	</context-param>
 
+	<!-- This indicates the package name containing our configuration classes. -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>com.webapp.config</param-value>
@@ -24,7 +30,8 @@
 	</listener>
 
 
-	<!-- Handles requests into the application -->
+	<!-- Handles requests into the application. The contextConfigLocation 
+		 parameter tells the servlet how it is to configure the context. -->
 	<servlet>
 		<servlet-name>appServlet</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
