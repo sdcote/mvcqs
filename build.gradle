@@ -58,6 +58,14 @@ sourceSets {
 }
 
 
+[jettyRun, jettyRunWar, jettyStop]*.with { 
+	httpPort = 80
+	stopPort = 8881
+	stopKey = 'stopKey'
+	jettyEnvXml = file('src/main/resources/jetty-env.xml') 
+}
+
+
 task wrapper(type: Wrapper) {
     gradleVersion = '1.11'
 }
