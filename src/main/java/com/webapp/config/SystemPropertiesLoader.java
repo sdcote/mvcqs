@@ -51,12 +51,15 @@ public class SystemPropertiesLoader implements ServletContextListener
   @Override
   public void contextInitialized( ServletContextEvent sce )
   {
-    // Load specific files from the WEB-INF
-    loadPropertiesIntoSystem( COMMON_PROPS, true, sce.getServletContext().getRealPath( "/WEB-INF/" ) );
+    // Load specific files from the WEB-INF - these are the application defaults
+    loadPropertiesIntoSystem( COMMON_PROPS, true, sce.getServletContext().getRealPath( "/WEB-INF" ) );
 
-    // Next load specific property files from the base path which over-rides 
-    // those properties 
-    loadPropertiesIntoSystem( COMMON_PROPS, false, getBasePath() );
+    // Next load specific property files from the configuration directory which 
+    // over-rides those properties in WEB-INF 
+    loadPropertiesIntoSystem( COMMON_PROPS, false, getConfigPath() );
+
+    // Next load specific property files from the current working directory
+    loadPropertiesIntoSystem( COMMON_PROPS, false, System.getProperty( "user.dir" ) );
 
     // Load the Java proxy authenticator if system properties contained the 
     // necessary data
@@ -79,21 +82,24 @@ public class SystemPropertiesLoader implements ServletContextListener
 
   private void loadPropertiesIntoSystem( String fileName, boolean errIfMissing, String pathName )
   {
-    String filename = pathName+ File.separator + fileName + ".properties";
-    System.out.println( this.getClass().getCanonicalName() + ": Trying to load properties from " + filename + " into system" );
-    Properties props = new Properties();
-    try
+    if( !isBlank( pathName ) )
     {
-      props.load( new FileInputStream( filename ) );
-      System.getProperties().putAll( props );
-    }
-    catch( IOException e )
-    {
-      String msg = "Failed to read from " + filename;
-      System.err.println( this.getClass().getCanonicalName() + ": " + msg + ": " + e.getMessage() );
-      if( errIfMissing )
+      String filename = pathName + File.separator + fileName + ".properties";
+      System.out.println( this.getClass().getCanonicalName() + ": Trying to load properties from " + filename + " into system" );
+      Properties props = new Properties();
+      try
       {
-        throw new IllegalStateException( msg, e );
+        props.load( new FileInputStream( filename ) );
+        System.getProperties().putAll( props );
+      }
+      catch( IOException e )
+      {
+        String msg = "Failed to read from " + filename;
+        System.err.println( this.getClass().getCanonicalName() + ": " + msg + ": " + e.getMessage() );
+        if( errIfMissing )
+        {
+          throw new IllegalStateException( msg, e );
+        }
       }
     }
   }
@@ -127,22 +133,25 @@ public class SystemPropertiesLoader implements ServletContextListener
 
 
 
-  public static String getBasePath()
+  /**
+   * Return the configuration path set in the system properties.
+   * 
+   * @return the path to the configuration property
+   */
+  public static String getConfigPath()
   {
-    String fs = File.separator;
-    StringBuilder path = new StringBuilder();
-    String cfgdir = System.getProperty( CONFIG_DIR );
-    if( isBlank( cfgdir ) )
+    // Check for ending file separator and remove it if found
+    String retval = System.getProperty( CONFIG_DIR );
+    if( retval == null )
     {
-      System.getProperty( "user.dir" );
+      System.out.println( SystemPropertiesLoader.class.getCanonicalName() + ": No configuration override found in '" + CONFIG_DIR + "' system property" );
+      return "";
     }
-    else
-    {
-      path.append( cfgdir );
-    }
-    path.append( fs );
+    retval = retval.trim();
+    if( retval.endsWith( File.separator ) )
+      retval = retval.substring( 0, retval.lastIndexOf( File.separator ) );
 
-    return path.toString();
+    return retval;
   }
 
 
