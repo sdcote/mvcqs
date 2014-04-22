@@ -6,7 +6,7 @@
 			<Pattern>.%d{HH:mm:ss.SSS} [%thread] %-5level %logger{20} - %msg %n</Pattern>
 		</encoder>
 		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-			<level>TRACE</level>
+			<level>INFO</level>
 		</filter>
 	</appender>
 
@@ -21,6 +21,9 @@
 		<encoder>
 			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{40} - %msg %n</Pattern>
 		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>TRACE</level>
+		</filter>
 	</appender>
 
 	<logger name="webapp" additivity="false">
@@ -30,7 +33,8 @@
 	</logger>
 
 	<root>
-		<level value="INFO" />
+		<level value="TRACE" />
 		<appender-ref ref="consoleAppender" />
+		<appender-ref ref="dailyRollingFileAppender" />
 	</root>
 </configuration>
