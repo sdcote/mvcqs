@@ -59,9 +59,13 @@ sourceSets {
 
 
 [jettyRun, jettyRunWar, jettyStop]*.with { 
-	httpPort = 80
-	stopPort = 8881
+	stopPort = 8081
 	stopKey = 'stopKey'
+}
+[jettyRun, jettyRunWar]*.with { 
+	httpPort = 80
+}
+jettyRun { 
 	jettyEnvXml = file('src/main/resources/jetty-env.xml') 
 }
 
