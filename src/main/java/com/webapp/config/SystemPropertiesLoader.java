@@ -144,7 +144,7 @@ public class SystemPropertiesLoader implements ServletContextListener
     String retval = System.getProperty( CONFIG_DIR );
     if( retval == null )
     {
-      System.out.println( SystemPropertiesLoader.class.getCanonicalName() + ": No configuration override found in '" + CONFIG_DIR + "' system property" );
+      System.out.println( SystemPropertiesLoader.class.getCanonicalName() + ": No configuration override path found in '" + CONFIG_DIR + "' system property" );
       return "";
     }
     retval = retval.trim();
