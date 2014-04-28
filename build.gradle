@@ -19,15 +19,18 @@ configurations {
 }
 
 
-ext.cglibVersion = '2.2'
-ext.logbackVersion = '1.0.12'
-ext.javaxInjectVersion = '1' 
-ext.jspVersion = '2.1'
-ext.jstlVersion = '1.2'
-ext.servletVersion = '2.5'
-ext.slf4jVersion = '1.7.6'
-ext.springVersion = '4.0.3.RELEASE'
-ext.h2Version = '1.4.177'
+ext {
+	cglibVersion = '2.2'
+	logbackVersion = '1.0.12'
+	javaxInjectVersion = '1' 
+	jspVersion = '2.1'
+	jstlVersion = '1.2'
+	servletVersion = '2.5'
+	slf4jVersion = '1.7.6'
+	springVersion = '4.0.3.RELEASE'
+	h2Version = '1.4.177'
+}
+
 
 dependencies {
     compile "cglib:cglib-nodep:$cglibVersion"
