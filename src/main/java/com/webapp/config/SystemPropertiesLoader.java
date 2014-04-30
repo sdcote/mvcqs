@@ -169,8 +169,8 @@ public class SystemPropertiesLoader implements ServletContextListener
    * </pre>
    *
    * @param str  the String to check, may be null
+   * 
    * @return <code>true</code> if the String is null, empty or whitespace
-   * @since 2.0
    */
   public static boolean isBlank( String str )
   {
