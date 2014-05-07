@@ -2,6 +2,9 @@ package com.webapp.controller;
 
 import java.util.Locale;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +53,13 @@ public class SampleController {
   @RequestMapping("home")
   public String loadHomePage( Model m )
   {
+    Context ctx = null;
+    try{
+      ctx = new InitialContext();
+    } catch(Exception e){
+      LOG.error( "No initial context",e );
+    }
+    
     LOG.info( "Handling request..." );
     LOG.info( "data store = " + _dataStore );
     m.addAttribute( "name", "World" );
