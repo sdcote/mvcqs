@@ -54,9 +54,6 @@ dependencies {
 [jettyRun, jettyRunWar]*.with { 
 	httpPort = 80
 }
-jettyRun { 
-	jettyEnvXml = file('src/main/resources/jetty-env.xml') 
-}
 
 
 task wrapper(type: Wrapper) {
