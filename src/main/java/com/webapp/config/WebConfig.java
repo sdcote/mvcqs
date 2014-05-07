@@ -71,7 +71,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
   public ResourceBundleMessageSource messageSource()
   {
     ResourceBundleMessageSource msrc = new ResourceBundleMessageSource();
-    msrc.setBasename( "webapp" );
+    msrc.setBasename( "message" );
     return msrc;
   }
 }
