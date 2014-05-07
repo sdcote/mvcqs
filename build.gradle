@@ -47,20 +47,6 @@ dependencies {
 }
 
 
-sourceSets {
-    main {
-        resources {
-            srcDirs = ['src/main/java']
-        }
-    }
-    test {
-        resources {
-            srcDirs = ['src/test/java']
-        }
-    }
-}
-
-
 [jettyRun, jettyRunWar, jettyStop]*.with { 
 	stopPort = 8081
 	stopKey = 'stopKey'
