@@ -43,7 +43,7 @@ dependencies {
     compile "javax.inject:javax.inject:$javaxInjectVersion"
     providedCompile "javax.servlet:servlet-api:$servletVersion"
     providedCompile "javax.servlet.jsp:jsp-api:$jspVersion" 	
-    providedCompile "javax.servlet:jstl:$jstlVersion"
+    compile "javax.servlet:jstl:$jstlVersion"
 }
 
 
