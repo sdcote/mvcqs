@@ -14,7 +14,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-import sun.security.krb5.internal.crypto.Nonce;
 
 
 /**
@@ -44,7 +43,7 @@ public class DefaultDataStore implements WebAppDataStore
 
 
 
-
+/*
   public Nonce getNonce( String consumerKey, String nonce )
   {
     String SQL = "select * from lti_nonce where consumer_key = ? and nonce = ?";
@@ -60,15 +59,7 @@ public class DefaultDataStore implements WebAppDataStore
     }
   }
 
-  // 
-
-  // 
-
-  // 
-
-  /**
-   * Maps all the column of the LTI Nonce table to the Nonce type
-   */
+   // Maps all the column of the LTI Nonce table to the Nonce type
   class NonceMapper implements RowMapper<Nonce>
   {
     public Nonce mapRow( ResultSet rs, int rowNum ) throws SQLException
@@ -78,7 +69,7 @@ public class DefaultDataStore implements WebAppDataStore
       return nonce;
     }
   }
-
+*/
 
   // 
 
@@ -90,10 +81,8 @@ public class DefaultDataStore implements WebAppDataStore
   /**
    * Initialize the data store.
    * 
-   * <p>
-   * This method is used to initialize the data store by executing data definitions if the tables appear to be
-   * missing.
-   * </p>
+   * <p>This method is used to initialize the data store by executing data 
+   * definitions if the tables appear to be missing.</p>
    * 
    * @throws Exception
    */
