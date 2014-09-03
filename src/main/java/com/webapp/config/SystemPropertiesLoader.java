@@ -17,8 +17,8 @@ import javax.servlet.ServletContextListener;
  * 
  * <p>Once the webapp is deployed, it can be very difficult to configure its 
  * operation since the administrators do not have ready access to the XML files
- * in the WEB-INF directory. One way to make an application more configurable 
- * is to use system properties at runtime.</p>  
+ * in the WEB-INF directory of the WAR file. One way to make an application 
+ * more configurable is to use system properties at runtime.</p>  
  * 
  * <p>This is called in the web.xml file and used to initialize the system with
  * application specific properties.

@@ -55,7 +55,7 @@ public class DataBaseConfig
     }
     catch( ClassNotFoundException | IllegalStateException e )
     {
-      LOG.fatal( "Could not greate driver class '" + env.getRequiredProperty( PROPERTY_NAME_DATABASE_DRIVER ) + "'", e );
+      LOG.fatal( "Could not create driver class '" + env.getRequiredProperty( PROPERTY_NAME_DATABASE_DRIVER ) + "'", e );
     }
 
     return dataSource;
