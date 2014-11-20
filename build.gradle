@@ -7,6 +7,12 @@ apply plugin: 'war'
 
 
 repositories {
+	// Use our own repo for coyote libraries
+	jcenter{
+	  url 'http://dl.bintray.com/sdcote/maven'
+	}
+
+	// for everything else we use Maven
     maven{ url 'http://maven.springframework.org/release'}
     maven{ url 'http://maven.springframework.org/milestone'}
     maven{ url 'http://maven.springframework.org/snapshot'}
@@ -29,6 +35,8 @@ ext {
 	slf4jVersion = '1.7.6'
 	springVersion = '4.0.3.RELEASE'
 	h2Version = '1.4.177'
+	dataFrameVersion = '0.0.+'
+	coyoteVersion = '0.0.+'
 }
 
 
@@ -44,6 +52,9 @@ dependencies {
     providedCompile "javax.servlet:servlet-api:$servletVersion"
     providedCompile "javax.servlet.jsp:jsp-api:$jspVersion" 	
     compile "javax.servlet:jstl:$jstlVersion"
+    
+    compile "coyote:DataFrame:$dataFrameVersion"
+    compile "coyote:Commons:$coyoteVersion"
 }
 
 
