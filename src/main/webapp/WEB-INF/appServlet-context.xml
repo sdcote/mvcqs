@@ -9,5 +9,10 @@
     <!-- INCLUDED HERE ONLY FOR ADHERENCE TO CURRENT BEST PRACTICE -->
     <!-- THIS APPLICATION CONFIGURED PROGRAMMATICLY VIA ANNOTATED CLASSES -->
     <!-- CONFIGURATION THROUGH THIS METHOD MAY RESULT IN CONFUSION -->
+    
+    <!-- Configurable parameters of this application are set in the property -->
+    <!-- files. The application uses the property file in the WEB-INF as the -->
+    <!-- defaults and then checks for over-riding properties in other -->
+    <!-- locations.  Refer to the documentation for configuration details. -->
 
 </beans>
