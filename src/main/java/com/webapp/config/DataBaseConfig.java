@@ -16,6 +16,15 @@ import com.webapp.dao.DefaultDataStore;
 import com.webapp.dao.WebAppDataStore;
 
 
+/**
+ * Most web applications need some type of data store.
+ * 
+ * <p>This is an example of setting up a DataSource for the application.</p>
+ * 
+ * <p>This code goes one better and sets up an application-specific DAO. This 
+ * is an example of course, but it can be extended to meet the needs of almost 
+ * any quick-start application.</p>
+ */
 @Configuration
 public class DataBaseConfig
 {

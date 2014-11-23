@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.webapp.dao.WebAppDataStore;
@@ -32,8 +33,7 @@ public class SampleController {
 
 
   @Autowired
-  public void setMessageSource( ResourceBundleMessageSource messageSource )
-  {
+  public void setMessageSource( ResourceBundleMessageSource messageSource ) {
     this.messageSource = messageSource;
   }
 
@@ -41,8 +41,7 @@ public class SampleController {
 
 
   @Autowired
-  public void setDataStore( WebAppDataStore datastore )
-  {
+  public void setDataStore( WebAppDataStore datastore ) {
     _dataStore = datastore;
     LOG.info( "DataStore wired" );
   }
@@ -50,16 +49,23 @@ public class SampleController {
 
 
 
+   @RequestMapping("login")
+  public String doLogin( Model m ) {
+    return "home";
+  }
+
+
+
+
   @RequestMapping("home")
-  public String loadHomePage( Model m )
-  {
+  public String loadHomePage( Model m ) {
     Context ctx = null;
-    try{
+    try {
       ctx = new InitialContext();
-    } catch(Exception e){
-      LOG.error( "No initial context",e );
+    } catch ( Exception e ) {
+      LOG.error( "No initial context", e );
     }
-    
+
     LOG.info( "Handling request..." );
     LOG.info( "data store = " + _dataStore );
     m.addAttribute( "name", "World" );
