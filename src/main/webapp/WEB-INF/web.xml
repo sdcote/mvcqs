@@ -66,9 +66,12 @@
 
 
 	<!-- Handles requests into the application. The contextConfigLocation 
-		 parameter tells the servlet how it is to configure the context. -->
+		 parameter tells the servlets how it is to configure the context. 
+		 There are two different servlets defined here to enable dedicated 
+		 configuration for each style of processing; RESTful services and MVC 
+		 view processing. -->
 		 
-	<!-- This handles our web application views -->
+	<!-- This handles our web application (MVC) views -->
 	<servlet>
 		<servlet-name>appServlet</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -83,7 +86,7 @@
 		<url-pattern>/do/*</url-pattern>
 	</servlet-mapping>
 
-	<!-- This handles our RESTful services -->
+	<!-- This handles our JSON services via Jackson -->
 	<servlet>
 		<servlet-name>rest</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>

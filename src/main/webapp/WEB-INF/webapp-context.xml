@@ -15,8 +15,10 @@
     <!-- defaults and then checks for over-riding properties in other -->
     <!-- locations.  Refer to the documentation for configuration details. -->
 
-	<!-- This is an exception to the above. In order to ger Jackson JSON  -->
-	<!-- support, we have to create a JSON message converter. -->
+	<!-- =================================================================== -->
+
+	<!-- This is an exception to the above. In order to get Jackson JSON  -->
+	<!-- support, we have to create a JSON message converter in the context. -->
 
     <!-- Configure to plugin JSON as request and response in method handler -->
 	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
