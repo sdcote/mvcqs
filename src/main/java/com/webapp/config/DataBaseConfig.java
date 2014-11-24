@@ -26,8 +26,7 @@ import com.webapp.dao.WebAppDataStore;
  * any quick-start application.</p>
  */
 @Configuration
-public class DataBaseConfig
-{
+public class DataBaseConfig {
   private static final Log LOG = LogFactory.getLog( DataBaseConfig.class );
 
   static final String PROPERTY_NAME_DATABASE_DRIVER = "db.driver";
@@ -41,13 +40,18 @@ public class DataBaseConfig
 
 
 
+  /**
+   * This creates a generic datasource for the web application.
+   * 
+   * <p>It uses system properties to determine the configuration.</p>
+   * 
+   * @return A datasource 
+   */
   @Bean
-  public DataSource dataSource()
-  {
+  public DataSource dataSource() {
     LOG.info( "Creating a datasource.." );
     SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
-    try
-    {
+    try {
       LOG.info( "Classname: " + env.getRequiredProperty( PROPERTY_NAME_DATABASE_DRIVER ) );
       @SuppressWarnings("unchecked")
       Class<? extends Driver> driverClass = (Class<? extends Driver>)Class.forName( env.getRequiredProperty( PROPERTY_NAME_DATABASE_DRIVER ) );
@@ -61,9 +65,7 @@ public class DataBaseConfig
 
       dataSource.setPassword( env.getRequiredProperty( PROPERTY_NAME_DATABASE_PASSWORD ) );
       LOG.info( "Datasource created successfully." );
-    }
-    catch( ClassNotFoundException | IllegalStateException e )
-    {
+    } catch ( ClassNotFoundException | IllegalStateException e ) {
       LOG.fatal( "Could not create driver class '" + env.getRequiredProperty( PROPERTY_NAME_DATABASE_DRIVER ) + "'", e );
     }
 
@@ -73,21 +75,25 @@ public class DataBaseConfig
 
 
 
+  /**
+   * Create an application-specific Data Access Object (DAO).
+   * 
+   * @param source The datasource to use.
+   * 
+   * @return An initialized DAO.
+   */
   @Bean
-  public WebAppDataStore datastore( DataSource source )
-  {
+  public WebAppDataStore datastore( DataSource source ) {
     WebAppDataStore retval = new DefaultDataStore( source );
 
     // Set properties
 
     // Initialize the data store
-    try
-    {
+    try {
       retval.init();
+    } catch ( Exception e ) {
+      LOG.fatal( "Could not initialize data store.", e );
     }
-    catch( Exception e )
-    {
-      LOG.fatal( "Could not initialize data store.", e );    }
 
     return retval;
   }

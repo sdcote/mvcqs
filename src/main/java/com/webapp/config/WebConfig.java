@@ -35,9 +35,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
   public void addResourceHandlers( ResourceHandlerRegistry registry )
   {
     registry.addResourceHandler( "/static/**" ).addResourceLocations( "/static/" );
+    registry.addResourceHandler( "/docs/**" ).addResourceLocations( "/docs/" );
     registry.addResourceHandler( "/css/**" ).addResourceLocations( "/css/" );
     registry.addResourceHandler( "/img/**" ).addResourceLocations( "/img/" );
     registry.addResourceHandler( "/js/**" ).addResourceLocations( "/js/" );
+    registry.addResourceHandler( "/font-awesome-4.1.0/**" ).addResourceLocations( "/font-awesome-4.1.0/" );
   }
 
 

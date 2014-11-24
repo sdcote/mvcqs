@@ -35,6 +35,7 @@ ext {
 	slf4jVersion = '1.7.6'
 	springVersion = '4.0.3.RELEASE'
 	h2Version = '1.4.177'
+	jacksonDatabindVersion = '2.+'
 	dataFrameVersion = '0.0.+'
 	coyoteVersion = '0.0.+'
 }
@@ -52,6 +53,7 @@ dependencies {
     providedCompile "javax.servlet:servlet-api:$servletVersion"
     providedCompile "javax.servlet.jsp:jsp-api:$jspVersion" 	
     compile "javax.servlet:jstl:$jstlVersion"
+    compile "com.fasterxml.jackson.core:jackson-databind:$jacksonDatabindVersion"
     
     compile "coyote:DataFrame:$dataFrameVersion"
     compile "coyote:Commons:$coyoteVersion"

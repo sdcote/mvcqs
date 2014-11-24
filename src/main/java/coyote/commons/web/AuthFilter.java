@@ -36,7 +36,8 @@ public class AuthFilter implements Filter {
 		context = filterConfig.getServletContext();
 		LOG.info("Context:" + context);
 
-		Enumeration initNames = context.getInitParameterNames();
+		@SuppressWarnings("rawtypes")
+    Enumeration initNames = context.getInitParameterNames();
 		if (initNames != null) {
 			while (initNames.hasMoreElements()) {
 				String name = (String) initNames.nextElement();
@@ -45,7 +46,8 @@ public class AuthFilter implements Filter {
 			}
 		}
 
-		Enumeration attrNames = context.getAttributeNames();
+		@SuppressWarnings("rawtypes")
+    Enumeration attrNames = context.getAttributeNames();
 		if (attrNames != null) {
 			while (attrNames.hasMoreElements()) {
 				String name = (String) attrNames.nextElement();
@@ -54,7 +56,8 @@ public class AuthFilter implements Filter {
 			}
 		}
 
-		Enumeration initParams = filterConfig.getInitParameterNames();
+		@SuppressWarnings("rawtypes")
+    Enumeration initParams = filterConfig.getInitParameterNames();
 		if (initParams != null) {
 			while (initParams.hasMoreElements()) {
 				String name = (String) initParams.nextElement();
@@ -72,7 +75,9 @@ public class AuthFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
-		Enumeration<String> params = req.getParameterNames();
+		
+		@SuppressWarnings("unchecked")
+    Enumeration<String> params = req.getParameterNames();
 		while (params.hasMoreElements()) {
 			String name = params.nextElement();
 			String value = request.getParameter(name);
