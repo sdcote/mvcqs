@@ -67,23 +67,43 @@
 
 	<!-- Handles requests into the application. The contextConfigLocation 
 		 parameter tells the servlet how it is to configure the context. -->
+		 
+	<!-- This handles our web application views -->
 	<servlet>
 		<servlet-name>appServlet</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
-            <param-value>/WEB-INF/appServlet-context.xml</param-value>
+            <param-value>/WEB-INF/webapp-context.xml</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>appServlet</servlet-name>
-		<url-pattern>/</url-pattern>
+		<url-pattern>/do/*</url-pattern>
 	</servlet-mapping>
 
+	<!-- This handles our RESTful services -->
+	<servlet>
+		<servlet-name>rest</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/webapp-context.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>rest</servlet-name>
+		<url-pattern>/svc/*</url-pattern>
+	</servlet-mapping>
+
+
+	<!-- An our default views and pages -->
 	<welcome-file-list>
+		<welcome-file>index</welcome-file>
 		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 
 </web-app>
