@@ -65,6 +65,7 @@ public class SampleService {
   int id ) {
     Message retval = new Message( id );
     retval.setBody( "This is a body of the message." );
+    LOG.info( "Returning message id " + retval.getId() );
     return retval;
   }
 
@@ -74,10 +75,10 @@ public class SampleService {
   @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json")
   public @ResponseBody List<Message> getAllMessages() {
     List<Message> retval = new ArrayList<Message>();
-
     retval.add( new Message( 1, "Message One" ) );
     retval.add( new Message( 2, "Message Two" ) );
     retval.add( new Message( 3, "Message Three" ) );
+    LOG.info( "Returning " + retval.size() + " messages" );
 
     return retval;
   }

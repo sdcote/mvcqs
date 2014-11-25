@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * An authentication and authorization filter to protect access to resources.
  * 
@@ -25,118 +26,119 @@ import org.apache.commons.logging.LogFactory;
  * access to private (non-public) resources.</p>
  */
 public class AuthFilter implements Filter {
-	private ServletContext context;
-	private static final Log LOG = LogFactory.getLog(AuthFilter.class);
+  private ServletContext context;
+  private static final Log LOG = LogFactory.getLog( AuthFilter.class );
 
 
 
 
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-		context = filterConfig.getServletContext();
-		LOG.info("Context:" + context);
+  @Override
+  public void init( FilterConfig filterConfig ) throws ServletException {
+    context = filterConfig.getServletContext();
+    LOG.info( "Context:" + context );
 
-		@SuppressWarnings("rawtypes")
+    @SuppressWarnings("rawtypes")
     Enumeration initNames = context.getInitParameterNames();
-		if (initNames != null) {
-			while (initNames.hasMoreElements()) {
-				String name = (String) initNames.nextElement();
-				String value = filterConfig.getInitParameter(name);
-				LOG.info("Init:" + name + ":" + value);
-			}
-		}
+    if ( initNames != null ) {
+      while ( initNames.hasMoreElements() ) {
+        String name = (String)initNames.nextElement();
+        String value = filterConfig.getInitParameter( name );
+        LOG.info( "Init:" + name + ":" + value );
+      }
+    }
 
-		@SuppressWarnings("rawtypes")
+    @SuppressWarnings("rawtypes")
     Enumeration attrNames = context.getAttributeNames();
-		if (attrNames != null) {
-			while (attrNames.hasMoreElements()) {
-				String name = (String) attrNames.nextElement();
-				String value = filterConfig.getInitParameter(name);
-				LOG.info("Attr:" + name + ":" + value);
-			}
-		}
+    if ( attrNames != null ) {
+      while ( attrNames.hasMoreElements() ) {
+        String name = (String)attrNames.nextElement();
+        String value = filterConfig.getInitParameter( name );
+        LOG.info( "Attr:" + name + ":" + value );
+      }
+    }
 
-		@SuppressWarnings("rawtypes")
+    @SuppressWarnings("rawtypes")
     Enumeration initParams = filterConfig.getInitParameterNames();
-		if (initParams != null) {
-			while (initParams.hasMoreElements()) {
-				String name = (String) initParams.nextElement();
-				String value = filterConfig.getInitParameter(name);
-				LOG.info(name + ":" + value);
-			}
-		}
+    if ( initParams != null ) {
+      while ( initParams.hasMoreElements() ) {
+        String name = (String)initParams.nextElement();
+        String value = filterConfig.getInitParameter( name );
+        LOG.info( name + ":" + value );
+      }
+    }
 
-		LOG.info("Authentication Filter initialized");
-	}
-
-
+    LOG.info( "Authentication Filter initialized" );
+  }
 
 
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		HttpServletRequest req = (HttpServletRequest) request;
-		
-		@SuppressWarnings("unchecked")
+
+
+  @Override
+  public void doFilter( ServletRequest request, ServletResponse response, FilterChain chain ) throws IOException, ServletException {
+    HttpServletRequest req = (HttpServletRequest)request;
+
+    @SuppressWarnings("unchecked")
     Enumeration<String> params = req.getParameterNames();
-		while (params.hasMoreElements()) {
-			String name = params.nextElement();
-			String value = request.getParameter(name);
-			LOG.info(req.getRemoteAddr() + "::Request Params::{" + name + "=" + value + "}");
-		}
+    while ( params.hasMoreElements() ) {
+      String name = params.nextElement();
+      String value = request.getParameter( name );
+      LOG.info( req.getRemoteAddr() + "::Request Params::{" + name + "=" + value + "}" );
+    }
 
-		Cookie[] cookies = req.getCookies();
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				LOG.info(req.getRemoteAddr() + "::Cookie::{" + cookie.getName() + "," + cookie.getValue() + "}");
-			}
-		}
+    Cookie[] cookies = req.getCookies();
+    if ( cookies != null ) {
+      for ( Cookie cookie : cookies ) {
+        LOG.info( req.getRemoteAddr() + "::Cookie::{" + cookie.getName() + "," + cookie.getValue() + "}" );
+      }
+    }
 
-		String uri = req.getRequestURI();
-		LOG.info("Requested Resource:" + uri);
+    String uri = req.getRequestURI();
+    LOG.info( "Requested Resource:" + uri );
 
-		HttpSession session = req.getSession(false);
+    HttpSession session = req.getSession( false );
 
-		HttpServletResponse res = (HttpServletResponse) response;
+    HttpServletResponse res = (HttpServletResponse)response;
 
-		if (session == null && uriIsProtected(uri)) {
-			LOG.info("Unauthorized access request");
-			// s
-			res.sendRedirect("login.html");
-		} else {
-			// pass the request along the filter chain
-			chain.doFilter(request, response);
-		}
+    if ( session == null && uriIsProtected( uri ) ) {
+      LOG.info( "Unauthorized access request" );
+      res.sendRedirect( "login.html" );
+    } else {
+      // pass the request along the filter chain
+      try {
+        chain.doFilter( request, response );
+      } catch ( Exception e ) {
+        LOG.warn( "Exception sending request down the chain", e );
+      }
+    }
 
-		// pass the request along the filter chain
-		chain.doFilter(request, response);
-	}
-
-
-
-
-	/**
-	 * 
-	 * @param uri
-	 * @return
-	 */
-	private boolean uriIsProtected(String uri) {
-
-		// Check the URI against a list of anonymous URI patterns
-		// if the pattern matches return false
-		return false;
-		// if there is no match, assume the URI is protected and requires
-		// authentication (session)
-		// return true;
-	}
+  }
 
 
 
 
-	@Override
-	public void destroy() {
+  /**
+   * 
+   * @param uri
+   * @return
+   */
+  private boolean uriIsProtected( String uri ) {
 
-		context.log("AuthFilter Filter destroyed");
-		LOG.info("Authentication destroyed");
-	}
+    // Check the URI against a list of anonymous URI patterns
+    // if the pattern matches return false
+    return false;
+    // if there is no match, assume the URI is protected and requires
+    // authentication (session)
+    // return true;
+  }
+
+
+
+
+  @Override
+  public void destroy() {
+
+    context.log( "AuthFilter Filter destroyed" );
+    LOG.info( "Authentication destroyed" );
+  }
 
 }

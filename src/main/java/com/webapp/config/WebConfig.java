@@ -23,8 +23,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 public class WebConfig extends WebMvcConfigurerAdapter {
 
   @Override
-  public void addViewControllers( ViewControllerRegistry registry )
-  {
+  public void addViewControllers( ViewControllerRegistry registry ) {
     registry.addViewController( "/" ).setViewName( "index" );
   }
 
@@ -32,9 +31,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 
   @Override
-  public void addResourceHandlers( ResourceHandlerRegistry registry )
-  {
-    registry.addResourceHandler( "/static/**" ).addResourceLocations( "/static/" );
+  public void addResourceHandlers( ResourceHandlerRegistry registry ) {
     registry.addResourceHandler( "/docs/**" ).addResourceLocations( "/docs/" );
     registry.addResourceHandler( "/css/**" ).addResourceLocations( "/css/" );
     registry.addResourceHandler( "/img/**" ).addResourceLocations( "/img/" );
@@ -46,8 +43,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 
   @Bean
-  public ViewResolver viewResolver()
-  {
+  public ViewResolver viewResolver() {
     InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
     viewResolver.setPrefix( "/WEB-INF/views/" );
     viewResolver.setSuffix( ".jsp" );
@@ -70,8 +66,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
    * @return a resource bundle to be autowired into any component wanting it.
    */
   @Bean
-  public ResourceBundleMessageSource messageSource()
-  {
+  public ResourceBundleMessageSource messageSource() {
     ResourceBundleMessageSource msrc = new ResourceBundleMessageSource();
     msrc.setBasename( "message" );
     return msrc;
