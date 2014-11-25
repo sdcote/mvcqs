@@ -87,6 +87,19 @@ public class AuthFilter implements Filter {
 			LOG.fatal("Could not obtain a reference to the security context); application is unsecured!");
 		}
 
+		if (applicationContext != null) {
+
+			String[] names = applicationContext.getBeanDefinitionNames();
+			if (names.length > 0) {
+				for (int x = 0; x < names.length; x++) {
+					LOG.info("BEAN: " + names[x]);
+				}
+
+			} else {
+				LOG.error("There are NO BEAN NAMES!");
+			}
+		}
+
 		LOG.info("Authentication Filter initialized");
 	}
 
