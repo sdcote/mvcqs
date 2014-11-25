@@ -22,6 +22,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import coyote.commons.security.Context;
 
+
 /**
  * An authentication and authorization filter to protect access to resources.
  * 
@@ -29,136 +30,137 @@ import coyote.commons.security.Context;
  * access to private (non-public) resources.</p>
  */
 public class AuthFilter implements Filter {
-	private ServletContext context;
-	private static final Log LOG = LogFactory.getLog(AuthFilter.class);
+  private ServletContext context;
+  private static final Log LOG = LogFactory.getLog( AuthFilter.class );
 
-	ApplicationContext applicationContext = null;
+  ApplicationContext applicationContext = null;
 
-	Context securityContext = null;
-
-
-
-
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-		context = filterConfig.getServletContext();
-		LOG.info("Servlet Context:" + context);
-
-		applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
-		LOG.info("Spring Context:" + applicationContext);
-
-		@SuppressWarnings("rawtypes")
-		Enumeration initNames = context.getInitParameterNames();
-		if (initNames != null) {
-			while (initNames.hasMoreElements()) {
-				String name = (String) initNames.nextElement();
-				String value = filterConfig.getInitParameter(name);
-				LOG.info("Init:" + name + ":" + value);
-			}
-		}
-
-		@SuppressWarnings("rawtypes")
-		Enumeration attrNames = context.getAttributeNames();
-		if (attrNames != null) {
-			while (attrNames.hasMoreElements()) {
-				String name = (String) attrNames.nextElement();
-				String value = filterConfig.getInitParameter(name);
-				LOG.info("Attr:" + name + ":" + value);
-			}
-		}
-
-		@SuppressWarnings("rawtypes")
-		Enumeration initParams = filterConfig.getInitParameterNames();
-		if (initParams != null) {
-			while (initParams.hasMoreElements()) {
-				String name = (String) initParams.nextElement();
-				String value = filterConfig.getInitParameter(name);
-				LOG.info(name + ":" + value);
-			}
-		}
-
-		if (applicationContext != null && applicationContext.containsBean("securityContext")) {
-			securityContext = (Context) applicationContext.getBean("securityContext");
-		}
-
-		if (securityContext != null) {
-			LOG.info("Security Context Initialized");
-		} else {
-			LOG.fatal("Could not obtain a reference to the security context); application is unsecured!");
-		}
-
-		LOG.info("Authentication Filter initialized");
-	}
+  Context securityContext = null;
 
 
 
 
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		HttpServletRequest req = (HttpServletRequest) request;
+  @Override
+  public void init( FilterConfig filterConfig ) throws ServletException {
+    context = filterConfig.getServletContext();
+    LOG.info( "Servlet Context:" + context );
 
-		@SuppressWarnings("unchecked")
-		Enumeration<String> params = req.getParameterNames();
-		while (params.hasMoreElements()) {
-			String name = params.nextElement();
-			String value = request.getParameter(name);
-			LOG.info(req.getRemoteAddr() + "::Request Params::{" + name + "=" + value + "}");
-		}
+    applicationContext = WebApplicationContextUtils.getWebApplicationContext( context );
+    LOG.info( "Spring Context:" + applicationContext );
 
-		Cookie[] cookies = req.getCookies();
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				LOG.info(req.getRemoteAddr() + "::Cookie::{" + cookie.getName() + "," + cookie.getValue() + "}");
-			}
-		}
+    @SuppressWarnings("rawtypes")
+    Enumeration initNames = context.getInitParameterNames();
+    if ( initNames != null ) {
+      while ( initNames.hasMoreElements() ) {
+        String name = (String)initNames.nextElement();
+        String value = filterConfig.getInitParameter( name );
+        LOG.info( "Init:" + name + ":" + value );
+      }
+    }
 
-		String uri = req.getRequestURI();
-		LOG.info("Requested Resource:" + uri);
+    @SuppressWarnings("rawtypes")
+    Enumeration attrNames = context.getAttributeNames();
+    if ( attrNames != null ) {
+      while ( attrNames.hasMoreElements() ) {
+        String name = (String)attrNames.nextElement();
+        String value = filterConfig.getInitParameter( name );
+        LOG.info( "Attr:" + name + ":" + value );
+      }
+    }
 
-		HttpSession session = req.getSession(false);
+    @SuppressWarnings("rawtypes")
+    Enumeration initParams = filterConfig.getInitParameterNames();
+    if ( initParams != null ) {
+      while ( initParams.hasMoreElements() ) {
+        String name = (String)initParams.nextElement();
+        String value = filterConfig.getInitParameter( name );
+        LOG.info( name + ":" + value );
+      }
+    }
 
-		HttpServletResponse res = (HttpServletResponse) response;
+    // Retrieve the SecurityContext from the application context.
+    if ( applicationContext != null && applicationContext.containsBean( "securityContext" ) ) {
+      securityContext = (Context)applicationContext.getBean( "securityContext" );
+    }
 
-		if (session == null && uriIsProtected(uri)) {
-			LOG.info("Unauthorized access request");
-			res.sendRedirect("login.html");
-		} else {
-			// pass the request along the filter chain
-			try {
-				chain.doFilter(request, response);
-			} catch (Exception e) {
-				LOG.warn("Exception sending request down the chain", e);
-			}
-		}
+    if ( securityContext != null ) {
+      LOG.info( "Security Context Initialized" );
+    } else {
+      LOG.fatal( "Could not obtain a reference to the security context); application is unsecured!" );
+    }
 
-	}
-
-
-
-
-	/**
-	 * 
-	 * @param uri
-	 * @return
-	 */
-	private boolean uriIsProtected(String uri) {
-
-		// Check the URI against a list of anonymous URI patterns
-		// if the pattern matches return false
-		return false;
-		// if there is no match, assume the URI is protected and requires
-		// authentication (session)
-		// return true;
-	}
+    LOG.info( "Authentication Filter initialized" );
+  }
 
 
 
 
-	@Override
-	public void destroy() {
+  @Override
+  public void doFilter( ServletRequest request, ServletResponse response, FilterChain chain ) throws IOException, ServletException {
+    HttpServletRequest req = (HttpServletRequest)request;
 
-		context.log("AuthFilter Filter destroyed");
-		LOG.info("Authentication destroyed");
-	}
+    @SuppressWarnings("unchecked")
+    Enumeration<String> params = req.getParameterNames();
+    while ( params.hasMoreElements() ) {
+      String name = params.nextElement();
+      String value = request.getParameter( name );
+      LOG.info( req.getRemoteAddr() + "::Request Params::{" + name + "=" + value + "}" );
+    }
+
+    Cookie[] cookies = req.getCookies();
+    if ( cookies != null ) {
+      for ( Cookie cookie : cookies ) {
+        LOG.info( req.getRemoteAddr() + "::Cookie::{" + cookie.getName() + "," + cookie.getValue() + "}" );
+      }
+    }
+
+    String uri = req.getRequestURI();
+    LOG.info( "Requested Resource:" + uri );
+
+    HttpSession session = req.getSession( false );
+
+    HttpServletResponse res = (HttpServletResponse)response;
+
+    if ( session == null && uriIsProtected( uri ) ) {
+      LOG.info( "Unauthorized access request" );
+      res.sendRedirect( "login.html" );
+    } else {
+      // pass the request along the filter chain
+      try {
+        chain.doFilter( request, response );
+      } catch ( Exception e ) {
+        LOG.warn( "Exception sending request down the chain", e );
+      }
+    }
+
+  }
+
+
+
+
+  /**
+   * 
+   * @param uri
+   * @return
+   */
+  private boolean uriIsProtected( String uri ) {
+
+    // Check the URI against a list of anonymous URI patterns
+    // if the pattern matches return false
+    return false;
+    // if there is no match, assume the URI is protected and requires
+    // authentication (session)
+    // return true;
+  }
+
+
+
+
+  @Override
+  public void destroy() {
+
+    context.log( "AuthFilter Filter destroyed" );
+    LOG.info( "Authentication destroyed" );
+  }
 
 }
