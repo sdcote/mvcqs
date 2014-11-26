@@ -18,6 +18,8 @@
 	<!-- This is an exception to the above. In order to get Jackson JSON  -->
 	<!-- support, we have to create a JSON message converter in the context. -->
 
+	<!-- TODO Move this to the configuration classes -->
+
     <!-- Configure to plugin JSON as request and response in method handler -->
 	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
 		<property name="messageConverters">
