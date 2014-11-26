@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.webapp.desc.LoginFeature;
 
-import coyote.commons.feature.FeatureList;
+import coyote.commons.feature.SystemDescription;
 
 
 /**
@@ -28,28 +28,26 @@ import coyote.commons.feature.FeatureList;
 @Configuration
 public class FeatureConfig {
 
-	private final FeatureList featureList = new FeatureList();
+  private final SystemDescription system = new SystemDescription();
 
 
 
 
-	/**
-	 * This creates a bean accessible to all the components in the system which
-	 * which lists and describes the feature of the system.
-	 * 
-	 * <p>This list of features is used to generate navigational views of the 
-	 * system and other important development functions.</p>
-	 * 
-	 * <p>As the system is evolved, new features are added to this list and 
-	 * subsequently appear on menus.</p>
-	 * 
-	 * @return The list of features in the application.
-	 */
-	@Bean
-	public FeatureList initFeatureList() {
-
-		featureList.add(new LoginFeature());
-		return featureList;
-	}
+  /**
+   * This creates a bean accessible to all the components in the system which
+   * which lists and describes the feature of the system.
+   * 
+   * <p>This list of features is used to generate navigational views of the 
+   * system and other important development functions.</p>
+   * 
+   * <p>As the system is evolved, new features are added to this list and 
+   * subsequently appear on menus.</p>
+   * 
+   * @return The list of features in the application.
+   */
+  @Bean
+  public SystemDescription systemDescription() {
+    return system;
+  }
 
 }
