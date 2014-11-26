@@ -8,7 +8,15 @@ simple web service or a platform independent UI to perform some simple task.
 
 Unlike the BOSS project which is a template for back office services, this 
 template is intended to provide a front-end service environment with an 
-emphasis on HTML via MVC. FEWAT  
+emphasis on HTML via MVC.
+
+It is a fully operational web application with authentication, authorization 
+and auditing built in.
+
+The system uses a responsive design for phones, tablets and desktop access, 
+courtesy of Bootstrap.
+
+Login profile management is also included. 
 
 Project Structure
 -----------------
@@ -26,4 +34,7 @@ See build/libs/webapp-tmpl.war
 To run the web app:
 -------------------
 ./gradlew jettyRun
-Point your preferred web browser at http://localhost:8080/webapp-tmpl
+Point your preferred web browser at http://localhost/mvcqs
+
+Easier still, just execute the *run* command to build and run the project in 
+a matter of seconds.
