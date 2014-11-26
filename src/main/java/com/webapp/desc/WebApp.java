@@ -38,9 +38,9 @@ import coyote.commons.feature.SystemDescription;
  * close to the code has proven very useful and a pest practice for effective 
  * agile teams.</p>   
  */
-public class System extends SystemDescription {
+public class WebApp extends SystemDescription {
 
-  public System() {
+  public WebApp() {
     version = new Version( 1, 0, 0, Version.DEVELOPMENT );
     name="webapp";
     description = "This is a fully-functional web application from which developers can begin prototyping their own application in a matter of seconds. It is a starting point for prototypes, utilities and proof of concept systems which can run on the desktop for individual use or exposed to all members of the team or organization.";
