@@ -14,7 +14,7 @@ package com.webapp.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.webapp.feature.LoginFeature;
+import com.webapp.desc.LoginFeature;
 
 import coyote.commons.feature.FeatureList;
 
