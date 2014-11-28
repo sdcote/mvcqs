@@ -13,6 +13,7 @@ package com.webapp.tags;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
@@ -63,7 +64,7 @@ public class MainNav extends SimpleTagSupport {
       }
       if ( webapp == null ) {
         LOG.warn( "Could not get system description...creating one" );
-        //webapp = new WebApp();
+        webapp = new WebApp();
       }
     }
 
@@ -74,8 +75,104 @@ public class MainNav extends SimpleTagSupport {
 
 
   public void doTag() throws JspException, IOException {
-
     JspWriter out = getJspContext().getOut();
-    out.println( "This is where the navigation menu for " + getSystemDescription().getDisplayName() + getSystemDescription().getVersion() +" will go." );
+
+    HttpServletRequest request = (HttpServletRequest)( (PageContext)getJspContext() ).getRequest();
+    String contextPath = request.getContextPath();
+
+    StringBuffer content = new StringBuffer();
+    content.append( "<nav class=\"navbar navbar-default navbar-static-top\" role=\"navigation\" style=\"margin-bottom: 0\">\r\n" );
+
+    content.append( navHeader( contextPath ) );
+    content.append( navTopLinks( contextPath ) );
+    content.append( navSidebar( contextPath ) );
+
+    content.append( "</nav>\r\n" );
+
+    out.println( content.toString() );
   }
+
+
+
+
+  /**
+   * Generates the top and left-most portion of the navigation header.
+   * @param contextPath 
+   * 
+   * @return the portion of the navigation containing the web application home link.
+   */
+  private Object navHeader( String contextPath ) {
+    StringBuffer b = new StringBuffer();
+    b.append( "\t\t\t<div class=\"navbar-header\">\r\n" );
+    b.append( "\t\t\t\t<button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\".navbar-collapse\">\r\n" );
+    b.append( "\t\t\t\t\t<span class=\"sr-only\">Toggle navigation</span>\r\n" );
+    b.append( "\t\t\t\t\t<span class=\"icon-bar\"></span>\r\n" );
+    b.append( "\t\t\t\t\t<span class=\"icon-bar\"></span>\r\n" );
+    b.append( "\t\t\t\t\t<span class=\"icon-bar\"></span>\r\n" );
+    b.append( "\t\t\t\t</button>\r\n" );
+    b.append( "\t\t\t\t<a class=\"navbar-brand\" href=\"" );
+    b.append( contextPath );
+    b.append( getSystemDescription().getLink() );
+    b.append( "\">" );
+    b.append( getSystemDescription().getDisplayName() );
+    b.append( "</a>\r\n" );
+    b.append( "\t\t\t</div>\r\n" );
+    return b.toString();
+  }
+
+
+
+
+  /**
+   * @param contextPath 
+   * @return
+   */
+  private Object navSidebar( String contextPath ) {
+    StringBuffer b = new StringBuffer();
+    b.append( "\t<div class=\"navbar-default sidebar\" role=\"navigation\">\r\n" );
+    b.append( "\t\t<div class=\"sidebar-nav navbar-collapse\">\r\n" );
+    b.append( "\t\t\t<ul class=\"nav\" id=\"side-menu\">\r\n" );
+
+    // each line item is a menu option
+
+    b.append( "\t\t\t</ul>\r\n" );
+    b.append( "\t\t</div>\r\n" );
+    b.append( "\t\t<!-- /.sidebar-collapse -->\r\n" );
+    b.append( "\t</div>\r\n" );
+    b.append( "\t<!-- /.navbar-static-side -->\r\n" );
+    return b.toString();
+  }
+
+
+
+
+  /**
+   * @param contextPath  
+   * @return
+   */
+  private Object navTopLinks (String contextPath ) {
+    StringBuffer b = new StringBuffer();
+    b.append( "\t<ul class=\"nav navbar-top-links navbar-right\">\r\n" );
+    b.append( "\t<li class=\"dropdown\">\r\n" );
+    b.append( "\t\t<a class=\"dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">\r\n" );
+    b.append( "\t\t<i class=\"fa fa-user fa-fw\"></i>  <i class=\"fa fa-caret-down\"></i>\r\n" );
+    b.append( "\t\t</a>\r\n" );
+    b.append( "\t\t<ul class=\"dropdown-menu dropdown-user\">\r\n" );
+    b.append( "\t\t\t\t\t<li><a href=\"#\"><i class=\"fa fa-user fa-fw\"></i> User Profile</a>\r\n" );
+    b.append( "\t\t\t\t\t</li>\r\n" );
+    b.append( "\t\t\t\t\t<li><a href=\"#\"><i class=\"fa fa-gear fa-fw\"></i> Settings</a>\r\n" );
+    b.append( "\t\t\t\t\t</li>\r\n" );
+    b.append( "\t\t\t\t\t<li class=\"divider\"></li>\r\n" );
+    b.append( "\t\t\t\t\t<li><a href=\"login\"><i class=\"fa fa-sign-out fa-fw\"></i> Logout</a>\r\n" );
+    b.append( "\t\t\t\t\t</li>\r\n" );
+    b.append( "\t\t\t\t</ul>\r\n" );
+    b.append( "\t\t\t\t<!-- /.dropdown-user -->\r\n" );
+    b.append( "\t\t\t</li>\r\n" );
+    b.append( "\t\t\t<!-- /.dropdown -->\r\n" );
+    b.append( "\t\t</ul>\r\n" );
+    b.append( "\t\t<!-- /.navbar-top-links -->\r\n" );
+    b.append( "\t</div>\r\n" );
+    return b.toString();
+  }
+
 }

@@ -97,8 +97,21 @@ public class SystemDescription extends Feature {
     StringBuilder b = new StringBuilder();
     b.append( "SysDesc: " );
     b.append( name );
-    b.append( " version:" );
+    b.append( " version: v" );
     b.append( version );
     return b.toString();
+  }
+
+
+
+
+  /**
+   * @return
+   */
+  public Object getLink() {
+    if ( link != null )
+      return link;
+    else
+      return "#";
   }
 }

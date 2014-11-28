@@ -20,9 +20,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.webapp.desc.WebApp;
-
-import coyote.commons.feature.SystemDescription;
 import coyote.commons.security.Context;
 
 
@@ -89,13 +86,6 @@ public class AuthFilter implements Filter {
       LOG.info( "Security Context Initialized" );
     } else {
       LOG.fatal( "Could not obtain a reference to the security context); application is unsecured!" );
-    }
-
-    if ( applicationContext != null && applicationContext.containsBean( WebApp.SYSTEM_DESCRIPTION ) ) {
-      SystemDescription systemDescription = (SystemDescription)applicationContext.getBean( WebApp.SYSTEM_DESCRIPTION );
-      SystemDescription webapp = (SystemDescription)applicationContext.getBean( WebApp.SYSTEM_DESCRIPTION );
-      
-      LOG.info( webapp );
     }
 
     LOG.info( "Authentication Filter initialized" );

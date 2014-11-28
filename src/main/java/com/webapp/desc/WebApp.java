@@ -50,6 +50,7 @@ public class WebApp extends SystemDescription {
   public WebApp() {
     version = new Version( 1, 0, 0, Version.DEVELOPMENT );
     name = "webapp";
+    link = "/";
     description = "This is a fully-functional web application from which developers can begin prototyping their own application in a matter of seconds. It is a starting point for prototypes, utilities and proof of concept systems which can run on the desktop for individual use or exposed to all members of the team or organization.";
 
     // We are providing security features
@@ -59,7 +60,13 @@ public class WebApp extends SystemDescription {
     // User profile management
     Feature profile = new UserProfileTheme();
     addTheme( profile );
-    System.out.println( "====================>" + super.getDisplayName() );
+    
+
+    // Operations pages and functions; thread pools and background processes
+    //Feature profile = new OperationsTheme();
+    //addTheme( profile );
+    
+
   }
 
 }
