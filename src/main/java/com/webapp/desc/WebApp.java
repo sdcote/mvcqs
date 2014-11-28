@@ -17,7 +17,7 @@ import coyote.commons.feature.SystemDescription;
 
 
 /**
- * This is the description of this system.
+ * This is the description of this web application.
  * 
  * <p>This class is used to keep track of the current state of this systems 
  * evolution. It ties in all the features modeled in this package to provide a

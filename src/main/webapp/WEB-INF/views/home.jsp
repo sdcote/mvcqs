@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="mvcqs" uri="/WEB-INF/mvcqs.tld" %>
 <!DOCTYPE HTML>
 <html lang="en-US">
 <head>
@@ -15,6 +16,11 @@
 </head>
 
 <body class="wrap">
+
+<div>
+    <mvcqs:MainNav/>
+</div>
+
 	<header>
 		<nav class="mobile-nav show-on-mobiles">
 			<ul>
