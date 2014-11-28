@@ -7,7 +7,6 @@ version="2.0">
 	<description>WebApp Custom Tags</description>
 	<tlib-version>2.1</tlib-version>
 	<short-name>WebAppTags</short-name>
-	<jsp-version>2.0</jsp-version>
 	<tag>
 		<name>MainNav</name>
 		<tag-class>com.webapp.tags.MainNav</tag-class>

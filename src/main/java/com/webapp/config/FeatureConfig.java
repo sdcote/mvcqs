@@ -14,7 +14,7 @@ package com.webapp.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.webapp.desc.LoginFeature;
+import com.webapp.desc.WebApp;
 
 import coyote.commons.feature.SystemDescription;
 
@@ -28,7 +28,8 @@ import coyote.commons.feature.SystemDescription;
 @Configuration
 public class FeatureConfig {
 
-  private final SystemDescription system = new SystemDescription();
+  /** Create a new WebApp object which describes the current state of this system. */
+  private final SystemDescription system = new WebApp();
 
 
 
@@ -42,6 +43,11 @@ public class FeatureConfig {
    * 
    * <p>As the system is evolved, new features are added to this list and 
    * subsequently appear on menus.</p>
+   * 
+   * <p>Do not change the name of this method, as it is used by other Spring-
+   * aware components in locating the system description bean in the 
+   * application context. If this method name must be changed, you may want to 
+   * consider changing {@code WebApp.SYSTEM_DESCRIPTION} as well.</p>
    * 
    * @return The list of features in the application.
    */

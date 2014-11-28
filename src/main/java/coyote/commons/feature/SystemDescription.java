@@ -64,4 +64,41 @@ public class SystemDescription extends Feature {
     themes.add( feature );
   }
 
+
+
+
+  /**
+   * @return
+   */
+  public String getDisplayName() {
+    if ( name != null )
+      //TODO resource bundle lookup
+      return name;
+    else
+      return "UNDEFINED";
+
+  }
+
+
+
+
+  public String getVersion() {
+    if ( version != null )
+      return version.toString();
+    else
+      return "0.0";
+  }
+
+
+
+
+  @Override
+  public String toString() {
+    StringBuilder b = new StringBuilder();
+    b.append( "SysDesc: " );
+    b.append( name );
+    b.append( " version:" );
+    b.append( version );
+    return b.toString();
+  }
 }

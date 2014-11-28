@@ -35,24 +35,31 @@ import coyote.commons.feature.SystemDescription;
  * coding these details into the system artifacts, all the details are 
  * committed to the code repository and made available to all members of the 
  * team and to automated build and deployment tools. Keeping this information 
- * close to the code has proven very useful and a pest practice for effective 
+ * close to the code has proven very useful and a best practice for effective 
  * agile teams.</p>   
+ * 
+ * <p>This is also the location of many of the Web Applications constants.</p>
  */
 public class WebApp extends SystemDescription {
 
+  public static final String SYSTEM_DESCRIPTION = "systemDescription";
+
+
+
+
   public WebApp() {
     version = new Version( 1, 0, 0, Version.DEVELOPMENT );
-    name="webapp";
+    name = "webapp";
     description = "This is a fully-functional web application from which developers can begin prototyping their own application in a matter of seconds. It is a starting point for prototypes, utilities and proof of concept systems which can run on the desktop for individual use or exposed to all members of the team or organization.";
 
     // We are providing security features
     Feature security = new SecurityTheme();
     addTheme( security );
-    
+
     // User profile management
     Feature profile = new UserProfileTheme();
     addTheme( profile );
-
+    System.out.println( "====================>" + super.getDisplayName() );
   }
 
 }
