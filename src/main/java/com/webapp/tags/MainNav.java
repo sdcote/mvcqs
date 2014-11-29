@@ -12,6 +12,7 @@
 package com.webapp.tags;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -36,12 +37,12 @@ public class MainNav extends SimpleTagSupport {
 
   private static final Log LOG = LogFactory.getLog( MainNav.class );
 
-  private static SystemDescription webapp = null;
+  private static WebApp webapp = null;
 
 
 
 
-  private SystemDescription getSystemDescription() {
+  private WebApp getSystemDescription() {
 
     if ( webapp == null ) {
       WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext( ( (PageContext)getJspContext() ).getServletContext() );
@@ -60,7 +61,7 @@ public class MainNav extends SimpleTagSupport {
       }
 
       if ( applicationContext != null && applicationContext.containsBean( WebApp.SYSTEM_DESCRIPTION ) ) {
-        webapp = (SystemDescription)applicationContext.getBean( WebApp.SYSTEM_DESCRIPTION );
+        webapp = (WebApp)applicationContext.getBean( WebApp.SYSTEM_DESCRIPTION );
       }
       if ( webapp == null ) {
         LOG.warn( "Could not get system description...creating one" );
@@ -79,13 +80,14 @@ public class MainNav extends SimpleTagSupport {
 
     HttpServletRequest request = (HttpServletRequest)( (PageContext)getJspContext() ).getRequest();
     String contextPath = request.getContextPath();
+    Locale locale = request.getLocale();
 
     StringBuffer content = new StringBuffer();
     content.append( "<nav class=\"navbar navbar-default navbar-static-top\" role=\"navigation\" style=\"margin-bottom: 0\">\r\n" );
 
-    content.append( navHeader( contextPath ) );
-    content.append( navTopLinks( contextPath ) );
-    content.append( navSidebar( contextPath ) );
+    content.append( navHeader( contextPath, locale ) );
+    content.append( navTopLinks( contextPath, locale ) );
+    content.append( navSidebar( contextPath, locale ) );
 
     content.append( "</nav>\r\n" );
 
@@ -98,10 +100,11 @@ public class MainNav extends SimpleTagSupport {
   /**
    * Generates the top and left-most portion of the navigation header.
    * @param contextPath 
+   * @param locale 
    * 
    * @return the portion of the navigation containing the web application home link.
    */
-  private Object navHeader( String contextPath ) {
+  private Object navHeader( String contextPath, Locale locale ) {
     StringBuffer b = new StringBuffer();
     b.append( "\t\t\t<div class=\"navbar-header\">\r\n" );
     b.append( "\t\t\t\t<button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\".navbar-collapse\">\r\n" );
@@ -114,7 +117,7 @@ public class MainNav extends SimpleTagSupport {
     b.append( contextPath );
     b.append( getSystemDescription().getLink() );
     b.append( "\">" );
-    b.append( getSystemDescription().getDisplayName() );
+    b.append( getSystemDescription().getDisplayName(locale) );
     b.append( "</a>\r\n" );
     b.append( "\t\t\t</div>\r\n" );
     return b.toString();
@@ -125,9 +128,10 @@ public class MainNav extends SimpleTagSupport {
 
   /**
    * @param contextPath 
+   * @param locale 
    * @return
    */
-  private Object navSidebar( String contextPath ) {
+  private Object navSidebar( String contextPath, Locale locale ) {
     StringBuffer b = new StringBuffer();
     b.append( "\t<div class=\"navbar-default sidebar\" role=\"navigation\">\r\n" );
     b.append( "\t\t<div class=\"sidebar-nav navbar-collapse\">\r\n" );
@@ -148,9 +152,10 @@ public class MainNav extends SimpleTagSupport {
 
   /**
    * @param contextPath  
+   * @param locale 
    * @return
    */
-  private Object navTopLinks (String contextPath ) {
+  private Object navTopLinks( String contextPath, Locale locale ) {
     StringBuffer b = new StringBuffer();
     b.append( "\t<ul class=\"nav navbar-top-links navbar-right\">\r\n" );
     b.append( "\t<li class=\"dropdown\">\r\n" );

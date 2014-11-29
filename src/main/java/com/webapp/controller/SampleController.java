@@ -8,10 +8,10 @@ import javax.naming.InitialContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.webapp.dao.WebAppDataStore;
@@ -49,7 +49,7 @@ public class SampleController {
 
 
 
-   @RequestMapping("login")
+  @RequestMapping("login")
   public String doLogin( Model m ) {
     return "home";
   }
@@ -69,7 +69,11 @@ public class SampleController {
     LOG.info( "Handling request..." );
     LOG.info( "data store = " + _dataStore );
     m.addAttribute( "name", "World" );
-    m.addAttribute( "title", messageSource.getMessage( "title", null, Locale.getDefault() ) );
+    try {
+      m.addAttribute( "title", messageSource.getMessage( "title", null, Locale.getDefault() ) );
+    } catch ( NoSuchMessageException e ) {
+      LOG.error( e.getMessage() );
+    }
     LOG.info( "Request handled." );
     return "home";
   }

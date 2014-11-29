@@ -67,16 +67,11 @@ public class SystemDescription extends Feature {
 
 
 
-  /**
-   * @return
-   */
-  public String getDisplayName() {
+  public String getName() {
     if ( name != null )
-      //TODO resource bundle lookup
       return name;
     else
-      return "UNDEFINED";
-
+      return "UNNAMED";
   }
 
 

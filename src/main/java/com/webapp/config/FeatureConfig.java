@@ -11,8 +11,10 @@
  */
 package com.webapp.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
 
 import com.webapp.desc.WebApp;
 
@@ -29,8 +31,12 @@ import coyote.commons.feature.SystemDescription;
 public class FeatureConfig {
 
   /** Create a new WebApp object which describes the current state of this system. */
-  private final SystemDescription system = new WebApp();
+  private final WebApp system = new WebApp();
 
+  @Autowired
+  public void setMessageSource( ResourceBundleMessageSource source ) {
+    system.setMessageSource(source);
+  }
 
 
 

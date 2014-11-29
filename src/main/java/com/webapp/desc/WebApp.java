@@ -11,6 +11,12 @@
  */
 package com.webapp.desc;
 
+import java.util.Locale;
+
+import org.springframework.context.NoSuchMessageException;
+import org.springframework.context.support.ResourceBundleMessageSource;
+
+import coyote.commons.Log;
 import coyote.commons.Version;
 import coyote.commons.feature.Feature;
 import coyote.commons.feature.SystemDescription;
@@ -43,6 +49,7 @@ import coyote.commons.feature.SystemDescription;
 public class WebApp extends SystemDescription {
 
   public static final String SYSTEM_DESCRIPTION = "systemDescription";
+  ResourceBundleMessageSource messageSource = null;
 
 
 
@@ -60,13 +67,37 @@ public class WebApp extends SystemDescription {
     // User profile management
     Feature profile = new UserProfileTheme();
     addTheme( profile );
-    
 
     // Operations pages and functions; thread pools and background processes
     //Feature profile = new OperationsTheme();
     //addTheme( profile );
-    
 
   }
 
+
+
+
+  /**
+   * @param source
+   */
+  public void setMessageSource( ResourceBundleMessageSource source ) {
+    messageSource = source;
+  }
+
+
+
+
+  public String getDisplayName( Locale locale ) {
+
+    if ( messageSource != null ) {
+      try {
+        return messageSource.getMessage( getName()+".displayname", null, locale );
+      } catch ( NoSuchMessageException e ) {
+        Log.warn( e.getMessage() );
+        return super.getName();
+      }
+    } else {
+      return super.getName();
+    }
+  }
 }
