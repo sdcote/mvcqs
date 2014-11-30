@@ -68,6 +68,9 @@ public class WebApp extends SystemDescription {
     Feature profile = new UserProfileTheme();
     addTheme( profile );
 
+    Feature userSettings = new UserSettingsFeature();
+    userSettings.setParent( profile );
+
     // Operations pages and functions; thread pools and background processes
     //Feature profile = new OperationsTheme();
     //addTheme( profile );
@@ -87,17 +90,36 @@ public class WebApp extends SystemDescription {
 
 
 
-  public String getDisplayName( Locale locale ) {
-
+  public String getMessage( String key, Object[] args, Locale locale ) {
     if ( messageSource != null ) {
       try {
-        return messageSource.getMessage( getName()+".displayname", null, locale );
+        return messageSource.getMessage( key, args, locale );
       } catch ( NoSuchMessageException e ) {
         Log.warn( e.getMessage() );
         return super.getName();
       }
     } else {
+      return key;
+    }
+
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.feature.SystemDescription#getDisplayName(java.util.Locale)
+   */
+  @Override
+  public String getDisplayName( Locale locale ) {
+    String key = getName() + ".displayname";
+
+    String retval = getMessage( getName() + ".displayname", null, locale );
+
+    if ( key.equals( retval ) ) {
       return super.getName();
+    } else {
+      return retval;
     }
   }
 }

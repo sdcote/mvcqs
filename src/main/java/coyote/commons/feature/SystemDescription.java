@@ -11,6 +11,9 @@
  */
 package coyote.commons.feature;
 
+import java.util.Locale;
+
+
 /**
  * This is the root of all features and provides the starting point for 
  * discovering everything about how the functionality of the system is 
@@ -52,7 +55,7 @@ package coyote.commons.feature;
  * project and quickly begin development with less time spent becoming familiar 
  * with the system.</p> 
  */
-public class SystemDescription extends Feature {
+public abstract class SystemDescription extends Feature {
 
   /** This is a list of top level features of the system. */
   private FeatureList themes = new FeatureList();
@@ -109,4 +112,17 @@ public class SystemDescription extends Feature {
     else
       return "#";
   }
+
+
+
+
+  /**
+   * Return the name of the system appropriate for the given locale
+   * 
+   * @param locale The locale requesting the name
+   * 
+   * @return Locale specific name of the system.
+   */
+  public abstract String getDisplayName( Locale locale );
+
 }
