@@ -14,14 +14,16 @@ package com.webapp.desc;
 import coyote.commons.Version;
 import coyote.commons.feature.Feature;
 
-/**
- * 
- */
-public class UserProfileTheme extends Feature {
-  UserProfileTheme(){
-  version = new Version( 1, 0, 0, Version.DEVELOPMENT );
-  name="profile";
-  description = "Manage settings related to the user login of the system.";
-  }
 
+public class I18nFeature extends Feature {
+
+  public I18nFeature() {
+    version = new Version( 1, 0, Version.GENERAL );
+    since = new Version( 1, 0, Version.GENERAL );
+    name = "internationalization";
+    featureId = "122";
+    description = "System supports the ability to display data in a locale specific manner";
+    link = null; // This is not a user accessible feature
+
+  }
 }

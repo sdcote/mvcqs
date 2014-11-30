@@ -14,14 +14,17 @@ package com.webapp.desc;
 import coyote.commons.Version;
 import coyote.commons.feature.Feature;
 
-/**
- * 
- */
-public class UserProfileTheme extends Feature {
-  UserProfileTheme(){
-  version = new Version( 1, 0, 0, Version.DEVELOPMENT );
-  name="profile";
-  description = "Manage settings related to the user login of the system.";
-  }
 
+public class UserProfileFeature extends Feature {
+
+  public UserProfileFeature() {
+    version = new Version( 1, 0, Version.GENERAL );
+    since = new Version( 1, 0, Version.GENERAL );
+    name = "userprofile";
+    featureId = "169";
+    description = "Allows the user to manage user identity and demographic information. The user profile describes the identity of the user.";
+    link = "/do/userProfile";
+    
+
+  }
 }

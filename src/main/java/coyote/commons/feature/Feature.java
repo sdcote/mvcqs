@@ -16,6 +16,7 @@ import java.util.List;
 
 import coyote.commons.Version;
 
+
 /**
  * This is a class which models a feature in the system.
  * 
@@ -58,36 +59,45 @@ import coyote.commons.Version;
  * system users.</p>
  */
 public abstract class Feature {
-  
+
   /** The parent feature */
   protected Feature parent = null;
-  
-  /** The resource name for the display name of the feature. It is also used as the root for other resource keys such as tooltip and description. */ 
+
+  /** The resource name for the display name of the feature. It is also used as the root for other resource keys such as tooltip and description. */
   protected String name = null;
-  
+
   /** The reference link to use when generating links to this feature's view */
   protected String link = null;
-  
+
   /** The internal identifier for this feature. This is usually the requirement ID or story card ID used during the development process. This is useful when generating  release notes. */
   protected String featureId = null;
-  
+
   /** The description of the feature. Used in generating release notes, it is often the body of the requirement or story card. */
   protected String description = null;
-  
+
   /** The version of the product when this feature was introduced. */
   protected Version since = null;
-  
+
   /** The version of the feature. This is incremented each time the feature is significantly updated. */
   protected Version version = null;
-  
+
   /** The reference link to the help documentation for this feature. */
   protected String helpLink = null;
-  
+
   /** The level of licensing required for this feature to be accessed. No licensing = '0' (zero). */
   protected int licenseLevel = 0;
-  
+
   /** The list of roles expected to access this feature. */
   protected List<String> roles = new ArrayList<String>();
-  
-  
+
+
+
+
+  /**
+   * @param profile
+   */
+  public void setParent( Feature feature ) {
+    parent = feature;
+  }
+
 }
