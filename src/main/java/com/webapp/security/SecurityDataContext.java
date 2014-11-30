@@ -34,6 +34,12 @@ import coyote.commons.security.Role;
  * <p>The main functionality is provided by the GenericContext superclass. This 
  * class has a few overrides which allow it to capture changes to the security
  * context data model and persist those changes to a database.<p>
+ * 
+ * <p>Other versions of this security context implement a distributed data 
+ * store which allows many different servers in a data center to share security 
+ * data such as sessions. This way it is possible for a user to login and 
+ * establish as session on one server but still hit a different server on 
+ * subsequent requests.</p>  
  */
 public class SecurityDataContext extends GenericContext implements Context {
 

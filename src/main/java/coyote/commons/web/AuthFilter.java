@@ -54,7 +54,7 @@ public class AuthFilter implements Filter {
       while ( initNames.hasMoreElements() ) {
         String name = (String)initNames.nextElement();
         String value = filterConfig.getInitParameter( name );
-        LOG.info( "Init:" + name + ":" + value );
+        LOG.trace( "Init:" + name + ":" + value );
       }
     }
 
@@ -64,7 +64,7 @@ public class AuthFilter implements Filter {
       while ( attrNames.hasMoreElements() ) {
         String name = (String)attrNames.nextElement();
         String value = filterConfig.getInitParameter( name );
-        LOG.info( "Attr:" + name + ":" + value );
+        LOG.trace( "Attr:" + name + ":" + value );
       }
     }
 
@@ -74,7 +74,7 @@ public class AuthFilter implements Filter {
       while ( initParams.hasMoreElements() ) {
         String name = (String)initParams.nextElement();
         String value = filterConfig.getInitParameter( name );
-        LOG.info( name + ":" + value );
+        LOG.trace( name + ":" + value );
       }
     }
 
@@ -83,12 +83,12 @@ public class AuthFilter implements Filter {
     }
 
     if ( securityContext != null ) {
-      LOG.info( "Security Context Initialized" );
+      LOG.trace( "Security Context Initialized" );
     } else {
       LOG.fatal( "Could not obtain a reference to the security context); application is unsecured!" );
     }
 
-    LOG.info( "Authentication Filter initialized" );
+    LOG.trace( "Authentication Filter initialized" );
   }
 
 
@@ -103,25 +103,25 @@ public class AuthFilter implements Filter {
     while ( params.hasMoreElements() ) {
       String name = params.nextElement();
       String value = request.getParameter( name );
-      LOG.info( req.getRemoteAddr() + "::Request Params::{" + name + "=" + value + "}" );
+      LOG.trace( req.getRemoteAddr() + "::Request Params::{" + name + "=" + value + "}" );
     }
 
     Cookie[] cookies = req.getCookies();
     if ( cookies != null ) {
       for ( Cookie cookie : cookies ) {
-        LOG.info( req.getRemoteAddr() + "::Cookie::{" + cookie.getName() + "," + cookie.getValue() + "}" );
+        LOG.trace( req.getRemoteAddr() + "::Cookie::{" + cookie.getName() + "," + cookie.getValue() + "}" );
       }
     }
 
     String uri = req.getRequestURI();
-    LOG.info( "Requested Resource:" + uri );
+    LOG.debug( "Requested Resource:" + uri );
 
     HttpSession session = req.getSession( false );
 
     HttpServletResponse res = (HttpServletResponse)response;
 
     if ( session == null && uriIsProtected( uri ) ) {
-      LOG.info( "Unauthorized access request" );
+      LOG.warn( "Unauthorized access request" );
       res.sendRedirect( "login.html" );
     } else {
       // pass the request along the filter chain
