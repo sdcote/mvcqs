@@ -11,11 +11,16 @@
  */
 package com.webapp.desc;
 
+import coyote.commons.Version;
 import coyote.commons.feature.Feature;
+
 
 public class LogoutFeature extends Feature {
 
-	public LogoutFeature(){
-		
-	}
+  public LogoutFeature() {
+    version = new Version( 1, 0, 0, Version.DEVELOPMENT );
+    name = "logout";
+    link = "/do/logout";
+    description = "Deactivates the current authenticated session.";
+  }
 }
