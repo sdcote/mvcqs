@@ -61,6 +61,8 @@ import coyote.commons.Version;
  */
 public abstract class Feature {
 
+  private static final String DISPLAYNAME = "displayname";
+
   /** The parent feature */
   protected Feature parent = null;
 
@@ -206,7 +208,7 @@ public abstract class Feature {
    * @return Locale specific name of the system.
    */
   public Object getDisplayName( Locale locale ) {
-    return getMessage( name, null, locale );
+    return getMessage( name+'.'+DISPLAYNAME, null, locale );
   }
 
 

@@ -131,8 +131,8 @@ public class WebApp extends SystemDescription {
       try {
         return messageSource.getMessage( key, args, locale );
       } catch ( NoSuchMessageException e ) {
-        Log.warn( e.getMessage() );
-        return super.getName();
+        Log.warn( e.getMessage() + " - returning key: '" + key + "'" );
+        return key;
       }
     } else {
       return key;
