@@ -49,7 +49,12 @@ import coyote.commons.feature.SystemDescription;
 public class WebApp extends SystemDescription {
 
   public static final String SYSTEM_DESCRIPTION = "systemDescription";
-  ResourceBundleMessageSource messageSource = null;
+  private static ResourceBundleMessageSource messageSource = null;
+
+  public static final String SIGNIN_PROPERTY = "signin.feature.name";
+  public static final String SIGNOUT_PROPERTY = "signout.feature.name";
+  public static final String USER_PROFILE_PROPERTY = "userprofile.feature.name";
+  public static final String USER_SETTINGS_PROPERTY = "usersettings.feature.name";
 
 
 
@@ -62,18 +67,34 @@ public class WebApp extends SystemDescription {
 
     // We are providing security features
     Feature security = new SecurityTheme();
-    addTheme( security );
+    addFeature( security );
+    security.addFeature( new LoginFeature() );
+    security.addFeature( new LogoutFeature() );
+    //security.addFeature( new FindLoginFeature() );
+    //security.addFeature( new AddLoginFeature() );
+    //security.addFeature( new ChangeLoginFeature() );
+    //security.addFeature( new DeleteLoginFeature() );
+    //security.addFeature( new FindRoleFeature() );
+    //security.addFeature( new AddRoleFeature() );
+    //security.addFeature( new ChangeRoleFeature() );
+    //security.addFeature( new DeleteRoleFeature() );
+    //security.addFeature( new GrantRolePermissionFeature() );
+    //security.addFeature( new RevokeRolePermissionFeature() );
+    //security.addFeature( new GrantLoginPermissionFeature() );
+    //security.addFeature( new RevokeLoginPermissionFeature() );
+    //security.addFeature( new GrantRolePermissionFeature() );
+    //security.addFeature( new ChangeCredentialFeature() );
 
     // User profile management
     Feature profile = new UserProfileTheme();
-    addTheme( profile );
-
-    Feature userSettings = new UserSettingsFeature();
-    userSettings.setParent( profile );
+    addFeature( profile );
+    profile.addFeature( new UserProfileFeature() );
+    profile.addFeature( new UserSettingsFeature() );
 
     // Operations pages and functions; thread pools and background processes
-    //Feature profile = new OperationsTheme();
-    //addTheme( profile );
+    //Feature operations = new OperationsTheme();
+    //operations.addFeature( new BackgroundJobsFeature() );
+    //operations.addFeature( new SchedulerFeature() );
 
   }
 
@@ -90,6 +111,21 @@ public class WebApp extends SystemDescription {
 
 
 
+  /**
+   * This performs all the message lookups for all child resources.
+   * 
+   * <p>Features delegate message retrieval to their parents by default. Since 
+   * we extend {@code SystemDescription} which is a feature and all features 
+   * are added to the system description (this class) this method is the root 
+   * of all call to get messages for all features.</p>.
+   * 
+   * <p>This method uses the Spring {@code ResourceBundleMessageSource} to 
+   * handle all message resolution and is auto-wired by the Spring IoC 
+   * context.</p> 
+   * 
+   * @see coyote.commons.feature.Feature#getMessage(java.lang.String, java.lang.Object[], java.util.Locale)
+   */
+  @Override
   public String getMessage( String key, Object[] args, Locale locale ) {
     if ( messageSource != null ) {
       try {
@@ -104,22 +140,4 @@ public class WebApp extends SystemDescription {
 
   }
 
-
-
-
-  /**
-   * @see coyote.commons.feature.SystemDescription#getDisplayName(java.util.Locale)
-   */
-  @Override
-  public String getDisplayName( Locale locale ) {
-    String key = getName() + ".displayname";
-
-    String retval = getMessage( getName() + ".displayname", null, locale );
-
-    if ( key.equals( retval ) ) {
-      return super.getName();
-    } else {
-      return retval;
-    }
-  }
 }

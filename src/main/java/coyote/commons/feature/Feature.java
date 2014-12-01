@@ -13,6 +13,7 @@ package coyote.commons.feature;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import coyote.commons.Version;
 
@@ -88,16 +89,158 @@ public abstract class Feature {
   protected int licenseLevel = 0;
 
   /** The list of roles expected to access this feature. */
-  protected List<String> roles = new ArrayList<String>();
+  protected final List<String> roles = new ArrayList<String>();
+
+  protected final List<Feature> children = new ArrayList<Feature>();
 
 
 
 
   /**
-   * @param profile
+   * @param feature
    */
   public void setParent( Feature feature ) {
     parent = feature;
+  }
+
+
+
+
+  /**
+   * @param child
+   */
+  protected void removeChild( Feature child ) {
+    children.remove( child );
+  }
+
+
+
+
+  /**
+   * @param child the child to add;
+   */
+  public void addFeature( Feature child ) {
+
+    if ( child != null ) {
+      child.setParent( this );
+      for ( Feature feature : children ) {
+        if ( feature == child )
+          return;
+      }
+      children.add( child );
+    }
+  }
+
+
+
+
+  /**
+   * @return
+   */
+  public Object getName() {
+    return name;
+  }
+
+
+
+
+  /**
+   * @return
+   */
+  public String getLink() {
+    if ( link != null )
+      return link;
+    else
+      return "#";
+  }
+
+
+
+
+  /**
+   * Retrieve the feature with the given name.
+   * 
+   * <p>Performs a breadth first search for feature with the given name. There 
+   * are no guarantees as to the order of searching, but normally the search 
+   * follows the order if the features as they were added.</p>
+   *  
+   * @param name The name of the feature for which to search.
+   * 
+   * @return The feature with the given name or null if a feature with that name was not found.
+   */
+  public Feature getFeature( String name ) {
+    Feature retval = null;
+    if ( name != null ) {
+      // search the top level of features (breadth first)
+      for ( Feature feature : children ) {
+        if ( name.equals( feature.getName() ) ) {
+          retval = feature;
+          break;
+        } // if name matches
+      } // for each
+
+      // now search the next level
+      if ( retval == null ) {
+        // Try searching the children      
+        for ( Feature child : children ) {
+          retval = child.getFeature( name );
+          if ( retval != null ) {
+            break;
+          }
+        } // for each
+      } // if retval==null
+
+    } // if name !null
+
+    return retval;
+  }
+
+
+
+
+  /**
+   * Return the name of the system appropriate for the given locale
+   * 
+   * @param locale The locale requesting the name
+   * 
+   * @return Locale specific name of the system.
+   */
+  public Object getDisplayName( Locale locale ) {
+    return getMessage( name, null, locale );
+  }
+
+
+
+
+  /**
+   * Resolve the given code and arguments as message in the given Locale, 
+   * returning the value of the given key if not found.
+   * 
+   * <p>This implementation simply delegates the call to its parent if set. The 
+   * reason for this is that each feature may not want to manage its own 
+   * resource bundles and let the root handle all resource message lookups and 
+   * caching of messages and bundles. This works because all features are part 
+   * of one global root feature or {@code SystemDescription} which is often 
+   * application specific and manages it resource bundles according to the 
+   * applications frameworks and APIs.</p>
+   * 
+   * <p>While the default {@code SystemDescription} class does not override 
+   * this method, it is left up to application-specific subclasses to override 
+   * this method and use the most appropriate approach to resolve messages.</p> 
+   *  
+   * @param key the key of the message to lookup up, such as 'printer.notfound'
+   * @param args array of arguments that will be filled in for params within the message
+   * @param locale the Locale in which to do the lookup
+   * 
+   * @return the resolved message, or the key if not found
+   */
+  public String getMessage( String key, Object[] args, Locale locale ) {
+    if ( parent != null ) {
+      return parent.getMessage( key, args, locale );
+    } else {
+      return key;
+    }
+
   }
 
 }

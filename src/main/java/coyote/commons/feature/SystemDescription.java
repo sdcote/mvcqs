@@ -11,9 +11,6 @@
  */
 package coyote.commons.feature;
 
-import java.util.Locale;
-
-
 /**
  * This is the root of all features and provides the starting point for 
  * discovering everything about how the functionality of the system is 
@@ -38,7 +35,7 @@ import java.util.Locale;
  * <p>Product Owners and Product Managers have been known to generate strategic 
  * inventories of themes and features for their product based on client and 
  * market needs. The development team often does not have a clear picture of 
- * these themes and features as a whole and often make decistions without a 
+ * these themes and features as a whole and often make decisions without a 
  * contextual understanding of the product as a whole. Some development teams 
  * work with the product owners/managers and develop a model of the product 
  * during backlog refinement meetings and update this model in code so as to 
@@ -56,19 +53,6 @@ import java.util.Locale;
  * with the system.</p> 
  */
 public abstract class SystemDescription extends Feature {
-
-  /** This is a list of top level features of the system. */
-  private FeatureList themes = new FeatureList();
-
-
-
-
-  protected void addTheme( Feature feature ) {
-    themes.add( feature );
-  }
-
-
-
 
   public String getName() {
     if ( name != null )
@@ -99,30 +83,5 @@ public abstract class SystemDescription extends Feature {
     b.append( version );
     return b.toString();
   }
-
-
-
-
-  /**
-   * @return
-   */
-  public Object getLink() {
-    if ( link != null )
-      return link;
-    else
-      return "#";
-  }
-
-
-
-
-  /**
-   * Return the name of the system appropriate for the given locale
-   * 
-   * @param locale The locale requesting the name
-   * 
-   * @return Locale specific name of the system.
-   */
-  public abstract String getDisplayName( Locale locale );
 
 }

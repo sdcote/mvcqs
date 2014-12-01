@@ -24,6 +24,5 @@ public class LoginFeature extends Feature {
     featureId = "163";
     description = "Allows the user to authenticate with the system and establish a session";
     link = "/do/login";
-
   }
 }
