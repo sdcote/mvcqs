@@ -22,7 +22,6 @@ import com.webapp.dao.WebAppDataStore;
  */
 @Controller
 public class SampleController {
-
   private static final Log LOG = LogFactory.getLog( SampleController.class );
 
   protected ResourceBundleMessageSource messageSource;
@@ -49,14 +48,11 @@ public class SampleController {
 
 
 
-  @RequestMapping("login")
-  public String doLogin( Model m ) {
-    return "home";
-  }
-
-
-
-
+  /**
+   * This shows how to create a simple MVC endpoint.
+   * @param m
+   * @return
+   */
   @RequestMapping("home")
   public String loadHomePage( Model m ) {
     Context ctx = null;
@@ -66,7 +62,7 @@ public class SampleController {
       LOG.error( "No initial context", e );
     }
 
-    LOG.info( "Handling request..." );
+    LOG.info( "Handling 'home' request..." );
     LOG.info( "data store = " + _dataStore );
     m.addAttribute( "name", "World" );
     try {
@@ -74,7 +70,8 @@ public class SampleController {
     } catch ( NoSuchMessageException e ) {
       LOG.error( e.getMessage() );
     }
-    LOG.info( "Request handled." );
+    LOG.info( "Request for 'home' handled." );
+    
     return "home";
   }
 }
