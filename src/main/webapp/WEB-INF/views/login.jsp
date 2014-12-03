@@ -12,6 +12,7 @@
     <title>Login</title>
 
     <link href="<c:url value="/css/bootstrap.min.css"/>" rel="stylesheet">
+    <link href="<c:url value="/css/jquery-ui.min.css"/>" rel="stylesheet">
     <link href="<c:url value="/css/plugins/metisMenu/metisMenu.min.css"/>" rel="stylesheet">
     <link href="<c:url value="/css/sb-admin-2.css"/>" rel="stylesheet">
     <link href="<c:url value="/font-awesome-4.1.0/css/font-awesome.min.css"/>" rel="stylesheet" type="text/css">
