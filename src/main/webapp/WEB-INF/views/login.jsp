@@ -11,16 +11,9 @@
 
     <title>Login</title>
 
-    <!-- Bootstrap Core CSS -->
     <link href="<c:url value="/css/bootstrap.min.css"/>" rel="stylesheet">
-
-    <!-- MetisMenu CSS -->
     <link href="<c:url value="/css/plugins/metisMenu/metisMenu.min.css"/>" rel="stylesheet">
-
-    <!-- Custom CSS -->
     <link href="<c:url value="/css/sb-admin-2.css"/>" rel="stylesheet">
-
-    <!-- Custom Fonts -->
     <link href="<c:url value="/font-awesome-4.1.0/css/font-awesome.min.css"/>" rel="stylesheet" type="text/css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -42,10 +35,11 @@
                         <h3 class="panel-title">Please Sign In</h3>
                     </div>
                     <div class="panel-body">
-                        <form role="form">
+                        <form id="loginForm" action="<c:url value="/do/login"/>" method="post">
+                        
                             <fieldset>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="E-mail" name="email" type="email" autofocus>
+                                    <input class="form-control" placeholder="E-mail" name="login" type="email" autofocus>
                                 </div>
                                 <div class="form-group">
                                     <input class="form-control" placeholder="Password" name="password" type="password" value="">
@@ -55,8 +49,7 @@
                                         <input name="remember" type="checkbox" value="Remember Me">Remember Me
                                     </label>
                                 </div>
-                                <!-- Change this to a button or input when using this as a form -->
-                                <a href="<c:url value="/do/login"/>" class="btn btn-lg btn-success btn-block">Login</a>
+                                <button type="button" class="btn btn-primary" id="loginLink">Log In</button>
                             </fieldset>
                         </form>
                     </div>
@@ -65,17 +58,21 @@
         </div>
     </div>
 
-    <!-- jQuery -->
     <script src="<c:url value="/js/jquery.js"/>"></script>
-
-    <!-- Bootstrap Core JavaScript -->
+    <script src="<c:url value="/js/jquery-ui.js"/>"></script>
     <script src="<c:url value="/js/bootstrap.min.js"/>"></script>
-
-    <!-- Metis Menu Plugin JavaScript -->
     <script src="<c:url value="/js/plugins/metisMenu/metisMenu.min.js"/>"></script>
-
-    <!-- Custom Theme JavaScript -->
     <script src="<c:url value="/js/sb-admin-2.js"/>"></script>
+    <script src="<c:url value="/js/Logger.js"/>"></script>
+
+	<script src="<c:url value="/js/Util.js"/>" type="text/javascript"></script>
+	<script type="text/javascript">
+		$(function(){
+			Util = new UtilImpl('/mvcqs', '/mvcqs/static');
+		});
+	</script>
+    <script src="<c:url value="/js/Login.js"/>" type="text/javascript"></script>
+    
 
 </body>
 

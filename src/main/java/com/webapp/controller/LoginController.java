@@ -118,6 +118,7 @@ public class LoginController {
    */
   @RequestMapping(value = { "/login" }, method = RequestMethod.POST)
   public ModelAndView login( HttpServletRequest request, HttpServletResponse response, HttpSession session ) throws Exception {
+	  LOG.info("Received a request!!!");
 
     final Map<String, Object> resultMap = new HashMap<String, Object>();
 
