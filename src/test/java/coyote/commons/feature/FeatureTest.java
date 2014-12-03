@@ -59,7 +59,7 @@ public class FeatureTest {
 			name = "testtwo";
 			link = "/two";
 			description = "This is a test feature.";
-			addLocation(new MenuLocation(MenuSection.TOP, 2));
+			addLocation(new MenuLocation(MenuSection.RIGHT, 2));
 		}
 	}
 
@@ -79,7 +79,7 @@ public class FeatureTest {
 			name = "testfour";
 			link = "/four";
 			description = "This is a test feature.";
-			addLocation(new MenuLocation(MenuSection.TOP, 4));
+			addLocation(new MenuLocation(MenuSection.LEFT, 4));
 		}
 	}
 
