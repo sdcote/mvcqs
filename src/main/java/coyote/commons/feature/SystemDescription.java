@@ -11,6 +11,11 @@
  */
 package coyote.commons.feature;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 /**
  * This is the root of all features and provides the starting point for 
  * discovering everything about how the functionality of the system is 
@@ -54,34 +59,9 @@ package coyote.commons.feature;
  */
 public abstract class SystemDescription extends Feature {
 
-  public String getName() {
-    if ( name != null )
-      return name;
-    else
-      return "UNNAMED";
-  }
 
 
 
 
-  public String getVersion() {
-    if ( version != null )
-      return version.toString();
-    else
-      return "0.0";
-  }
-
-
-
-
-  @Override
-  public String toString() {
-    StringBuilder b = new StringBuilder();
-    b.append( "SysDesc: " );
-    b.append( name );
-    b.append( " version: v" );
-    b.append( version );
-    return b.toString();
-  }
-
+	
 }

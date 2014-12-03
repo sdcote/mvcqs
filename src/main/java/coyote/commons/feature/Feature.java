@@ -12,6 +12,8 @@
 package coyote.commons.feature;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -141,8 +143,11 @@ public abstract class Feature {
 	/**
 	 * @return
 	 */
-	public Object getName() {
-		return name;
+	public String getName() {
+		if (name != null)
+			return name;
+		else
+			return "UNNAMED";
 	}
 
 
@@ -156,6 +161,16 @@ public abstract class Feature {
 			return link;
 		else
 			return "#";
+	}
+
+
+
+
+	public String getVersion() {
+		if (version != null)
+			return version.toString();
+		else
+			return "0.0";
 	}
 
 
@@ -265,6 +280,102 @@ public abstract class Feature {
 	 */
 	protected void addLocation(MenuLocation menuLocation) {
 		locations.add(menuLocation);
+	}
+
+
+
+
+	/**
+	 * Perform a check if the given section location matches any of this 
+	 * features menu locations.
+	 * 
+	 * <p>This is a convenience method which wraps a call to 
+	 * <pre>getLocationBySection(section) != null</pre></p>
+	 * 
+	 * @param section The section to query.
+	 * 
+	 * @return True if this feature is to appear in the given section, false 
+	 * otherwise. False is also returned if the argument passed is null.
+	 * 
+	 * @see #getLocationBySection(MenuSection)
+	 */
+	public boolean isLocatedIn(MenuSection section) {
+		return (getLocationBySection(section) != null);
+	}
+
+
+
+
+	/**
+	 * Retrieve the location which matches the given section.
+	 * 
+	 * <p>This method can be called to determine if this feature is supposed to 
+	 * appear in the given section.</p? 
+	 * 
+	 * @param section The section to query.
+	 * 
+	 * @return the first location in this feature matching the given section, 
+	 * {@code null} otherwise. {@code null} is also returned if the argument 
+	 * passed is {@code null}.
+	 */
+	public MenuLocation getLocationBySection(MenuSection section) {
+		if (section != null) {
+			for (MenuLocation location : locations) {
+				if (section == location.getSection()) {
+					return location;
+				}
+			}
+		}
+		return null;
+	}
+
+
+
+
+	/**
+	 * Return a list of child features which match the given section.
+	 * 
+	 * @param section The menu section to match
+	 * 
+	 * @return a list of sequenced child features which match the given section 
+	 */
+	public List<Feature> getFeaturesBySection(final MenuSection section) {
+		List<Feature> retval = new ArrayList<Feature>();
+
+		for (Feature feature : children) {
+			if (feature.isLocatedIn(section)) {
+				retval.add(feature);
+			}
+		}
+
+		// Sort the list
+		Collections.sort(retval, new Comparator<Feature>() {
+
+			public int compare(Feature feature1, Feature feature2) {
+
+				MenuLocation location1 = feature1.getLocationBySection(section);
+				MenuLocation location2 = feature2.getLocationBySection(section);
+
+				// ascending order
+				return location1.compareTo(location2);
+
+				// descending order
+				// return location2.compareTo(location1);
+			}
+		});
+
+		return retval;
+	}
+	
+	
+	@Override
+	public String toString() {
+		StringBuilder b = new StringBuilder();
+		b.append("Feature: ");
+		b.append(name);
+		b.append(" version: v");
+		b.append(version);
+		return b.toString();
 	}
 
 }
