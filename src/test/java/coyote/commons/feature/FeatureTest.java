@@ -37,6 +37,8 @@ public class FeatureTest {
 			addFeature(theme);
 			theme = new TestThemeThree();
 			addFeature(theme);
+			theme = new TestThemeFive();
+			addFeature(theme);
 			theme = new TestThemeTwo();
 			addFeature(theme);
 
@@ -80,6 +82,17 @@ public class FeatureTest {
 			link = "/four";
 			description = "This is a test feature.";
 			addLocation(new MenuLocation(MenuSection.LEFT, 4));
+			addLocation(new MenuLocation(MenuSection.TOP, 4));
+		}
+	}
+
+	class TestThemeFive extends Feature {
+		public TestThemeFive() {
+			version = new Version(1, 0, 0, Version.DEVELOPMENT);
+			name = "testfive";
+			link = "/five";
+			description = "This is a test feature.";
+			addLocation(new MenuLocation(MenuSection.TOP, 5));
 		}
 	}
 
