@@ -13,16 +13,18 @@ package com.webapp.desc;
 
 import coyote.commons.Version;
 import coyote.commons.feature.Feature;
-
+import coyote.commons.feature.MenuLocation;
+import coyote.commons.feature.MenuSection;
 
 /**
  * 
  */
 public class SecurityTheme extends Feature {
-  SecurityTheme() {
-    version = new Version( 1, 0, 0, Version.DEVELOPMENT );
-    name="security";
-    description = "The monitoring and management of authentication, authorization and auditing functions in the system.";
-  }
+	SecurityTheme() {
+		version = new Version(1, 0, 0, Version.DEVELOPMENT);
+		name = "security";
+		description = "The monitoring and management of authentication, authorization and auditing functions in the system.";
+		addLocation(new MenuLocation(MenuSection.LEFT, 99));
+	}
 
 }
