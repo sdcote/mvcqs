@@ -52,7 +52,7 @@ import coyote.commons.security.Session;
  */
 @Controller
 public class LoginController {
-	
+
 	public static final String ACCOUNT_PARAM_KEY = "account";
 	public static final String PASSWORD_PARAM_KEY = "password";
 	public static final String REMEMBER_PARAM_KEY = "remember";
@@ -144,6 +144,12 @@ public class LoginController {
 				response.addCookie(loginCookie);
 			}
 
+			// Now set the redirect to the appropriate location. This could be
+			// the user's home page, profile page or a generic landing page set
+			// in the configuration. The login.js will handle the result code 
+			// and the redirection for us.
+			result.setRedirect(request.getContextPath() + "/"); // home for now
+
 		} else {
 			SECURITY_LOG.info("Login Failure from " + request.getRemoteAddr());
 		}
@@ -174,8 +180,8 @@ public class LoginController {
 		// look for the credentials
 		String account = request.getParameter(ACCOUNT_PARAM_KEY);
 		String passwd = request.getParameter(PASSWORD_PARAM_KEY);
-		
-		// Debugging information 
+
+		// Debugging information
 		if (StringUtil.isBlank(account)) {
 			LOG.warn("Request did not contain " + ACCOUNT_PARAM_KEY + " parameter");
 		}
@@ -186,12 +192,12 @@ public class LoginController {
 		// authenticate the credentials through the security context
 		Login login = securityContext.getLogin(new CredentialSet(account, passwd));
 
-		// If we retrieved a login, then the credentials are authentic 
+		// If we retrieved a login, then the credentials are authentic
 		if (login != null) {
 			retval = ResultCode.SUCCESS;
 			session.setAttribute(LOGIN_SESSION_KEY, login);
-			LOG.info("Successful login: "+login.toString());
-		} 
+			LOG.info("Successful login: " + login.toString());
+		}
 
 		return retval;
 	}

@@ -17,6 +17,8 @@ public class LoginResult implements Serializable {
 	private static final long serialVersionUID = -192475760409031131L;
 
 	ResultCode resultCode = ResultCode.UNVERIFIED;
+	
+	String redirect ="/";
 
 
 
@@ -37,6 +39,20 @@ public class LoginResult implements Serializable {
 
 	public void setResultCode(ResultCode code) {
 		resultCode = code;
+	}
+
+
+
+
+	public String getRedirect() {
+		return redirect;
+	}
+
+
+
+
+	public void setRedirect(String path) {
+		redirect = path;
 	}
 
 }
