@@ -99,6 +99,9 @@ public abstract class Feature {
 	/** The list of menu locations this feature appears. */
 	protected final List<MenuLocation> locations = new ArrayList<MenuLocation>();
 
+	/** A list of features to be implemented or at least considered.*/
+	protected final List<Feature> todolist = new ArrayList<Feature>();
+
 
 
 
@@ -366,15 +369,29 @@ public abstract class Feature {
 
 		return retval;
 	}
-	
-	
+
+
+
+
+	/**
+	 * Add the given ToDo feature to the To-Do list.
+	 * 
+	 * @param todo The ToDo feature to add.
+	 */
+	protected void addToDo(ToDo todo) {
+		todolist.add(todo);
+	}
+
+
+
+
 	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder();
 		b.append("Feature: ");
 		b.append(name);
 		b.append(" version: v");
-		b.append(version);
+		b.append(getVersion());
 		return b.toString();
 	}
 
