@@ -43,11 +43,11 @@
                                     <input class="form-control" placeholder="E-mail" name="login" type="email" autofocus>
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="Password" name="password" type="password" value="">
+                                    <input class="form-control" placeholder="Password" name="passwd" type="password" value="">
                                 </div>
                                 <div class="checkbox">
                                     <label>
-                                        <input name="remember" type="checkbox" value="Remember Me">Remember Me
+                                        <input name="remember" type="checkbox" value="true">Remember Me
                                     </label>
                                 </div>
                                 <button type="button" class="btn btn-primary" id="loginLink">Log In</button>
