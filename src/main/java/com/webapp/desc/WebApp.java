@@ -13,13 +13,18 @@ package com.webapp.desc;
 
 import java.util.Locale;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.ResourceBundleMessageSource;
+
+import com.webapp.controller.LoginController;
 
 import coyote.commons.Log;
 import coyote.commons.Version;
 import coyote.commons.feature.Feature;
 import coyote.commons.feature.SystemDescription;
+import coyote.commons.security.Login;
 
 
 /**
@@ -55,6 +60,22 @@ public class WebApp extends SystemDescription {
   public static final String SIGNOUT_PROPERTY = "signout.feature.name";
   public static final String USER_PROFILE_PROPERTY = "userprofile.feature.name";
   public static final String USER_SETTINGS_PROPERTY = "usersettings.feature.name";
+
+  public static final String LOGIN_SESSION_KEY = "login";
+	public static final String SESSION_COOKIE_KEY = "mvcqsid";
+
+
+
+
+	public static Login getLogin(HttpSession session) {
+		Login retval = null;
+		try {
+			retval = (Login) session.getAttribute(LOGIN_SESSION_KEY);
+		} catch (Exception e) {
+			Log.error(e);
+		}
+		return retval;
+	}
 
 
 

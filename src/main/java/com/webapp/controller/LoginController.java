@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.webapp.controller.login.LoginResult;
 import com.webapp.controller.login.ResultCode;
 import com.webapp.dao.WebAppDataStore;
+import com.webapp.desc.WebApp;
 
 import coyote.commons.StringUtil;
 import coyote.commons.security.Context;
@@ -56,8 +57,6 @@ public class LoginController {
 	public static final String ACCOUNT_PARAM_KEY = "account";
 	public static final String PASSWORD_PARAM_KEY = "password";
 	public static final String REMEMBER_PARAM_KEY = "remember";
-	public static final String LOGIN_SESSION_KEY = "login";
-	public static final String SESSION_COOKIE_KEY = "mvcqsid";
 
 	private static final Log LOG = LogFactory.getLog(LoginController.class);
 	private static final Log SECURITY_LOG = LogFactory.getLog("SecurityEvent");
@@ -134,19 +133,19 @@ public class LoginController {
 			// do all the things!
 			String remember = request.getParameter(ACCOUNT_PARAM_KEY);
 			if (StringUtil.isNotBlank(remember)) {
-				Login login = (Login) session.getAttribute(LOGIN_SESSION_KEY);
+				Login login = (Login) session.getAttribute(WebApp.LOGIN_SESSION_KEY);
 
 				Session loginSession = securityContext.createSession(login);
 				LOG.info("Remembering " + login + " with sessionId " + loginSession.getId());
 
-				Cookie loginCookie = new Cookie(SESSION_COOKIE_KEY, loginSession.getId());
+				Cookie loginCookie = new Cookie(WebApp.SESSION_COOKIE_KEY, loginSession.getId());
 				loginCookie.setMaxAge(30 * 60); // TODO make this configurable
 				response.addCookie(loginCookie);
 			}
 
 			// Now set the redirect to the appropriate location. This could be
 			// the user's home page, profile page or a generic landing page set
-			// in the configuration. The login.js will handle the result code 
+			// in the configuration. The login.js will handle the result code
 			// and the redirection for us.
 			result.setRedirect(request.getContextPath() + "/"); // home for now
 
@@ -195,7 +194,7 @@ public class LoginController {
 		// If we retrieved a login, then the credentials are authentic
 		if (login != null) {
 			retval = ResultCode.SUCCESS;
-			session.setAttribute(LOGIN_SESSION_KEY, login);
+			session.setAttribute(WebApp.LOGIN_SESSION_KEY, login);
 			LOG.info("Successful login: " + login.toString());
 		}
 

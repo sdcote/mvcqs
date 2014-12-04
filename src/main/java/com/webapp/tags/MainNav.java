@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
@@ -25,9 +26,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.webapp.controller.LoginController;
 import com.webapp.desc.WebApp;
 
 import coyote.commons.feature.Feature;
+import coyote.commons.security.Login;
 import coyote.commons.security.Session;
 
 
@@ -82,15 +85,18 @@ public class MainNav extends SimpleTagSupport {
     HttpServletRequest request = (HttpServletRequest)( (PageContext)getJspContext() ).getRequest();
     String contextPath = request.getContextPath();
     Locale locale = request.getLocale();
+    
+    Login login = WebApp.getLogin(request.getSession(true));
+    
+    
 
-    Session session = null;
 
     StringBuffer content = new StringBuffer();
     content.append( "<nav class=\"navbar navbar-default navbar-static-top\" role=\"navigation\" style=\"margin-bottom: 0\">\r\n" );
 
-    content.append( navHeader( contextPath, locale, session ) );
-    content.append( navTopLinks( contextPath, locale, session ) );
-    content.append( navSidebar( contextPath, locale, session ) );
+    content.append( navHeader( contextPath, locale, login ) );
+    content.append( navTopLinks( contextPath, locale, login ) );
+    content.append( navSidebar( contextPath, locale, login ) );
 
     content.append( "</nav>\r\n" );
 
@@ -104,11 +110,11 @@ public class MainNav extends SimpleTagSupport {
    * Generates the top and left-most portion of the navigation header.
    * @param contextPath 
    * @param locale 
-   * @param session 
+   * @param login 
    * 
    * @return the portion of the navigation containing the web application home link.
    */
-  private Object navHeader( String contextPath, Locale locale, Session session ) {
+  private Object navHeader( String contextPath, Locale locale, Login login ) {
     StringBuffer b = new StringBuffer();
     b.append( "\t\t\t<div class=\"navbar-header\">\r\n" );
     b.append( "\t\t\t\t<button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\".navbar-collapse\">\r\n" );
@@ -133,10 +139,10 @@ public class MainNav extends SimpleTagSupport {
   /**
    * @param contextPath  
    * @param locale 
-   * @param session 
+   * @param login 
    * @return
    */
-  private Object navTopLinks( String contextPath, Locale locale, Session session ) {
+  private Object navTopLinks( String contextPath, Locale locale, Login login ) {
     StringBuffer b = new StringBuffer();
     b.append( "\t<ul class=\"nav navbar-top-links navbar-right\">\r\n" );
 
@@ -148,7 +154,7 @@ public class MainNav extends SimpleTagSupport {
     b.append( "\t\t<i class=\"fa fa-user fa-fw\"></i>  <i class=\"fa fa-caret-down\"></i></a>\r\n" );
     b.append( "\t\t<ul class=\"dropdown-menu dropdown-user\">\r\n" );
 
-    if ( session != null ) {
+    if ( login != null ) {
 
       // Lookup User Profile Feature
       b.append( "\t\t\t\t\t<li><a href=\"#\"><i class=\"fa fa-user fa-fw\"></i> User Profile</a></li>\r\n" );
@@ -200,7 +206,7 @@ public class MainNav extends SimpleTagSupport {
    * @param session 
    * @return
    */
-  private Object navSidebar( String contextPath, Locale locale, Session session ) {
+  private Object navSidebar( String contextPath, Locale locale, Login login ) {
     StringBuffer b = new StringBuffer();
     b.append( "\t<div class=\"navbar-default sidebar\" role=\"navigation\">\r\n" );
     b.append( "\t\t<div class=\"sidebar-nav navbar-collapse\">\r\n" );
