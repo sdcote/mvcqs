@@ -102,7 +102,7 @@ var Login = {
 				content: text
 			});
 		} else if ('CONCURRENT' === data.resultCode) {
-			var text = '<p>You are attempting to log into ConnectED from more than one location.</p>'
+			var text = '<p>You are attempting to log in from more than one location.</p>'
 					+ '<p>Please click <strong>Proceed</strong> to log in at this location and have the system automatically log you out of the other location.</p>'
 					+ '<p>If you want to remain logged in at the other location, click <strong>Cancel</strong> to abandon this login attempt.</p>';
 			Dialog.warning({
@@ -211,7 +211,7 @@ var Login = {
 	},
 
 	doTeacherRegistration : function() {
-		window.location.href = "/connected/teacherRegistration.do";
+		window.location.href = "/mvcqs/teacherRegistration.do";
 	}
 
 };
@@ -373,7 +373,7 @@ var InitialPasswordChange = {
 					type : 'button',
 					text : 'Cancel',
 					onClick : function(event) {
-						window.location = "/connected/logout.do";
+						window.location = "/mvcqs/logout.do";
 						return false;
 					}
 				},
@@ -427,7 +427,7 @@ var InitialPasswordChange = {
 	openEulaDialog : function(data) {
 		$('body').append(data);
 		$dialog = Dialog.create({
-			title : 'ConnectED Terms of Service',
+			title : 'Terms of Service',
 			container: $('#eulaDialog'),
 			width : 640,
 			height: 520,
@@ -437,7 +437,7 @@ var InitialPasswordChange = {
 					type : 'button',
 					text : 'No, I Decline',
 					onClick : function(event) {
-						window.location = "/connected/logout.do";
+						window.location = "/mvcqs/logout.do";
 						return false;
 					}
 				},
@@ -486,7 +486,7 @@ var InitialPasswordChange = {
 						type : 'button',
 						text : 'OK',
 						onClick : function(event) {
-							window.location = "/connected/home.do"
+							window.location = "/mvcqs/home.do"
 							return false;
 						}
 					}
