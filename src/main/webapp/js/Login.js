@@ -72,14 +72,14 @@ var Login = {
 	},
 
 	loginResult : function(data) {
-		if (('INVALID' === data.code) || ('UNAUTHORIZED' === data.code) || ('UNVERIFIED' === data.code)) {
+		if (('INVALID' === data.resultCode) || ('UNAUTHORIZED' === data.resultCode) || ('UNVERIFIED' === data.resultCode)) {
 			//Determine the text based on the error code
 			var text = '';
-			if ('INVALID' === data.code) {
+			if ('INVALID' === data.resultCode) {
 				text = 'The user name and password entered do not match any existing users in the system.';
-			} else if ('UNAUTHORIZED' === data.code) {
+			} else if ('UNAUTHORIZED' === data.resultCode) {
 				text = 'Sorry, user ' + $('#loginUserName').val() + ' is not authorized for this application.';
-			} else if ('UNVERIFIED' === data.code) {
+			} else if ('UNVERIFIED' === data.resultCode) {
 				text = 'You are currently blocked from login until you have validated your email address.';
 			}
 
@@ -101,7 +101,7 @@ var Login = {
 				],
 				content: text
 			});
-		} else if ('CONCURRENT' === data.code) {
+		} else if ('CONCURRENT' === data.resultCode) {
 			var text = '<p>You are attempting to log into ConnectED from more than one location.</p>'
 					+ '<p>Please click <strong>Proceed</strong> to log in at this location and have the system automatically log you out of the other location.</p>'
 					+ '<p>If you want to remain logged in at the other location, click <strong>Cancel</strong> to abandon this login attempt.</p>';
@@ -135,9 +135,9 @@ var Login = {
 				],
 				content: text
 			});
-		} else if ('SUCCESS' === data.code) {
+		} else if ('SUCCESS' === data.resultCode) {
 			window.location = data.redirect;
-		} else if ('INITIAL_PASSWORD_CHANGE' === data.code) {
+		} else if ('INITIAL_PASSWORD_CHANGE' === data.resultCode) {
 			InitialPasswordChange.display();
 		} else {
 			Dialog.systemError();
