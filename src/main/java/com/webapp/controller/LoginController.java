@@ -11,8 +11,7 @@
  */
 package com.webapp.controller;
 
-import java.util.Enumeration;
-
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -31,7 +30,11 @@ import com.webapp.controller.login.LoginResult;
 import com.webapp.controller.login.ResultCode;
 import com.webapp.dao.WebAppDataStore;
 
+import coyote.commons.StringUtil;
 import coyote.commons.security.Context;
+import coyote.commons.security.CredentialSet;
+import coyote.commons.security.Login;
+import coyote.commons.security.Session;
 
 /**
  * This is the login controller for the basic authentication of logins in the 
@@ -49,6 +52,12 @@ import coyote.commons.security.Context;
  */
 @Controller
 public class LoginController {
+	
+	public static final String ACCOUNT_PARAM_KEY = "account";
+	public static final String PASSWORD_PARAM_KEY = "password";
+	public static final String REMEMBER_PARAM_KEY = "remember";
+	public static final String LOGIN_SESSION_KEY = "login";
+	public static final String SESSION_COOKIE_KEY = "mvcqsid";
 
 	private static final Log LOG = LogFactory.getLog(LoginController.class);
 	private static final Log SECURITY_LOG = LogFactory.getLog("SecurityEvent");
@@ -123,6 +132,18 @@ public class LoginController {
 
 		if (ResultCode.SUCCESS == result.getResultCode()) {
 			// do all the things!
+			String remember = request.getParameter(ACCOUNT_PARAM_KEY);
+			if (StringUtil.isNotBlank(remember)) {
+				Login login = (Login) session.getAttribute(LOGIN_SESSION_KEY);
+
+				Session loginSession = securityContext.createSession(login);
+				LOG.info("Remembering " + login + " with sessionId " + loginSession.getId());
+
+				Cookie loginCookie = new Cookie(SESSION_COOKIE_KEY, loginSession.getId());
+				loginCookie.setMaxAge(30 * 60); // TODO make this configurable
+				response.addCookie(loginCookie);
+			}
+
 		} else {
 			SECURITY_LOG.info("Login Failure from " + request.getRemoteAddr());
 		}
@@ -134,20 +155,44 @@ public class LoginController {
 
 
 
+	/**
+	 * This method authenticates the credentials pass as part of the request.
+	 * 
+	 * <p>On successful authentication, a login-object is added to the 
+	 * container's session for this request. THis login can be retrieved by 
+	 * other components to retrieve identity and permissions related to the 
+	 * requester.</p> 
+	 * 
+	 * @param request the request from the browser
+	 * @param session the session from the container
+	 * 
+	 * @return the results of authentication.
+	 */
 	private ResultCode authenticate(HttpServletRequest request, HttpSession session) {
-		ResultCode retval = ResultCode.SUCCESS;
+		ResultCode retval = ResultCode.UNVERIFIED;
 
-		StringBuffer b = new StringBuffer("Request Parameters:\r\n");
-		Enumeration<String> names = request.getParameterNames();
-		while (names.hasMoreElements()) {
-			String name = names.nextElement();
-			b.append("Name: ");
-			b.append(name);
-			b.append(" Value: '");
-			b.append(request.getParameter(name));
-			b.append("'\r\n");
+		// look for the credentials
+		String account = request.getParameter(ACCOUNT_PARAM_KEY);
+		String passwd = request.getParameter(PASSWORD_PARAM_KEY);
+		
+		// Debugging information 
+		if (StringUtil.isBlank(account)) {
+			LOG.warn("Request did not contain " + ACCOUNT_PARAM_KEY + " parameter");
 		}
-		LOG.info(b.toString());
+		if (StringUtil.isBlank(passwd)) {
+			LOG.warn("Request did not contain " + PASSWORD_PARAM_KEY + " parameter");
+		}
+
+		// authenticate the credentials through the security context
+		Login login = securityContext.getLogin(new CredentialSet(account, passwd));
+
+		// If we retrieved a login, then the credentials are authentic 
+		if (login != null) {
+			retval = ResultCode.SUCCESS;
+			session.setAttribute(LOGIN_SESSION_KEY, login);
+			LOG.info("Successful login: "+login.toString());
+		} 
+
 		return retval;
 	}
 

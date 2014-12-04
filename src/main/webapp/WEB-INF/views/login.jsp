@@ -40,10 +40,10 @@
                         
                             <fieldset>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="E-mail" name="login" type="email" autofocus>
+                                    <input class="form-control" placeholder="E-mail" name="account" type="email" autofocus>
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="Password" name="passwd" type="password" value="">
+                                    <input class="form-control" placeholder="Password" name="password" type="password" value="">
                                 </div>
                                 <div class="checkbox">
                                     <label>
