@@ -168,52 +168,6 @@ var Login = {
 			]
 		});
 	},
-
-
-	doStudentRegistration : function() {
-		var redemptionCode = $.trim($('#redCode1').val()) + $.trim($('#redCode2').val()) + $.trim($('#redCode3').val());
-		$.ajax({
-			type: 'POST',
-			cache: false,
-			async: false,
-			dataType: 'json',
-			url: 'validateRedemptionCode.do',
-			data: {redemptionCode:redemptionCode},
-
-			success: function (data) {
-				if (!data.hasErrors) {
-					//use sanitized redemption code
-					window.location.href = "studentRegistration.do?redemptionCode=" + encodeURIComponent(data.redemptionCode);
-				} else {
-					var errorHtml = '<ul>';
-					if (data.globalErrors) {
-						$.each(data.globalErrors, function(index, errorMessage){
-							errorHtml += ('<li>' + errorMessage + '</li>');
-						});
-					}
-
-					if (data.fieldErrors) {
-						$.each (data.fieldErrors, function (fieldName, errorMessages) {
-							$.each(errorMessages, function(index, errorMessage) {
-								errorHtml += ('<li>' + errorMessage + '</li>');
-							});
-						});
-					}
-
-					errorHtml += '</ul>';
-
-					Dialog.error({
-						content: errorHtml
-					});
-				}
-			}
-		});
-	},
-
-	doTeacherRegistration : function() {
-		window.location.href = "/mvcqs/teacherRegistration.do";
-	}
-
 };
 
 
@@ -417,7 +371,7 @@ var InitialPasswordChange = {
 			type: 'GET',
 			dataType: 'html',
 			async: false,
-			url: 'eula.mchDialog.do',
+			url: 'eula.mvcsDialog.do',
 			success: function (data) {
 				InitialPasswordChange.openEulaDialog(data);
 			}
@@ -586,7 +540,7 @@ var EmailUserName = {
 		} else {
 			Dialog.info({
 				title: "Username Emailed",
-				content: "Your username will be sent to the email address you have provided. If you do not receive an email please contact Digital Technical Support at 800-437-3715."
+				content: "Your username will be sent to the email address you have provided. If you do not receive an email please contact Technical Support."
 			});
 
 			EmailUserName.close();
