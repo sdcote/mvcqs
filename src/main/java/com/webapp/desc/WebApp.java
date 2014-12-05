@@ -116,6 +116,9 @@ public class WebApp extends SystemDescription {
     // Feature operations = new OperationsTheme();
     // operations.addFeature( new BackgroundJobsFeature() );
     // operations.addFeature( new SchedulerFeature() );
+    
+    // Search service should have special components to perform searches in 
+    Feature search = new SearchTheme();
 
     // This shows how to add your feature to the system
     Feature helloworld = new HelloWorldFeature();
