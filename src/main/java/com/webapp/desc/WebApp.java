@@ -76,6 +76,52 @@ public class WebApp extends SystemDescription {
   private static ResourceBundleMessageSource messageSource = null;
 
 
+  public WebApp() {
+    version = new Version( 1, 0, 0, Version.DEVELOPMENT );
+    name = "webapp";
+    link = "/";
+    description = "This is a fully-functional web application from which developers can begin prototyping their own application in a matter of seconds. It is a starting point for prototypes, utilities and proof of concept systems which can run on the desktop for individual use or exposed to all members of the team or organization.";
+
+    // We are providing security features
+    Feature security = new SecurityTheme();
+    addFeature( security );
+    security.addFeature( new LoginFeature() );
+    security.addFeature( new LogoutFeature() );
+    //security.addFeature( new FindLoginFeature() );
+    //security.addFeature( new AddLoginFeature() );
+    //security.addFeature( new ChangeLoginFeature() );
+    //security.addFeature( new DeleteLoginFeature() );
+    //security.addFeature( new FindRoleFeature() );
+    //security.addFeature( new AddRoleFeature() );
+    //security.addFeature( new ChangeRoleFeature() );
+    //security.addFeature( new DeleteRoleFeature() );
+    //security.addFeature( new GrantRolePermissionFeature() );
+    //security.addFeature( new RevokeRolePermissionFeature() );
+    //security.addFeature( new GrantLoginPermissionFeature() );
+    //security.addFeature( new RevokeLoginPermissionFeature() );
+    //security.addFeature( new GrantRolePermissionFeature() );
+    //security.addFeature( new ChangeCredentialFeature() );
+
+    // User profile management
+    Feature profile = new UserProfileTheme();
+    addFeature( profile );
+    profile.addFeature( new UserProfileFeature() );
+    profile.addFeature( new UserSettingsFeature() );
+
+    // Operations pages and functions; thread pools and background processes
+    //Feature operations = new OperationsTheme();
+    //operations.addFeature( new BackgroundJobsFeature() );
+    //operations.addFeature( new SchedulerFeature() );
+    
+    
+    // This shows how to add your feature to the system
+    Feature custom = new HelloWorldFeature();
+    addFeature( custom );
+
+  }
+
+
+
 
 
   public static Login getLogin( HttpServletRequest request ) {
@@ -131,47 +177,6 @@ public class WebApp extends SystemDescription {
     return retval;
   }
 
-
-
-
-  public WebApp() {
-    version = new Version( 1, 0, 0, Version.DEVELOPMENT );
-    name = "webapp";
-    link = "/";
-    description = "This is a fully-functional web application from which developers can begin prototyping their own application in a matter of seconds. It is a starting point for prototypes, utilities and proof of concept systems which can run on the desktop for individual use or exposed to all members of the team or organization.";
-
-    // We are providing security features
-    Feature security = new SecurityTheme();
-    addFeature( security );
-    security.addFeature( new LoginFeature() );
-    security.addFeature( new LogoutFeature() );
-    //security.addFeature( new FindLoginFeature() );
-    //security.addFeature( new AddLoginFeature() );
-    //security.addFeature( new ChangeLoginFeature() );
-    //security.addFeature( new DeleteLoginFeature() );
-    //security.addFeature( new FindRoleFeature() );
-    //security.addFeature( new AddRoleFeature() );
-    //security.addFeature( new ChangeRoleFeature() );
-    //security.addFeature( new DeleteRoleFeature() );
-    //security.addFeature( new GrantRolePermissionFeature() );
-    //security.addFeature( new RevokeRolePermissionFeature() );
-    //security.addFeature( new GrantLoginPermissionFeature() );
-    //security.addFeature( new RevokeLoginPermissionFeature() );
-    //security.addFeature( new GrantRolePermissionFeature() );
-    //security.addFeature( new ChangeCredentialFeature() );
-
-    // User profile management
-    Feature profile = new UserProfileTheme();
-    addFeature( profile );
-    profile.addFeature( new UserProfileFeature() );
-    profile.addFeature( new UserSettingsFeature() );
-
-    // Operations pages and functions; thread pools and background processes
-    //Feature operations = new OperationsTheme();
-    //operations.addFeature( new BackgroundJobsFeature() );
-    //operations.addFeature( new SchedulerFeature() );
-
-  }
 
 
 
