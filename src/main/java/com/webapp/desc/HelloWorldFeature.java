@@ -16,7 +16,11 @@ import coyote.commons.feature.MenuSection;
  * for the model.</p>
  * 
  * <p>Finally, create the view (see {@code helloworld.jsp}) that will be used 
- * to display the model.</p> 
+ * to display the model.</p>
+ * 
+ * <p>OK, there might be a little more than that. The name of the feature will 
+ * not resolve to a Locale-specific string until it is placed in the 
+ * appropriate message_*_*.properties file. But this is a minor tweak.</p>
  */
 public class HelloWorldFeature extends Feature {
 
