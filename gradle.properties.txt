@@ -1,5 +1,0 @@
-systemProp.http.proxyHost=corp-proxy.mcgraw-hill.com
-systemProp.http.proxyPort=8080
-systemProp.http.proxyUser=stephan_cote
-systemProp.http.proxyPassword=pgQkFFb5
-systemProp.http.nonProxyHosts=*.nonproxyrepos.com|localhost
