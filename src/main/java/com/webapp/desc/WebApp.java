@@ -57,24 +57,34 @@ import coyote.commons.security.Session;
 public class WebApp extends SystemDescription {
 
   public static final String SYSTEM_DESCRIPTION = "systemDescription";
-  private static ResourceBundleMessageSource messageSource = null;
 
   public static final String SIGNIN_PROPERTY = "signin.feature.name";
   public static final String SIGNOUT_PROPERTY = "signout.feature.name";
   public static final String USER_PROFILE_PROPERTY = "userprofile.feature.name";
   public static final String USER_SETTINGS_PROPERTY = "usersettings.feature.name";
-  public static final String LOGIN_SESSION_KEY = "login";
-  public static final String SESSION_COOKIE_KEY = "mvcqsid";
+
+  /** The name of the cookie containing the security context's session identifier */
+  public static final String COOKIE_SESSION_KEY = "mvcqsid";
+
+  /** The session attribute containing login reference */
+  public static final String SESSION_LOGIN_KEY = "login";
+
+  /** The session attribute containing the ultimate destination of this session */
+  public static final String SESSION_TARGET_URI_KEY = "targetURI";
 
   private static Context securityContext = null;
+  private static ResourceBundleMessageSource messageSource = null;
 
 
 
 
-  public static Login getLogin( HttpServletRequest request, HttpSession session ) {
+  public static Login getLogin( HttpServletRequest request ) {
     Login retval = null;
+
+    HttpSession session = request.getSession( true );
+
     try {
-      retval = (Login)session.getAttribute( LOGIN_SESSION_KEY );
+      retval = (Login)session.getAttribute( SESSION_LOGIN_KEY );
     } catch ( Exception e ) {
       Log.error( e );
     }
@@ -89,7 +99,7 @@ public class WebApp extends SystemDescription {
         if ( cookies != null ) {
 
           for ( int i = 0; i < cookies.length; i++ ) {
-            if ( SESSION_COOKIE_KEY.equals( cookies[i].getName() ) ) {
+            if ( COOKIE_SESSION_KEY.equals( cookies[i].getName() ) ) {
               sessionid = cookies[i].getValue();
               break;
             }

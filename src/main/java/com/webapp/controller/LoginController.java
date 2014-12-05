@@ -133,12 +133,12 @@ public class LoginController {
 			// do all the things!
 			String remember = request.getParameter(ACCOUNT_PARAM_KEY);
 			if (StringUtil.isNotBlank(remember)) {
-				Login login = (Login) session.getAttribute(WebApp.LOGIN_SESSION_KEY);
+				Login login = (Login) session.getAttribute(WebApp.SESSION_LOGIN_KEY);
 
 				Session loginSession = securityContext.createSession(login);
 				LOG.info("Remembering " + login + " with sessionId " + loginSession.getId());
 
-				Cookie loginCookie = new Cookie(WebApp.SESSION_COOKIE_KEY, loginSession.getId());
+				Cookie loginCookie = new Cookie(WebApp.COOKIE_SESSION_KEY, loginSession.getId());
 				loginCookie.setMaxAge(30 * 60); // TODO make this configurable
 				response.addCookie(loginCookie);
 			}
@@ -194,7 +194,7 @@ public class LoginController {
 		// If we retrieved a login, then the credentials are authentic
 		if (login != null) {
 			retval = ResultCode.SUCCESS;
-			session.setAttribute(WebApp.LOGIN_SESSION_KEY, login);
+			session.setAttribute(WebApp.SESSION_LOGIN_KEY, login);
 			LOG.info("Successful login: " + login.toString());
 		}
 
