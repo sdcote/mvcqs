@@ -21,17 +21,18 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.webapp.desc.WebApp;
+
 import coyote.commons.security.Context;
+import coyote.commons.security.Login;
 
 
 /**
@@ -109,39 +110,29 @@ public class AuthFilter implements Filter {
   public void doFilter( ServletRequest request, ServletResponse response, FilterChain chain ) throws IOException, ServletException {
     HttpServletRequest req = (HttpServletRequest)request;
 
-    @SuppressWarnings("unchecked")
-    Enumeration<String> params = req.getParameterNames();
-    while ( params.hasMoreElements() ) {
-      String name = params.nextElement();
-      String value = request.getParameter( name );
-      LOG.trace( req.getRemoteAddr() + "::Request Params::{" + name + "=" + value + "}" );
-    }
-
-    Cookie[] cookies = req.getCookies();
-    if ( cookies != null ) {
-      for ( Cookie cookie : cookies ) {
-        LOG.trace( req.getRemoteAddr() + "::Cookie::{" + cookie.getName() + "," + cookie.getValue() + "}" );
-      }
-    }
-
     String uri = req.getRequestURI();
     LOG.debug( "Requested Resource:" + uri );
 
-    HttpSession session = req.getSession( false );
-
     HttpServletResponse res = (HttpServletResponse)response;
 
-    if ( session == null && uriIsProtected( uri ) ) {
-      LOG.warn( "Unauthorized access request" );
-      res.sendRedirect( "login.html" );
+    if ( uriIsProtected( uri ) ) {
+      Login login = WebApp.getLogin( req );
+      if ( login == null ) {
+        LOG.warn( "Must be logged in to access " + uri );
+        // set the original request URI in the session so login script can redirect
+        req.getSession().setAttribute( WebApp.SESSION_TARGET_URI_KEY, uri );
+        res.sendRedirect( "login" );
+      } else {
+        // TODO: Check if login has access to the URI target
+      } // login check
     } else {
-      // pass the request along the filter chain
+      // Not a protected URI, pass the request along the filter chain
       try {
         chain.doFilter( request, response );
       } catch ( Exception e ) {
         LOG.warn( "Exception sending request down the chain", e );
       }
-    }
+    } // if protected URI
 
   }
 

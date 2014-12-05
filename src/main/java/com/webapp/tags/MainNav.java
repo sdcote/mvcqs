@@ -83,8 +83,8 @@ public class MainNav extends SimpleTagSupport {
     String contextPath = request.getContextPath();
     Locale locale = request.getLocale();
 
-    // Retrieve the login for this session 
-    Login login = WebApp.getLogin( request, request.getSession( true ) );
+    // Retrieve the login for this request 
+    Login login = WebApp.getLogin( request );
 
     StringBuffer content = new StringBuffer();
     content.append( "<nav class=\"navbar navbar-default navbar-static-top\" role=\"navigation\" style=\"margin-bottom: 0\">\r\n" );
