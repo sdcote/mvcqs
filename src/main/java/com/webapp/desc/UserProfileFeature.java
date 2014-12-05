@@ -24,7 +24,6 @@ public class UserProfileFeature extends Feature {
     featureId = "169";
     description = "Allows the user to manage user identity and demographic information. The user profile describes the identity of the user.";
     link = "/do/userProfile";
-    
 
   }
 }

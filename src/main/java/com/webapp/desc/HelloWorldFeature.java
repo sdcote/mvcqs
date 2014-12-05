@@ -4,6 +4,7 @@ import coyote.commons.feature.Feature;
 import coyote.commons.feature.MenuLocation;
 import coyote.commons.feature.MenuSection;
 
+
 /**
  * This describes a feature we are adding to this application.
  * 
@@ -24,18 +25,18 @@ import coyote.commons.feature.MenuSection;
  */
 public class HelloWorldFeature extends Feature {
 
-	public HelloWorldFeature() {
+  public HelloWorldFeature() {
 
-		// Name the feature
-		name = "helloworld";
+    // Name the feature
+    name = "helloworld";
 
-		// brief optional description
-		description = "Just displays the HelloWorld page.";
+    // brief optional description
+    description = "Just displays the HelloWorld page.";
 
-		// this maps to our HelloWorld controller
-		link = "/do/helloWorld";
+    // this maps to our HelloWorld controller
+    link = "/do/helloWorld";
 
-		// add it to the left side menu in no particular sequence
-		addLocation(new MenuLocation(MenuSection.LEFT));
-	}
+    // add it to the left side menu in no particular sequence
+    addLocation( new MenuLocation( MenuSection.LEFT ) );
+  }
 }

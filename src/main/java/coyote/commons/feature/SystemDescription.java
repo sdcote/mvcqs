@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+
 /**
  * This is the root of all features and provides the starting point for 
  * discovering everything about how the functionality of the system is 
@@ -59,9 +60,4 @@ import java.util.List;
  */
 public abstract class SystemDescription extends Feature {
 
-
-
-
-
-	
 }

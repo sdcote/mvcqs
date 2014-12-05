@@ -75,7 +75,7 @@ public class SecurityDataContext extends GenericContext implements Context {
   /**
    * Initialize the context
    */
-  public void init() throws Exception{
+  public void init() throws Exception {
     // Get a listing of the tables in this data store
     Set<String> tableset = new HashSet<String>();
     DatabaseMetaData md = dataSource.getConnection().getMetaData();
@@ -86,9 +86,9 @@ public class SecurityDataContext extends GenericContext implements Context {
 
     // Check to see if the needed tables exist and create them if necessary
     if ( !tableset.contains( "SECURITY_CONTEXT" ) ) {
-      
+
     }
-    
+
     LOG.info( "Security context initialized" );
   }
 
@@ -116,6 +116,4 @@ public class SecurityDataContext extends GenericContext implements Context {
     super.add( role );
   }
 
-  
-  
 }

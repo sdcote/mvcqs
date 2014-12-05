@@ -29,19 +29,18 @@ package coyote.commons.feature;
  * multiple menu sections.</p> * 
  */
 public enum MenuSection {
-	HIDDEN, TOP, BOTTOM, LEFT, RIGHT;
+  HIDDEN, TOP, BOTTOM, LEFT, RIGHT;
 
-	private MenuSection() {
-	}
-
+  private MenuSection() {}
 
 
 
-	public static MenuSection safeValueOf(String name) {
-		try {
-			return MenuSection.valueOf(name);
-		} catch (final IllegalArgumentException e) {
-			return null;
-		}
-	}
+
+  public static MenuSection safeValueOf( String name ) {
+    try {
+      return MenuSection.valueOf( name );
+    } catch ( final IllegalArgumentException e ) {
+      return null;
+    }
+  }
 }

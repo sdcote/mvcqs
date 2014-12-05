@@ -12,19 +12,14 @@
 package com.webapp.controller.login;
 
 public enum ResultCode {
-	SUCCESS,
-	INVALID,
-	UNAUTHORIZED,
-	CONCURRENT,
-	UNVERIFIED,
-	INITIAL_PASSWORD_CHANGE;
+  SUCCESS, INVALID, UNAUTHORIZED, CONCURRENT, UNVERIFIED, INITIAL_PASSWORD_CHANGE;
 
-	public static ResultCode safeValueOf(String name) {
-		try {
-			return ResultCode.valueOf(name);
-		} catch (final IllegalArgumentException e) {
-			return null;
-		}
-	}
+  public static ResultCode safeValueOf( String name ) {
+    try {
+      return ResultCode.valueOf( name );
+    } catch ( final IllegalArgumentException e ) {
+      return null;
+    }
+  }
 
 }

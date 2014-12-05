@@ -6,8 +6,7 @@ package com.webapp.dao;
 /**
  * 
  */
-public interface WebAppDataStore
-{
+public interface WebAppDataStore {
 
   public void init() throws Exception;
 

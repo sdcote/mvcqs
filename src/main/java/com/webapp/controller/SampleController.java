@@ -22,43 +22,44 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.webapp.desc.WebApp;
 
+
 /**
  * This is a sample controller 
  */
 @Controller
 public class SampleController {
-	private static final Log LOG = LogFactory.getLog(SampleController.class);
+  private static final Log LOG = LogFactory.getLog( SampleController.class );
 
-	private WebApp webapp = null;
-
-
-
-
-	/**
-	 * Have Spring wire-up the WebApp system description object which contains 
-	 * all our application specific facilities, constants and data.
-	 * 
-	 * @param sysDesc
-	 */
-	@Autowired
-	public void setWebApp(WebApp sysDesc) {
-		webapp = sysDesc;
-	}
+  private WebApp webapp = null;
 
 
 
 
-	/**
-	 * This shows how to create a simple MVC endpoint.
-	 * @param m
-	 * @return
-	 */
-	@RequestMapping("home")
-	public String loadHomePage(HttpServletRequest request, Model model) {
+  /**
+   * Have Spring wire-up the WebApp system description object which contains 
+   * all our application specific facilities, constants and data.
+   * 
+   * @param sysDesc
+   */
+  @Autowired
+  public void setWebApp( WebApp sysDesc ) {
+    webapp = sysDesc;
+  }
 
-		// Get the title of the application in the request's locale
-		model.addAttribute("title", webapp.getMessage("title", null, request.getLocale()));
 
-		return "home";
-	}
+
+
+  /**
+   * This shows how to create a simple MVC endpoint.
+   * @param m
+   * @return
+   */
+  @RequestMapping("home")
+  public String loadHomePage( HttpServletRequest request, Model model ) {
+
+    // Get the title of the application in the request's locale
+    model.addAttribute( "title", webapp.getMessage( "title", null, request.getLocale() ) );
+
+    return "home";
+  }
 }

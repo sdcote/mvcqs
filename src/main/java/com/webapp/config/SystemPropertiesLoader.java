@@ -35,8 +35,7 @@ import javax.servlet.ServletContextListener;
  * application specific properties.
  * 
  */
-public class SystemPropertiesLoader implements ServletContextListener
-{
+public class SystemPropertiesLoader implements ServletContextListener {
 
   /** Root name of the web application property file */
   public static final String COMMON_PROPS = "webapp";
@@ -60,8 +59,7 @@ public class SystemPropertiesLoader implements ServletContextListener
    * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
    */
   @Override
-  public void contextInitialized( ServletContextEvent sce )
-  {
+  public void contextInitialized( ServletContextEvent sce ) {
     // Load specific files from the WEB-INF - these are the application defaults
     loadPropertiesIntoSystem( COMMON_PROPS, true, sce.getServletContext().getRealPath( "/WEB-INF" ) );
 
@@ -84,31 +82,23 @@ public class SystemPropertiesLoader implements ServletContextListener
    * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
    */
   @Override
-  public void contextDestroyed( ServletContextEvent sce )
-  {
-  }
+  public void contextDestroyed( ServletContextEvent sce ) {}
 
 
 
 
-  private void loadPropertiesIntoSystem( String fileName, boolean errIfMissing, String pathName )
-  {
-    if( !isBlank( pathName ) )
-    {
+  private void loadPropertiesIntoSystem( String fileName, boolean errIfMissing, String pathName ) {
+    if ( !isBlank( pathName ) ) {
       String filename = pathName + File.separator + fileName + ".properties";
       System.out.println( this.getClass().getCanonicalName() + ": Trying to load properties from " + filename + " into system" );
       Properties props = new Properties();
-      try
-      {
+      try {
         props.load( new FileInputStream( filename ) );
         System.getProperties().putAll( props );
-      }
-      catch( IOException e )
-      {
+      } catch ( IOException e ) {
         String msg = "Failed to read from " + filename;
         System.err.println( this.getClass().getCanonicalName() + ": " + msg + ": " + e.getMessage() );
-        if( errIfMissing )
-        {
+        if ( errIfMissing ) {
           throw new IllegalStateException( msg, e );
         }
       }
@@ -122,19 +112,15 @@ public class SystemPropertiesLoader implements ServletContextListener
    * Load the Java proxy authenticator if the are system properties specifying 
    * a proxy host and user name.
    */
-  private void installProxyAuthenticatorIfNeeded()
-  {
+  private void installProxyAuthenticatorIfNeeded() {
     final String user = System.getProperty( PROXY_USER );
     final String password = System.getProperty( PROXY_PASSWORD );
     final String host = System.getProperty( PROXY_HOST );
-    if( !isBlank( user ) && !isBlank( password ) && !isBlank( host ) )
-    {
+    if ( !isBlank( user ) && !isBlank( password ) && !isBlank( host ) ) {
       System.out.println( String.format( "Detected http proxy settings (%s@%s), will setup authenticator", user, host ) );
-      Authenticator.setDefault( new Authenticator()
-      {
+      Authenticator.setDefault( new Authenticator() {
         @Override
-        protected PasswordAuthentication getPasswordAuthentication()
-        {
+        protected PasswordAuthentication getPasswordAuthentication() {
           return new PasswordAuthentication( user, password.toCharArray() );
         }
       } );
@@ -149,17 +135,15 @@ public class SystemPropertiesLoader implements ServletContextListener
    * 
    * @return the path to the configuration property
    */
-  public static String getConfigPath()
-  {
+  public static String getConfigPath() {
     // Check for ending file separator and remove it if found
     String retval = System.getProperty( CONFIG_DIR );
-    if( retval == null )
-    {
+    if ( retval == null ) {
       System.out.println( SystemPropertiesLoader.class.getCanonicalName() + ": No configuration override path found in '" + CONFIG_DIR + "' system property" );
       return "";
     }
     retval = retval.trim();
-    if( retval.endsWith( File.separator ) )
+    if ( retval.endsWith( File.separator ) )
       retval = retval.substring( 0, retval.lastIndexOf( File.separator ) );
 
     return retval;
@@ -183,17 +167,13 @@ public class SystemPropertiesLoader implements ServletContextListener
    * 
    * @return <code>true</code> if the String is null, empty or whitespace
    */
-  public static boolean isBlank( String str )
-  {
+  public static boolean isBlank( String str ) {
     int strLen;
-    if( str == null || ( strLen = str.length() ) == 0 )
-    {
+    if ( str == null || ( strLen = str.length() ) == 0 ) {
       return true;
     }
-    for( int i = 0; i < strLen; i++ )
-    {
-      if( ( Character.isWhitespace( str.charAt( i ) ) == false ) )
-      {
+    for ( int i = 0; i < strLen; i++ ) {
+      if ( ( Character.isWhitespace( str.charAt( i ) ) == false ) ) {
         return false;
       }
     }

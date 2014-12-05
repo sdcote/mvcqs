@@ -15,13 +15,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 
-
 /**
  * 
  * 
  */
-public class DefaultDataStore implements WebAppDataStore
-{
+public class DefaultDataStore implements WebAppDataStore {
   private DataSource _dataSource = null;
 
   private static final Log LOG = LogFactory.getLog( DefaultDataStore.class );
@@ -35,48 +33,47 @@ public class DefaultDataStore implements WebAppDataStore
    * 
    * @param source The data source this data store is to use.
    */
-  public DefaultDataStore( DataSource source )
-  {
+  public DefaultDataStore( DataSource source ) {
     _dataSource = source;
     jdbcTemplate = new JdbcTemplate( source );
   }
 
 
 
-/*
-  public Nonce getNonce( String consumerKey, String nonce )
-  {
-    String SQL = "select * from lti_nonce where consumer_key = ? and nonce = ?";
-    List<Nonce> results = jdbcTemplate.query( SQL, new Object[] { consumerKey, nonce }, new NonceMapper() );
 
-    if( results.isEmpty() )
+  /*
+    public Nonce getNonce( String consumerKey, String nonce )
     {
-      return null;
-    }
-    else
-    {
-      return results.get( 0 );
-    }
-  }
+      String SQL = "select * from lti_nonce where consumer_key = ? and nonce = ?";
+      List<Nonce> results = jdbcTemplate.query( SQL, new Object[] { consumerKey, nonce }, new NonceMapper() );
 
-   // Maps all the column of the LTI Nonce table to the Nonce type
-  class NonceMapper implements RowMapper<Nonce>
-  {
-    public Nonce mapRow( ResultSet rs, int rowNum ) throws SQLException
-    {
-      //Nonce nonce = new Nonce( rs.getString( "consumer_key" ), rs.getString( "nonce" ) );
-      Nonce nonce = new Nonce();
-      return nonce;
+      if( results.isEmpty() )
+      {
+        return null;
+      }
+      else
+      {
+        return results.get( 0 );
+      }
     }
-  }
-*/
+
+     // Maps all the column of the LTI Nonce table to the Nonce type
+    class NonceMapper implements RowMapper<Nonce>
+    {
+      public Nonce mapRow( ResultSet rs, int rowNum ) throws SQLException
+      {
+        //Nonce nonce = new Nonce( rs.getString( "consumer_key" ), rs.getString( "nonce" ) );
+        Nonce nonce = new Nonce();
+        return nonce;
+      }
+    }
+  */
 
   // 
 
   // Data Store methods
 
   // 
-
 
   /**
    * Initialize the data store.
@@ -87,21 +84,18 @@ public class DefaultDataStore implements WebAppDataStore
    * @throws Exception
    */
   @Override
-  public void init() throws Exception
-  {
+  public void init() throws Exception {
 
     // Get a listing of the tables in this data store
     Set<String> tableset = new HashSet<String>();
     DatabaseMetaData md = _dataSource.getConnection().getMetaData();
     ResultSet rs = md.getTables( null, null, "%", null );
-    while( rs.next() )
-    {
+    while ( rs.next() ) {
       tableset.add( rs.getString( 3 ) );
     }
 
     // Check to see if the Consumer table exists and create it if necessary
-    if( !tableset.contains( "LTI_CONSUMER" ) )
-    {
+    if ( !tableset.contains( "LTI_CONSUMER" ) ) {
       LOG.info( "Creating the Consumer table" );
       String createConsumerTable = "CREATE TABLE lti_consumer (" + "consumer_key varchar(255) NOT NULL," + "name varchar(45) NOT NULL," + "secret varchar(32) NOT NULL," + "lti_version varchar(12) DEFAULT NULL," + "enabled tinyint(1) NOT NULL," + "PRIMARY KEY (consumer_key)" + ");";
       jdbcTemplate.execute( createConsumerTable );
@@ -113,8 +107,7 @@ public class DefaultDataStore implements WebAppDataStore
     }
 
     // Create the Nonce table if it does not exist
-    if( !tableset.contains( "LTI_NONCE" ) )
-    {
+    if ( !tableset.contains( "LTI_NONCE" ) ) {
       LOG.info( "Creating the Nonce table" );
       String createNonceTable = "CREATE TABLE lti_nonce (" + "consumer_key varchar(255) NOT NULL," + "nonce varchar(32) NOT NULL," + "issued datetime NOT NULL," + "PRIMARY KEY (consumer_key, nonce)" + ");";
       jdbcTemplate.execute( createNonceTable );
@@ -128,8 +121,7 @@ public class DefaultDataStore implements WebAppDataStore
 
 
   @Override
-  public void destroy()
-  {
+  public void destroy() {
     // TODO how would this get called?
   }
 

@@ -34,15 +34,22 @@ public class FeatureConfig {
   /** Create a new WebApp object which describes the current state of this system. */
   private final WebApp system = new WebApp();
 
+
+
+
   @Autowired
   public void setMessageSource( ResourceBundleMessageSource source ) {
-    system.setMessageSource(source);
+    system.setMessageSource( source );
   }
-  
+
+
+
+
   @Autowired
   public void setSecurityContext( Context context ) {
-    system.setSecurityContext(context);
+    system.setSecurityContext( context );
   }
+
 
 
 

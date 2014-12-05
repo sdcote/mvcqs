@@ -26,7 +26,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ComponentScan(basePackages = "com.webapp", excludeFilters = { @Filter(Configuration.class) })
-public class ComponentConfig
-{
+public class ComponentConfig {
 
 }

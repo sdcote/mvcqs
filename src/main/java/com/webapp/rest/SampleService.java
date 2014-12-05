@@ -61,7 +61,8 @@ public class SampleService {
 
 
   @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
-  public @ResponseBody Message getMsg( @PathVariable
+  public @ResponseBody
+  Message getMsg( @PathVariable
   int id ) {
     Message retval = new Message( id );
     retval.setBody( "This is a body of the message." );
@@ -73,7 +74,8 @@ public class SampleService {
 
 
   @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json")
-  public @ResponseBody List<Message> getAllMessages() {
+  public @ResponseBody
+  List<Message> getAllMessages() {
     List<Message> retval = new ArrayList<Message>();
     retval.add( new Message( 1, "Message One" ) );
     retval.add( new Message( 2, "Message Two" ) );

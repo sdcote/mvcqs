@@ -13,46 +13,47 @@ package com.webapp.controller.login;
 
 import java.io.Serializable;
 
+
 public class LoginResult implements Serializable {
-	private static final long serialVersionUID = -192475760409031131L;
+  private static final long serialVersionUID = -192475760409031131L;
 
-	ResultCode resultCode = ResultCode.UNVERIFIED;
-	
-	String redirect ="/";
+  ResultCode resultCode = ResultCode.UNVERIFIED;
 
-
-
-
-	public LoginResult() {
-
-	}
+  String redirect = "/";
 
 
 
 
-	public ResultCode getResultCode() {
-		return resultCode;
-	}
+  public LoginResult() {
+
+  }
 
 
 
 
-	public void setResultCode(ResultCode code) {
-		resultCode = code;
-	}
+  public ResultCode getResultCode() {
+    return resultCode;
+  }
 
 
 
 
-	public String getRedirect() {
-		return redirect;
-	}
+  public void setResultCode( ResultCode code ) {
+    resultCode = code;
+  }
 
 
 
 
-	public void setRedirect(String path) {
-		redirect = path;
-	}
+  public String getRedirect() {
+    return redirect;
+  }
+
+
+
+
+  public void setRedirect( String path ) {
+    redirect = path;
+  }
 
 }

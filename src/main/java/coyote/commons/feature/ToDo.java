@@ -16,8 +16,8 @@ package coyote.commons.feature;
  */
 public class ToDo extends Feature {
 
-	public ToDo(String desc) {
-		description = desc;
-	}
+  public ToDo( String desc ) {
+    description = desc;
+  }
 
 }
