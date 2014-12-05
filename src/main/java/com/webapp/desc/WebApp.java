@@ -13,18 +13,21 @@ package com.webapp.desc;
 
 import java.util.Locale;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
-import com.webapp.controller.LoginController;
-
 import coyote.commons.Log;
+import coyote.commons.StringUtil;
 import coyote.commons.Version;
 import coyote.commons.feature.Feature;
 import coyote.commons.feature.SystemDescription;
+import coyote.commons.security.Context;
 import coyote.commons.security.Login;
+import coyote.commons.security.Session;
 
 
 /**
@@ -60,22 +63,63 @@ public class WebApp extends SystemDescription {
   public static final String SIGNOUT_PROPERTY = "signout.feature.name";
   public static final String USER_PROFILE_PROPERTY = "userprofile.feature.name";
   public static final String USER_SETTINGS_PROPERTY = "usersettings.feature.name";
-
   public static final String LOGIN_SESSION_KEY = "login";
-	public static final String SESSION_COOKIE_KEY = "mvcqsid";
+  public static final String SESSION_COOKIE_KEY = "mvcqsid";
+
+  private static Context securityContext = null;
 
 
 
 
-	public static Login getLogin(HttpSession session) {
-		Login retval = null;
-		try {
-			retval = (Login) session.getAttribute(LOGIN_SESSION_KEY);
-		} catch (Exception e) {
-			Log.error(e);
-		}
-		return retval;
-	}
+  public static Login getLogin( HttpServletRequest request, HttpSession session ) {
+    Login retval = null;
+    try {
+      retval = (Login)session.getAttribute( LOGIN_SESSION_KEY );
+    } catch ( Exception e ) {
+      Log.error( e );
+    }
+
+    // If the login was not in the HTTP session, check for the cookie
+    if ( retval == null ) {
+
+      if ( request != null ) {
+        String sessionid = null;
+
+        Cookie[] cookies = request.getCookies();
+        if ( cookies != null ) {
+
+          for ( int i = 0; i < cookies.length; i++ ) {
+            if ( SESSION_COOKIE_KEY.equals( cookies[i].getName() ) ) {
+              sessionid = cookies[i].getValue();
+              break;
+            }
+          }
+
+          if ( StringUtil.isNotBlank( sessionid ) ) {
+            if ( securityContext != null ) {
+              Log.trace( "Retrieving security session for " + sessionid );
+              Session msession = securityContext.getSession( sessionid );
+              if ( msession != null ) {
+                // TODO: It might be interesting to ensure that the servlet session identifier matches data stored in the security context's session as an additional check
+                retval = msession.getLogin();
+                Log.trace( "Using existing session from security context" );
+              } else {
+                Log.warn( "No security session for session ID :" + sessionid );
+                // TODO: Should we clear the cookie since we lost the session?
+              }
+            } else {
+              Log.warn( "Security Context not set" );
+            }
+
+          } // session id !null
+        } // cookies !null
+      } // request !null
+
+    } // login was not stored in the local http session
+
+    // return what we retrieved
+    return retval;
+  }
 
 
 
@@ -127,6 +171,16 @@ public class WebApp extends SystemDescription {
    */
   public void setMessageSource( ResourceBundleMessageSource source ) {
     messageSource = source;
+  }
+
+
+
+
+  /**
+   * @param context
+   */
+  public void setSecurityContext( Context context ) {
+    securityContext = context;
   }
 
 

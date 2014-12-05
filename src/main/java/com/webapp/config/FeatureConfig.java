@@ -19,6 +19,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import com.webapp.desc.WebApp;
 
 import coyote.commons.feature.SystemDescription;
+import coyote.commons.security.Context;
 
 
 /**
@@ -36,6 +37,11 @@ public class FeatureConfig {
   @Autowired
   public void setMessageSource( ResourceBundleMessageSource source ) {
     system.setMessageSource(source);
+  }
+  
+  @Autowired
+  public void setSecurityContext( Context context ) {
+    system.setSecurityContext(context);
   }
 
 
