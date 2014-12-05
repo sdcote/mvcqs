@@ -42,10 +42,17 @@ public class MenuLocation implements Comparable<MenuLocation> {
 	}
 
 
+	/**
+	 * Construct a menu location of a given section and a sequence of 0.
+	 * @param section The menu section this location represents.
+	 */
+	public MenuLocation(MenuSection section) {
+		this(section,0);
+	}
 
 
 	/**
-	 * Construct a menu location of a given section, level and sequence.
+	 * Construct a menu location of a given section and sequence.
 	 * @param section The menu section this location represents.
 	 * @param sequence The sequence/order this location is in respect to other 
 	 * locations in this section.
