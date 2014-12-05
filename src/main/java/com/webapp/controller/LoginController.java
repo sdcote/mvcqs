@@ -114,8 +114,6 @@ public class LoginController {
   @RequestMapping(value = { "/login" }, method = RequestMethod.POST)
   public @ResponseBody
   LoginResult login( HttpServletRequest request, HttpServletResponse response, HttpSession session ) throws Exception {
-    LOG.info( "Received a login request!" );
-
     LoginResult result = new LoginResult();
 
     result.setResultCode( authenticate( request, session ) );
@@ -127,7 +125,7 @@ public class LoginController {
         Login login = (Login)session.getAttribute( WebApp.SESSION_LOGIN_KEY );
 
         Session loginSession = webapp.getSecurityContext().createSession( login );
-        LOG.info( "Remembering " + login + " with sessionId " + loginSession.getId() );
+        LOG.trace( "Remembering " + login + " with sessionId " + loginSession.getId() );
 
         Cookie loginCookie = new Cookie( WebApp.COOKIE_SESSION_KEY, loginSession.getId() );
         loginCookie.setMaxAge( 30 * 60 ); // TODO make this configurable
