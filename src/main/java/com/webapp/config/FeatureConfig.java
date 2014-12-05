@@ -64,7 +64,7 @@ public class FeatureConfig {
    * @return The list of features in the application.
    */
   @Bean
-  public SystemDescription systemDescription() {
+  public WebApp systemDescription() {
     return system;
   }
 

@@ -19,7 +19,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,11 +27,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.webapp.controller.login.LoginResult;
 import com.webapp.controller.login.ResultCode;
-import com.webapp.dao.WebAppDataStore;
 import com.webapp.desc.WebApp;
 
 import coyote.commons.StringUtil;
-import coyote.commons.security.Context;
 import coyote.commons.security.CredentialSet;
 import coyote.commons.security.Login;
 import coyote.commons.security.Session;
@@ -61,27 +58,20 @@ public class LoginController {
 	private static final Log LOG = LogFactory.getLog(LoginController.class);
 	private static final Log SECURITY_LOG = LogFactory.getLog("SecurityEvent");
 
-	protected ResourceBundleMessageSource messageSource;
-
-	private WebAppDataStore dataStore = null;
-
-	private Context securityContext = null;
+	private WebApp webapp = null;
 
 
 
 
+	/**
+	 * Have Spring wire-up the WebApp system description object which contains 
+	 * all our application specific facilities, constants and data.
+	 * 
+	 * @param sysDesc the WebApp object which describes our system.
+	 */
 	@Autowired
-	public void setMessageSource(ResourceBundleMessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
-
-
-
-
-	@Autowired
-	public void setContext(Context context) {
-		securityContext = context;
-		LOG.info("Security Context wired");
+	public void setWebApp(WebApp sysDesc) {
+		webapp = sysDesc;
 	}
 
 
@@ -135,7 +125,7 @@ public class LoginController {
 			if (StringUtil.isNotBlank(remember)) {
 				Login login = (Login) session.getAttribute(WebApp.SESSION_LOGIN_KEY);
 
-				Session loginSession = securityContext.createSession(login);
+				Session loginSession = webapp.getSecurityContext().createSession(login);
 				LOG.info("Remembering " + login + " with sessionId " + loginSession.getId());
 
 				Cookie loginCookie = new Cookie(WebApp.COOKIE_SESSION_KEY, loginSession.getId());
@@ -189,7 +179,7 @@ public class LoginController {
 		}
 
 		// authenticate the credentials through the security context
-		Login login = securityContext.getLogin(new CredentialSet(account, passwd));
+		Login login = webapp.getSecurityContext().getLogin(new CredentialSet(account, passwd));
 
 		// If we retrieved a login, then the credentials are authentic
 		if (login != null) {

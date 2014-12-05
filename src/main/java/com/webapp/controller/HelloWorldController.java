@@ -12,9 +12,11 @@ public class HelloWorldController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String hello(ModelMap model) {
 
+		// add data to the model
 		model.addAttribute("message", "Hello World!");
-		return "helloWorld";
 
+		// return the name of the view to use with this model
+		return "helloWorld";
 	}
 
 }
