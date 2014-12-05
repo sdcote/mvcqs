@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
@@ -26,12 +25,10 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.webapp.controller.LoginController;
 import com.webapp.desc.WebApp;
 
 import coyote.commons.feature.Feature;
 import coyote.commons.security.Login;
-import coyote.commons.security.Session;
 
 
 /**
@@ -85,11 +82,9 @@ public class MainNav extends SimpleTagSupport {
     HttpServletRequest request = (HttpServletRequest)( (PageContext)getJspContext() ).getRequest();
     String contextPath = request.getContextPath();
     Locale locale = request.getLocale();
-    
-    Login login = WebApp.getLogin(request.getSession(true));
-    
-    
 
+    // Retrieve the login for this session 
+    Login login = WebApp.getLogin( request, request.getSession( true ) );
 
     StringBuffer content = new StringBuffer();
     content.append( "<nav class=\"navbar navbar-default navbar-static-top\" role=\"navigation\" style=\"margin-bottom: 0\">\r\n" );
@@ -151,23 +146,13 @@ public class MainNav extends SimpleTagSupport {
     // We always have a user section at the far right side of the top menu
     b.append( "\t<li class=\"dropdown\">\r\n" );
     b.append( "\t\t<a class=\"dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">\r\n" );
-    b.append( "\t\t<i class=\"fa fa-user fa-fw\"></i>  <i class=\"fa fa-caret-down\"></i></a>\r\n" );
-    b.append( "\t\t<ul class=\"dropdown-menu dropdown-user\">\r\n" );
 
-    if ( login != null ) {
+    if ( login == null ) {
+      // No login, we display a different user icon...
+      b.append( "\t\t<i class=\"fa fa-question fa-fw\"></i><i class=\"fa fa-user fa-fw\"></i>  <i class=\"fa fa-caret-down\"></i></a>\r\n" );
+      b.append( "\t\t<ul class=\"dropdown-menu dropdown-user\">\r\n" );
 
-      // Lookup User Profile Feature
-      b.append( "\t\t\t\t\t<li><a href=\"#\"><i class=\"fa fa-user fa-fw\"></i> User Profile</a></li>\r\n" );
-
-      // Lookup User Settings Feature
-      b.append( "\t\t\t\t\t<li><a href=\"#\"><i class=\"fa fa-gear fa-fw\"></i> Settings</a></li>\r\n" );
-
-      // Lookup the Sign-Out feature
-      b.append( "\t\t\t\t\t<li class=\"divider\"></li>\r\n" );
-      b.append( "\t\t\t\t\t<li><a href=\"logout\"><i class=\"fa fa-sign-out fa-fw\"></i> Logout</a></li>\r\n" );
-    } else {
-      // no session means we need to just show the sign-in option
-      // get the sign-in feature from the system properties
+      // ... and just show the sign-in option
       String signinName = System.getProperty( WebApp.SIGNIN_PROPERTY );
       if ( signinName != null ) {
         Feature signInFeature = getSystemDescription().getFeature( signinName );
@@ -184,6 +169,20 @@ public class MainNav extends SimpleTagSupport {
       } else {
         LOG.error( "There is no sign-in feature specified in system property '" + WebApp.SIGNIN_PROPERTY + "'" );
       }
+    } else {
+      // since we have a login, we provide a different menu to the user
+      b.append( "\t\t</i><i class=\"fa fa-user fa-fw\"></i>  <i class=\"fa fa-caret-down\"></i></a>\r\n" );
+      b.append( "\t\t<ul class=\"dropdown-menu dropdown-user\">\r\n" );
+
+      // Lookup User Profile Feature
+      b.append( "\t\t\t\t\t<li><a href=\"#\"><i class=\"fa fa-user fa-fw\"></i> User Profile</a></li>\r\n" );
+
+      // Lookup User Settings Feature
+      b.append( "\t\t\t\t\t<li><a href=\"#\"><i class=\"fa fa-gear fa-fw\"></i> Settings</a></li>\r\n" );
+
+      // Lookup the Sign-Out feature
+      b.append( "\t\t\t\t\t<li class=\"divider\"></li>\r\n" );
+      b.append( "\t\t\t\t\t<li><a href=\"logout\"><i class=\"fa fa-sign-out fa-fw\"></i> Logout</a></li>\r\n" );
     }
 
     b.append( "\t\t\t\t</ul>\r\n" );
