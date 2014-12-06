@@ -91,6 +91,8 @@ public class WebApp extends SystemDescription {
     addFeature( security );
     security.addFeature( new LoginFeature() );
     security.addFeature( new LogoutFeature() );
+    security.addFeature( new LoginProfileFeature() );
+
     // security.addFeature( new FindLoginFeature() );
     // security.addFeature( new AddLoginFeature() );
     // security.addFeature( new ChangeLoginFeature() );
@@ -106,10 +108,9 @@ public class WebApp extends SystemDescription {
     // security.addFeature( new GrantRolePermissionFeature() );
     // security.addFeature( new ChangeCredentialFeature() );
 
-    // User profile management
+    // Login profile management
     Feature profile = new UserProfileTheme();
     addFeature( profile );
-    profile.addFeature( new UserProfileFeature() );
     profile.addFeature( new UserSettingsFeature() );
 
     // Operations pages and functions; thread pools and background processes

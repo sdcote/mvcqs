@@ -185,10 +185,10 @@ public class MainNav extends SimpleTagSupport {
       b.append( "\t\t</i><i class=\"fa fa-user fa-fw\"></i>  <i class=\"fa fa-caret-down\"></i></a>\r\n" );
       b.append( "\t\t<ul class=\"dropdown-menu dropdown-user\">\r\n" );
 
-      // Lookup User Profile Feature
-      b.append( "\t\t\t\t\t<li><a href=\"#\"><i class=\"fa fa-user fa-fw\"></i> User Profile</a></li>\r\n" );
+      // Lookup Login Profile Feature
+      b.append( "\t\t\t\t\t<li><a href=\"#\"><i class=\"fa fa-user fa-fw\"></i> Profile</a></li>\r\n" );
 
-      // Lookup User Settings Feature
+      // Lookup Login Settings Feature
       b.append( "\t\t\t\t\t<li><a href=\"#\"><i class=\"fa fa-gear fa-fw\"></i> Settings</a></li>\r\n" );
 
       // Lookup the Sign-Out feature

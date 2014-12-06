@@ -13,17 +13,26 @@ package com.webapp.desc;
 
 import coyote.commons.Version;
 import coyote.commons.feature.Feature;
+import coyote.commons.feature.MenuIcon;
 
+/**
+ * Allows users to manage user their own login account information.
+ * 
+ * <p>This feature allows users to edit the meta data relating to their login 
+ * accounts. This data is used by the system to control the way the system 
+ * operates for the user. For example, the user can change the time zone and 
+ * locale settings to alter the way the system presents data to the user.</p>   
+ */
+public class LoginProfileFeature extends Feature {
 
-public class UserProfileFeature extends Feature {
-
-  public UserProfileFeature() {
+  public LoginProfileFeature() {
     version = new Version( 1, 0, Version.GENERAL );
     since = new Version( 1, 0, Version.GENERAL );
     name = "userprofile";
     featureId = "169";
-    description = "Allows the user to manage user identity and demographic information. The user profile describes the identity of the user.";
+    description = "Allows users to manage user their own login account information.";
     link = "/do/userProfile";
+    setIcon( MenuIcon.USER );
 
   }
 }
