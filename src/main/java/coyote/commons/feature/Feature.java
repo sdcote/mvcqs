@@ -100,28 +100,11 @@ public abstract class Feature {
   /** The list of menu locations this feature appears. */
   protected final List<MenuLocation> locations = new ArrayList<MenuLocation>();
 
-  /** A list of features to be implemented or at least considered.*/
+  /** A list of features to be implemented or at least considered. */
   protected final List<Feature> todolist = new ArrayList<Feature>();
 
-
-
-
-  /**
-   * @param feature
-   */
-  public void setParent( Feature feature ) {
-    parent = feature;
-  }
-
-
-
-
-  /**
-   * @param child
-   */
-  protected void removeChild( Feature child ) {
-    children.remove( child );
-  }
+  /** A basic description of an icon to use for the menu item. */
+  protected MenuIcon icon = null;
 
 
 
@@ -129,13 +112,14 @@ public abstract class Feature {
   /**
    * @param child the child to add;
    */
-  public void addFeature( Feature child ) {
+  public void addFeature( final Feature child ) {
 
     if ( child != null ) {
       child.setParent( this );
-      for ( Feature feature : children ) {
-        if ( feature == child )
+      for ( final Feature feature : children ) {
+        if ( feature == child ) {
           return;
+        }
       }
       children.add( child );
     }
@@ -145,36 +129,55 @@ public abstract class Feature {
 
 
   /**
-   * @return
+   * Add a location where this feature is to appear in the system menus.
+   * 
+   * <p>This exposes a feature to the user through the menus by specifying 
+   * the menu section in which it is to appear and the sequence in that 
+   * section in relation to other features.</p>
+   * 
+   * <p>Features can appear in many different locations so this method simply 
+   * adds to the existing list of menu locations.</p>
+   * 
+   * @param menuLocation The menu location to add
    */
-  public String getName() {
-    if ( name != null )
-      return name;
-    else
-      return "UNNAMED";
+  protected void addLocation( final MenuLocation menuLocation ) {
+    locations.add( menuLocation );
   }
 
 
 
 
   /**
-   * @return
+   * Add the given ToDo feature to the To-Do list.
+   * 
+   * @param todo The ToDo feature to add.
    */
-  public String getLink() {
-    if ( link != null )
-      return link;
-    else
-      return "#";
+  protected void addToDo( final ToDo todo ) {
+    todolist.add( todo );
   }
 
 
 
 
-  public String getVersion() {
-    if ( version != null )
-      return version.toString();
-    else
-      return "0.0";
+  /**
+   * @return the description
+   */
+  public String getDescription() {
+    return description;
+  }
+
+
+
+
+  /**
+   * Return the name of the system appropriate for the given locale
+   * 
+   * @param locale The locale requesting the name
+   * 
+   * @return Locale specific name of the system.
+   */
+  public Object getDisplayName( final Locale locale ) {
+    return getMessage( name + '.' + DISPLAYNAME, null, locale );
   }
 
 
@@ -191,11 +194,11 @@ public abstract class Feature {
    * 
    * @return The feature with the given name or null if a feature with that name was not found.
    */
-  public Feature getFeature( String name ) {
+  public Feature getFeature( final String name ) {
     Feature retval = null;
     if ( name != null ) {
       // search the top level of features (breadth first)
-      for ( Feature feature : children ) {
+      for ( final Feature feature : children ) {
         if ( name.equals( feature.getName() ) ) {
           retval = feature;
           break;
@@ -205,7 +208,7 @@ public abstract class Feature {
       // now search the next level
       if ( retval == null ) {
         // Try searching the children
-        for ( Feature child : children ) {
+        for ( final Feature child : children ) {
           retval = child.getFeature( name );
           if ( retval != null ) {
             break;
@@ -222,14 +225,99 @@ public abstract class Feature {
 
 
   /**
-   * Return the name of the system appropriate for the given locale
-   * 
-   * @param locale The locale requesting the name
-   * 
-   * @return Locale specific name of the system.
+   * @return the featureId
    */
-  public Object getDisplayName( Locale locale ) {
-    return getMessage( name + '.' + DISPLAYNAME, null, locale );
+  public String getFeatureId() {
+    return featureId;
+  }
+
+
+
+
+  /**
+   * Return a list of child features which match the given section.
+   * 
+   * @param section The menu section to match
+   * 
+   * @return a list of sequenced child features which match the given section 
+   */
+  public List<Feature> getFeaturesBySection( final MenuSection section ) {
+    final List<Feature> retval = new ArrayList<Feature>();
+
+    for ( final Feature feature : children ) {
+      if ( feature.isLocatedIn( section ) ) {
+        retval.add( feature );
+      }
+    }
+
+    // Sort the list
+    Collections.sort( retval, new Comparator<Feature>() {
+
+      @Override
+      public int compare( final Feature feature1, final Feature feature2 ) {
+
+        final MenuLocation location1 = feature1.getLocationBySection( section );
+        final MenuLocation location2 = feature2.getLocationBySection( section );
+
+        // ascending order
+        return location1.compareTo( location2 );
+
+        // descending order
+        // return location2.compareTo(location1);
+      }
+    } );
+
+    return retval;
+  }
+
+
+
+
+  /**
+   * @return the type of icon to use for the menu for this feature/
+   */
+  public MenuIcon getIcon() {
+    return icon;
+  }
+
+
+
+
+  /**
+   * @return
+   */
+  public String getLink() {
+    if ( link != null ) {
+      return link;
+    } else {
+      return "#";
+    }
+  }
+
+
+
+
+  /**
+   * Retrieve the location which matches the given section.
+   * 
+   * <p>This method can be called to determine if this feature is supposed to 
+   * appear in the given section.</p? 
+   * 
+   * @param section The section to query.
+   * 
+   * @return the first location in this feature matching the given section, 
+   * {@code null} otherwise. {@code null} is also returned if the argument 
+   * passed is {@code null}.
+   */
+  public MenuLocation getLocationBySection( final MenuSection section ) {
+    if ( section != null ) {
+      for ( final MenuLocation location : locations ) {
+        if ( section == location.getSection() ) {
+          return location;
+        }
+      }
+    }
+    return null;
   }
 
 
@@ -258,7 +346,7 @@ public abstract class Feature {
    * 
    * @return the resolved message, or the key if not found
    */
-  public String getMessage( String key, Object[] args, Locale locale ) {
+  public String getMessage( final String key, final Object[] args, final Locale locale ) {
     if ( parent != null ) {
       return parent.getMessage( key, args, locale );
     } else {
@@ -271,19 +359,25 @@ public abstract class Feature {
 
 
   /**
-   * Add a location where this feature is to appear in the system menus.
-   * 
-   * <p>This exposes a feature to the user through the menus by specifying 
-   * the menu section in which it is to appear and the sequence in that 
-   * section in relation to other features.</p>
-   * 
-   * <p>Features can appear in many different locations so this method simply 
-   * adds to the existing list of menu locations.</p>
-   * 
-   * @param menuLocation The menu location to add
+   * @return
    */
-  protected void addLocation( MenuLocation menuLocation ) {
-    locations.add( menuLocation );
+  public String getName() {
+    if ( name != null ) {
+      return name;
+    } else {
+      return "UNNAMED";
+    }
+  }
+
+
+
+
+  public String getVersion() {
+    if ( version != null ) {
+      return version.toString();
+    } else {
+      return "0.0";
+    }
   }
 
 
@@ -303,7 +397,7 @@ public abstract class Feature {
    * 
    * @see #getLocationBySection(MenuSection)
    */
-  public boolean isLocatedIn( MenuSection section ) {
+  public boolean isLocatedIn( final MenuSection section ) {
     return ( getLocationBySection( section ) != null );
   }
 
@@ -311,76 +405,77 @@ public abstract class Feature {
 
 
   /**
-   * Retrieve the location which matches the given section.
-   * 
-   * <p>This method can be called to determine if this feature is supposed to 
-   * appear in the given section.</p? 
-   * 
-   * @param section The section to query.
-   * 
-   * @return the first location in this feature matching the given section, 
-   * {@code null} otherwise. {@code null} is also returned if the argument 
-   * passed is {@code null}.
+   * @param child
    */
-  public MenuLocation getLocationBySection( MenuSection section ) {
-    if ( section != null ) {
-      for ( MenuLocation location : locations ) {
-        if ( section == location.getSection() ) {
-          return location;
-        }
-      }
-    }
-    return null;
+  protected void removeChild( final Feature child ) {
+    children.remove( child );
   }
 
 
 
 
   /**
-   * Return a list of child features which match the given section.
-   * 
-   * @param section The menu section to match
-   * 
-   * @return a list of sequenced child features which match the given section 
+   * @param description the description to set
    */
-  public List<Feature> getFeaturesBySection( final MenuSection section ) {
-    List<Feature> retval = new ArrayList<Feature>();
-
-    for ( Feature feature : children ) {
-      if ( feature.isLocatedIn( section ) ) {
-        retval.add( feature );
-      }
-    }
-
-    // Sort the list
-    Collections.sort( retval, new Comparator<Feature>() {
-
-      public int compare( Feature feature1, Feature feature2 ) {
-
-        MenuLocation location1 = feature1.getLocationBySection( section );
-        MenuLocation location2 = feature2.getLocationBySection( section );
-
-        // ascending order
-        return location1.compareTo( location2 );
-
-        // descending order
-        // return location2.compareTo(location1);
-      }
-    } );
-
-    return retval;
+  public void setDescription( final String description ) {
+    this.description = description;
   }
 
 
 
 
   /**
-   * Add the given ToDo feature to the To-Do list.
-   * 
-   * @param todo The ToDo feature to add.
+   * @param featureId the featureId to set
    */
-  protected void addToDo( ToDo todo ) {
-    todolist.add( todo );
+  public void setFeatureId( final String featureId ) {
+    this.featureId = featureId;
+  }
+
+
+
+
+  protected void setIcon( final MenuIcon icon ) {
+    this.icon = icon;
+  }
+
+
+
+
+  /**
+   * @param link the link to set
+   */
+  public void setLink( final String link ) {
+    this.link = link;
+  }
+
+
+
+
+  /**
+   * @param name the name to set
+   */
+  public void setName( final String name ) {
+    this.name = name;
+  }
+
+
+
+
+  /**
+   * @param feature
+   */
+  public void setParent( final Feature feature ) {
+    parent = feature;
+  }
+
+
+
+
+  /**
+   * @param version the version to set
+   */
+  public void setVersion( final Version version ) {
+    this.version = version;
   }
 
 
@@ -388,7 +483,7 @@ public abstract class Feature {
 
   @Override
   public String toString() {
-    StringBuilder b = new StringBuilder();
+    final StringBuilder b = new StringBuilder();
     b.append( "Feature: " );
     b.append( name );
     b.append( " version: v" );
