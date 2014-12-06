@@ -13,6 +13,7 @@ package com.webapp.desc;
 
 import coyote.commons.Version;
 import coyote.commons.feature.Feature;
+import coyote.commons.feature.MenuIcon;
 
 
 public class LogoutFeature extends Feature {
@@ -22,5 +23,6 @@ public class LogoutFeature extends Feature {
     name = "logout";
     link = "/do/logout";
     description = "Deactivates the current authenticated session.";
+    setIcon( MenuIcon.SIGN_OUT );
   }
 }

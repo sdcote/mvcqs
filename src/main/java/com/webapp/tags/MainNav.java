@@ -31,7 +31,6 @@ import com.webapp.desc.WebApp;
 import coyote.commons.feature.Feature;
 import coyote.commons.feature.MenuSection;
 import coyote.commons.security.Login;
-import coyote.commons.security.Permission;
 
 
 /**
@@ -235,18 +234,29 @@ public class MainNav extends SimpleTagSupport {
       b.append( contextPath );
       b.append( feature.getLink() );
       b.append( "\">" );
-      
-      if( feature.getIcon() != null){
+
+      if ( feature.getIcon() != null ) {
         b.append( "<i class=\"fa fa-" );
         b.append( feature.getIcon().toString() );
         b.append( " fa-fw\"></i> " );
       }
-      
+
       b.append( feature.getDisplayName( locale ) );
       b.append( "</a></li>\r\n" );
 
-      // TODO: Handle Sub menu items by looking at the children of each
-      // feature
+      // TODO: Handle Sub menu items by looking at the children of each feature
+      List<Feature> features2 = feature.getFeaturesBySection( MenuSection.LEFT );
+      if ( features2.size() > 0 ) {
+        for ( Feature feature2 : features2 ) {
+
+          // TODO: Handle 3rd level menus (but this is a low as we go)
+          List<Feature> features3 = feature2.getFeaturesBySection( MenuSection.LEFT );
+          if ( features3.size() > 0 ) {
+            for ( Feature feature3 : features3 ) {}
+          }
+
+        }
+      }
 
     }
 
