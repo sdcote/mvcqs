@@ -1,6 +1,7 @@
 package com.webapp.desc;
 
 import coyote.commons.feature.Feature;
+import coyote.commons.feature.MenuIcon;
 import coyote.commons.feature.MenuLocation;
 import coyote.commons.feature.MenuSection;
 
@@ -28,15 +29,18 @@ public class HelloWorldFeature extends Feature {
   public HelloWorldFeature() {
 
     // Name the feature
-    name = "helloworld";
+    setName("helloworld");
 
     // brief optional description
-    description = "Just displays the HelloWorld page.";
+    setDescription( "Just displays the HelloWorld page." );
 
     // this maps to our HelloWorld controller
-    link = "/do/helloWorld";
+    setLink( "/do/helloWorld" );
 
-    // add it to the left side menu in no particular sequence
+    // Set the type of icon to be displayed on the menu
+    setIcon( MenuIcon.COGS );
+
+    // add this feature to the left side menu in no particular sequence
     addLocation( new MenuLocation( MenuSection.LEFT ) );
   }
 }

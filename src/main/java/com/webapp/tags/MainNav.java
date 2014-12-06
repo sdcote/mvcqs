@@ -31,6 +31,7 @@ import com.webapp.desc.WebApp;
 import coyote.commons.feature.Feature;
 import coyote.commons.feature.MenuSection;
 import coyote.commons.security.Login;
+import coyote.commons.security.Permission;
 
 
 /**
@@ -228,11 +229,19 @@ public class MainNav extends SimpleTagSupport {
     for ( Feature feature : features ) {
 
       // TODO: Is the login allowed to see the feature?
+      // getSystemDescription().getSecurityContext().loginHasPermission( login, "Ticket", Permission.READ );
 
       b.append( "\t\t\t\t<li><a href=\"" );
       b.append( contextPath );
       b.append( feature.getLink() );
       b.append( "\">" );
+      
+      if( feature.getIcon() != null){
+        b.append( "<i class=\"fa fa-" );
+        b.append( feature.getIcon().toString() );
+        b.append( " fa-fw\"></i> " );
+      }
+      
       b.append( feature.getDisplayName( locale ) );
       b.append( "</a></li>\r\n" );
 
