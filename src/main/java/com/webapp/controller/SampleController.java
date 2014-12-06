@@ -58,7 +58,7 @@ public class SampleController {
   public String loadHomePage( HttpServletRequest request, Model model ) {
 
     // Get the title of the application in the request's locale
-    model.addAttribute( "title", webapp.getMessage( "title", null, request.getLocale() ) );
+    model.addAttribute( "title", webapp.getMessage( "webapp.subtitle", null, request.getLocale() ) );
 
     return "home";
   }

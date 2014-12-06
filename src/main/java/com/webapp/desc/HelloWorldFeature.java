@@ -29,7 +29,7 @@ public class HelloWorldFeature extends Feature {
   public HelloWorldFeature() {
 
     // Name the feature
-    setName("helloworld");
+    setName( "helloworld" );
 
     // brief optional description
     setDescription( "Just displays the HelloWorld page." );
@@ -40,7 +40,7 @@ public class HelloWorldFeature extends Feature {
     // Set the type of icon to be displayed on the menu
     setIcon( MenuIcon.COGS );
 
-    // add this feature to the left side menu in no particular sequence
-    addLocation( new MenuLocation( MenuSection.LEFT ) );
+    // add this feature to the left side menu
+    addLocation( new MenuLocation( MenuSection.LEFT, 1 ) );
   }
 }

@@ -9,21 +9,20 @@
  *   Stephan D. Cote 
  *      - Initial concept and initial implementation
  */
-package com.webapp.desc;
+package com.webapp.desc.security;
 
 import coyote.commons.Version;
 import coyote.commons.feature.Feature;
+import coyote.commons.feature.MenuIcon;
 
 
-public class I18nFeature extends Feature {
+public class LogoutFeature extends Feature {
 
-  public I18nFeature() {
-    version = new Version( 1, 0, Version.GENERAL );
-    since = new Version( 1, 0, Version.GENERAL );
-    name = "internationalization";
-    featureId = "122";
-    description = "System supports the ability to display data in a locale specific manner";
-    link = null; // This is not a user accessible feature
-
+  public LogoutFeature() {
+    version = new Version( 1, 0, 0, Version.DEVELOPMENT );
+    name = "logout";
+    link = "/do/logout";
+    description = "Deactivates the current authenticated session.";
+    setIcon( MenuIcon.SIGN_OUT );
   }
 }

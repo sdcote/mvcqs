@@ -13,18 +13,16 @@ package com.webapp.desc;
 
 import coyote.commons.Version;
 import coyote.commons.feature.Feature;
-import coyote.commons.feature.MenuIcon;
 
 
-public class LoginFeature extends Feature {
-
-  public LoginFeature() {
-    version = new Version( 1, 0, Version.GENERAL );
-    since = new Version( 1, 0, Version.GENERAL );
-    name = "login";
-    featureId = "163";
-    description = "Allows the user to authenticate with the system and establish a session";
-    link = "/do/login";
-    setIcon( MenuIcon.SIGN_IN );
+/**
+ * 
+ */
+public class LoginToolsTheme extends Feature {
+  LoginToolsTheme() {
+    version = new Version( 1, 0, 0, Version.DEVELOPMENT );
+    name = "profile";
+    description = "Manage settings related to the user login of the system.";
   }
+
 }

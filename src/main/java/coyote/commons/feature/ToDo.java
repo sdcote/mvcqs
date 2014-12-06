@@ -16,8 +16,26 @@ package coyote.commons.feature;
  */
 public class ToDo extends Feature {
 
-  public ToDo( String desc ) {
+  /**
+   * Create a ToDo item with and identifier and a description.
+   * 
+   * @param id an identifying string
+   * @param desc a description of the task to perform.
+   */
+  public ToDo( String id, String desc ) {
     description = desc;
+  }
+
+
+
+
+  /**
+   * Construct a ToDo item with a description.
+   * 
+   * @param desc a description of the task to perform.
+   */
+  public ToDo( String desc ) {
+    this( null, desc );
   }
 
 }

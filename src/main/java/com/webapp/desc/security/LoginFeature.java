@@ -9,21 +9,22 @@
  *   Stephan D. Cote 
  *      - Initial concept and initial implementation
  */
-package com.webapp.desc;
+package com.webapp.desc.security;
 
 import coyote.commons.Version;
 import coyote.commons.feature.Feature;
+import coyote.commons.feature.MenuIcon;
 
 
-public class UserSettingsFeature extends Feature {
+public class LoginFeature extends Feature {
 
-  public UserSettingsFeature() {
+  public LoginFeature() {
     version = new Version( 1, 0, Version.GENERAL );
     since = new Version( 1, 0, Version.GENERAL );
-    name = "usersettings";
-    featureId = "165";
-    description = "Allows the user to set application configuration attributes to their login. The user can configure how the system operates for them.";
-    link = "/do/userSetting";
-
+    name = "login";
+    featureId = "163";
+    description = "Allows the user to authenticate with the system and establish a session";
+    link = "/do/login";
+    setIcon( MenuIcon.SIGN_IN );
   }
 }

@@ -130,6 +130,8 @@ public class LoginController {
         Cookie loginCookie = new Cookie( WebApp.COOKIE_SESSION_KEY, loginSession.getId() );
         loginCookie.setMaxAge( 30 * 60 ); // TODO make this configurable
         response.addCookie( loginCookie );
+        
+        // TODO Now we need to persist the session 
       }
 
       // Now set the redirect to the appropriate location. This could be

@@ -22,6 +22,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
+import com.webapp.desc.logintools.LoginSettingsFeature;
+import com.webapp.desc.security.LoginFeature;
+import com.webapp.desc.security.LoginProfileFeature;
+import com.webapp.desc.security.LogoutFeature;
+
 import coyote.commons.StringUtil;
 import coyote.commons.Version;
 import coyote.commons.feature.Feature;
@@ -92,7 +97,6 @@ public class WebApp extends SystemDescription {
     security.addFeature( new LoginFeature() );
     security.addFeature( new LogoutFeature() );
     security.addFeature( new LoginProfileFeature() );
-
     // security.addFeature( new FindLoginFeature() );
     // security.addFeature( new AddLoginFeature() );
     // security.addFeature( new ChangeLoginFeature() );
@@ -108,18 +112,26 @@ public class WebApp extends SystemDescription {
     // security.addFeature( new GrantRolePermissionFeature() );
     // security.addFeature( new ChangeCredentialFeature() );
 
-    // Login profile management
-    Feature profile = new UserProfileTheme();
+    // Login account facilities
+    Feature profile = new LoginToolsTheme();
     addFeature( profile );
-    profile.addFeature( new UserSettingsFeature() );
+    profile.addFeature( new LoginSettingsFeature() );
+    //profile.addFeature( new LoginMessageInboxFeature() ); // Message Inbox
+    //profile.addFeature( new LoginMessageSendFeature() ); // Send Messages
+    //profile.addFeature( new LoginEULAFeature() ); // accept EULA & Terms
+    //profile.addFeature( new LoginAlertFeature() ); // events and notifications
+    //profile.addFeature( new LoginTaskFeature() ); // Simple task management
 
     // Operations pages and functions; thread pools and background processes
     // Feature operations = new OperationsTheme();
-    // operations.addFeature( new BackgroundJobsFeature() );
-    // operations.addFeature( new SchedulerFeature() );
+    // operations.addFeature( new BackgroundJobsFeature() ); view & manage jobs
+    // operations.addFeature( new SchedulerFeature() ); // schedule a job
+    // operations.addFeature( new MaintenanceWindowFeature() ); // currently down for maintenance
+    // Database functions might be nice to have
     
-    // Search service should have special components to perform searches in 
+    // Search service should have special components to perform searches in external facilities
     Feature search = new SearchTheme();
+    addFeature( search );
 
     // This shows how to add your feature to the system
     Feature helloworld = new HelloWorldFeature();
@@ -130,6 +142,13 @@ public class WebApp extends SystemDescription {
 
 
 
+  /**
+   * Retrieve a login from the current request.
+   * 
+   * @param request The HTTP request containing container session and cookie data
+   * 
+   * @return the login associated with the request, or null if the user has not logged into the system with valid credentials.
+   */
   public static Login getLogin( HttpServletRequest request ) {
     Login retval = null;
 
@@ -191,7 +210,7 @@ public class WebApp extends SystemDescription {
 
 
   /**
-   * @param source
+   * @param source The message source for this application
    */
   public void setMessageSource( ResourceBundleMessageSource source ) {
     messageSource = source;
@@ -221,12 +240,13 @@ public class WebApp extends SystemDescription {
 
 
   /**
-   * This performs all the message lookups for all child resources.
+   * Resolves all messages for different locales using the applications 
+   * resource bundles.
    * 
    * <p>Features delegate message retrieval to their parents by default. Since 
    * we extend {@code SystemDescription} which is a feature and all features 
-   * are added to the system description (this class) this method is the root 
-   * of all call to get messages for all features.</p>.
+   * are added to the system description (this class), this method is the root 
+   * of all calls to get messages for all features.</p>.
    * 
    * <p>This method uses the Spring {@code ResourceBundleMessageSource} to 
    * handle all message resolution and is auto-wired by the Spring IoC 
