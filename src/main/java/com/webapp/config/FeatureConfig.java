@@ -18,7 +18,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 
 import com.webapp.desc.WebApp;
 
-import coyote.commons.security.Context;
+import coyote.commons.security.SecurityContext;
 
 
 /**
@@ -45,7 +45,7 @@ public class FeatureConfig {
 
 
   @Autowired
-  public void setSecurityContext( Context context ) {
+  public void setSecurityContext( SecurityContext context ) {
     system.setSecurityContext( context );
   }
 

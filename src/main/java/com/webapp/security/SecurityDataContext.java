@@ -22,10 +22,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import coyote.commons.security.Context;
-import coyote.commons.security.GenericContext;
+import coyote.commons.security.GenericSecurityContext;
 import coyote.commons.security.Login;
 import coyote.commons.security.Role;
+import coyote.commons.security.SecurityContext;
 
 
 /**
@@ -41,7 +41,7 @@ import coyote.commons.security.Role;
  * establish as session on one server but still hit a different server on 
  * subsequent requests.</p>  
  */
-public class SecurityDataContext extends GenericContext implements Context {
+public class SecurityDataContext extends GenericSecurityContext implements SecurityContext {
 
   private DataSource dataSource = null;
   private static final Log LOG = LogFactory.getLog( SecurityDataContext.class );

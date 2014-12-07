@@ -31,7 +31,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.webapp.desc.WebApp;
 
-import coyote.commons.security.Context;
+import coyote.commons.security.SecurityContext;
 import coyote.commons.security.Login;
 
 
@@ -47,7 +47,7 @@ public class AuthFilter implements Filter {
 
   ApplicationContext applicationContext = null;
 
-  Context securityContext = null;
+  SecurityContext securityContext = null;
 
 
 
@@ -91,7 +91,7 @@ public class AuthFilter implements Filter {
     }
 
     if ( applicationContext != null && applicationContext.containsBean( "securityContext" ) ) {
-      securityContext = (Context)applicationContext.getBean( "securityContext" );
+      securityContext = (SecurityContext)applicationContext.getBean( "securityContext" );
     }
 
     if ( securityContext != null ) {

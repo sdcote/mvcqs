@@ -26,7 +26,7 @@ import coyote.commons.StringUtil;
 import coyote.commons.Version;
 import coyote.commons.feature.Feature;
 import coyote.commons.feature.SystemDescription;
-import coyote.commons.security.Context;
+import coyote.commons.security.SecurityContext;
 import coyote.commons.security.Login;
 import coyote.commons.security.Session;
 
@@ -74,7 +74,7 @@ public class WebApp extends SystemDescription {
   /** The session attribute containing the ultimate destination of this session */
   public static final String SESSION_TARGET_URI_KEY = "targetURI";
 
-  private static Context securityContext = null;
+  private static SecurityContext securityContext = null;
   private static ResourceBundleMessageSource messageSource = null;
 
 
@@ -191,7 +191,7 @@ public class WebApp extends SystemDescription {
   /**
    * @param context The security context to use for this web application
    */
-  public void setSecurityContext( Context context ) {
+  public void setSecurityContext( SecurityContext context ) {
     securityContext = context;
   }
 
@@ -201,7 +201,7 @@ public class WebApp extends SystemDescription {
   /**
    * @return The security context to use for this web application
    */
-  public Context getSecurityContext() {
+  public SecurityContext getSecurityContext() {
     return securityContext;
   }
 

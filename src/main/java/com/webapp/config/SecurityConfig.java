@@ -21,11 +21,11 @@ import org.springframework.context.annotation.Configuration;
 
 import com.webapp.security.SecurityDataContext;
 
-import coyote.commons.security.Context;
 import coyote.commons.security.CredentialSet;
 import coyote.commons.security.Login;
 import coyote.commons.security.Permission;
 import coyote.commons.security.Role;
+import coyote.commons.security.SecurityContext;
 
 
 /**
@@ -53,7 +53,7 @@ public class SecurityConfig {
 
 
   @Bean
-  public Context securityContext() {
+  public SecurityContext securityContext() {
 
     if ( dataSource == null ) {
       LOG.fatal( "No datasource configured, cannot persist security context!" );
