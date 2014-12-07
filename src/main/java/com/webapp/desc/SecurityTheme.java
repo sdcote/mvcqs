@@ -11,6 +11,10 @@
  */
 package com.webapp.desc;
 
+import com.webapp.desc.security.LoginFeature;
+import com.webapp.desc.security.LoginProfileFeature;
+import com.webapp.desc.security.LogoutFeature;
+
 import coyote.commons.Version;
 import coyote.commons.feature.Feature;
 import coyote.commons.feature.MenuIcon;
@@ -34,6 +38,25 @@ public class SecurityTheme extends Feature {
     addToDo( new ToDo( "Configure concurrent logins by login" ) );
     addToDo( new ToDo( "Configure system-wide concurrent logins" ) );
     addToDo( new ToDo( "System-wide concurrent logins can be disabled for particular logins" ) );
+    
+    
+    addFeature( new LoginFeature() );
+    addFeature( new LogoutFeature() );
+    addFeature( new LoginProfileFeature() );
+    // addFeature( new FindLoginFeature() );
+    // addFeature( new AddLoginFeature() );
+    // addFeature( new ChangeLoginFeature() );
+    // addFeature( new DeleteLoginFeature() );
+    // addFeature( new FindRoleFeature() );
+    // addFeature( new AddRoleFeature() );
+    // addFeature( new ChangeRoleFeature() );
+    // addFeature( new DeleteRoleFeature() );
+    // addFeature( new GrantRolePermissionFeature() );
+    // addFeature( new RevokeRolePermissionFeature() );
+    // addFeature( new GrantLoginPermissionFeature() );
+    // addFeature( new RevokeLoginPermissionFeature() );
+    // addFeature( new GrantRolePermissionFeature() );
+    // addFeature( new ChangeCredentialFeature() );
   }
 
 }

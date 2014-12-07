@@ -22,11 +22,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
-import com.webapp.desc.logintools.LoginSettingsFeature;
-import com.webapp.desc.security.LoginFeature;
-import com.webapp.desc.security.LoginProfileFeature;
-import com.webapp.desc.security.LogoutFeature;
-
 import coyote.commons.StringUtil;
 import coyote.commons.Version;
 import coyote.commons.feature.Feature;
@@ -94,41 +89,15 @@ public class WebApp extends SystemDescription {
     // We are providing security features
     Feature security = new SecurityTheme();
     addFeature( security );
-    security.addFeature( new LoginFeature() );
-    security.addFeature( new LogoutFeature() );
-    security.addFeature( new LoginProfileFeature() );
-    // security.addFeature( new FindLoginFeature() );
-    // security.addFeature( new AddLoginFeature() );
-    // security.addFeature( new ChangeLoginFeature() );
-    // security.addFeature( new DeleteLoginFeature() );
-    // security.addFeature( new FindRoleFeature() );
-    // security.addFeature( new AddRoleFeature() );
-    // security.addFeature( new ChangeRoleFeature() );
-    // security.addFeature( new DeleteRoleFeature() );
-    // security.addFeature( new GrantRolePermissionFeature() );
-    // security.addFeature( new RevokeRolePermissionFeature() );
-    // security.addFeature( new GrantLoginPermissionFeature() );
-    // security.addFeature( new RevokeLoginPermissionFeature() );
-    // security.addFeature( new GrantRolePermissionFeature() );
-    // security.addFeature( new ChangeCredentialFeature() );
 
-    // Login account facilities
+    // Login account facilities; settings etc.
     Feature profile = new LoginToolsTheme();
     addFeature( profile );
-    profile.addFeature( new LoginSettingsFeature() );
-    //profile.addFeature( new LoginMessageInboxFeature() ); // Message Inbox
-    //profile.addFeature( new LoginMessageSendFeature() ); // Send Messages
-    //profile.addFeature( new LoginEULAFeature() ); // accept EULA & Terms
-    //profile.addFeature( new LoginAlertFeature() ); // events and notifications
-    //profile.addFeature( new LoginTaskFeature() ); // Simple task management
 
     // Operations pages and functions; thread pools and background processes
     // Feature operations = new OperationsTheme();
-    // operations.addFeature( new BackgroundJobsFeature() ); view & manage jobs
-    // operations.addFeature( new SchedulerFeature() ); // schedule a job
-    // operations.addFeature( new MaintenanceWindowFeature() ); // currently down for maintenance
-    // Database functions might be nice to have
-    
+    // addFeature( operations );
+
     // Search service should have special components to perform searches in external facilities
     Feature search = new SearchTheme();
     addFeature( search );
