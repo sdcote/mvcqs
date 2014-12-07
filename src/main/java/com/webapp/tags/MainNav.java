@@ -136,6 +136,8 @@ public class MainNav extends SimpleTagSupport {
     b.append( getSystemDescription().getDisplayName( locale ) );
     b.append( "</a>\r\n" );
     b.append( "\t\t\t</div>\r\n" );
+    b.append( "\t\t\t<!-- /.navbar-header -->\r\n\r\n" );
+
     return b.toString();
   }
 
@@ -150,30 +152,31 @@ public class MainNav extends SimpleTagSupport {
    */
   private Object navTopLinks( String contextPath, Locale locale, Login login ) {
     StringBuffer b = new StringBuffer();
-    b.append( "\t<ul class=\"nav navbar-top-links navbar-right\">\r\n" );
+    b.append( "\t\t<ul class=\"nav navbar-top-links navbar-right\">\r\n" );
+
+    //
 
     // Menu Items across the top goes here
 
+    //
+
     // We always have a user section at the far right side of the top menu
-    b.append( "\t<li class=\"dropdown\">\r\n" );
-    b.append( "\t\t<a class=\"dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">\r\n" );
+    b.append( "\t\t<li class=\"dropdown\">\r\n" );
+    b.append( "\t\t\t<a class=\"dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">\r\n" );
 
     if ( login == null ) {
       // No login, we display a different user icon...
-      b.append( "\t\t<i class=\"fa fa-question fa-fw\"></i><i class=\"fa fa-user fa-fw\"></i>  <i class=\"fa fa-caret-down\"></i></a>\r\n" );
-      b.append( "\t\t<ul class=\"dropdown-menu dropdown-user\">\r\n" );
+      b.append( "\t\t\t\t<i class=\"fa fa-question fa-fw\"></i><i class=\"fa fa-user fa-fw\"></i>  <i class=\"fa fa-caret-down\"></i>\r\n\t\t\t</a>\r\n" );
+      b.append( "\t\t\t<ul class=\"dropdown-menu dropdown-user\">\r\n" );
 
       // ... and just show the sign-in option
       String signinName = System.getProperty( WebApp.SIGNIN_PROPERTY );
       if ( signinName != null ) {
         Feature signInFeature = getSystemDescription().getFeature( signinName );
         if ( signInFeature != null ) {
-          b.append( "\t\t\t\t\t<li><a href=\"" );
-          b.append( contextPath );
-          b.append( signInFeature.getLink() );
-          b.append( "\"><i class=\"fa fa-sign-in fa-fw\"></i> " );
-          b.append( signInFeature.getDisplayName( locale ) );
-          b.append( "</a></li>\r\n" );
+          b.append( "\t\t\t\t\t<li>" );
+          b.append( getFeatureLink( signInFeature, contextPath, locale ) );
+          b.append( "</li>\r\n" );
         } else {
           LOG.error( "No feature named '" + signinName + "' defined in system description" );
         }
@@ -182,18 +185,57 @@ public class MainNav extends SimpleTagSupport {
       }
     } else {
       // since we have a login, we provide a different menu to the user
-      b.append( "\t\t</i><i class=\"fa fa-user fa-fw\"></i>  <i class=\"fa fa-caret-down\"></i></a>\r\n" );
-      b.append( "\t\t<ul class=\"dropdown-menu dropdown-user\">\r\n" );
+      b.append( "\t\t\t</i><i class=\"fa fa-user fa-fw\"></i>  <i class=\"fa fa-caret-down\"></i>\r\n\t\t\t</a>\r\n" );
+      b.append( "\t\t\t<ul class=\"dropdown-menu dropdown-user\">\r\n" );
 
-      // Lookup Login Profile Feature
-      b.append( "\t\t\t\t\t<li><a href=\"#\"><i class=\"fa fa-user fa-fw\"></i> Profile</a></li>\r\n" );
+      // Login profile feature - the login's home page
+      String featureName = System.getProperty( WebApp.LOGIN_PROFILE_PROPERTY );
+      if ( featureName != null ) {
+        Feature feature = getSystemDescription().getFeature( featureName );
+        if ( feature != null ) {
+          b.append( "\t\t\t\t<li>" );
+          b.append( getFeatureLink( feature, contextPath, locale ) );
+          b.append( "</li>\r\n" );
+        } else {
+          LOG.error( "No feature named '" + featureName + "' defined in system description" );
+        }
+      } else {
+        LOG.error( "There is no user profile feature specified in system property '" + WebApp.LOGIN_PROFILE_PROPERTY + "'" );
+      }
 
-      // Lookup Login Settings Feature
-      b.append( "\t\t\t\t\t<li><a href=\"#\"><i class=\"fa fa-gear fa-fw\"></i> Settings</a></li>\r\n" );
+      // Login settings feature - the login's application configuration
+      featureName = System.getProperty( WebApp.LOGIN_SETTINGS_PROPERTY );
+      if ( featureName != null ) {
+        Feature feature = getSystemDescription().getFeature( featureName );
+        if ( feature != null ) {
+          b.append( "\t\t\t\t<li>" );
+          b.append( getFeatureLink( feature, contextPath, locale ) );
+          b.append( "</li>\r\n" );
+        } else {
+          LOG.error( "No feature named '" + featureName + "' defined in system description" );
+        }
+      } else {
+        LOG.error( "There is no user profile feature specified in system property '" + WebApp.LOGIN_SETTINGS_PROPERTY + "'" );
+      }
+
+      // menu divider
+      b.append( "\t\t\t\t<li class=\"divider\"></li>\r\n" );
 
       // Lookup the Sign-Out feature
-      b.append( "\t\t\t\t\t<li class=\"divider\"></li>\r\n" );
-      b.append( "\t\t\t\t\t<li><a href=\"logout\"><i class=\"fa fa-sign-out fa-fw\"></i> Logout</a></li>\r\n" );
+      featureName = System.getProperty( WebApp.SIGNOUT_PROPERTY );
+      if ( featureName != null ) {
+        Feature feature = getSystemDescription().getFeature( featureName );
+        if ( feature != null ) {
+          b.append( "\t\t\t\t<li>" );
+          b.append( getFeatureLink( feature, contextPath, locale ) );
+          b.append( "</li>\r\n" );
+        } else {
+          LOG.error( "No feature named '" + featureName + "' defined in system description" );
+        }
+      } else {
+        LOG.error( "There is no user profile feature specified in system property '" + WebApp.SIGNOUT_PROPERTY + "'" );
+      }
+
     }
 
     b.append( "\t\t\t\t</ul>\r\n" );
@@ -204,6 +246,34 @@ public class MainNav extends SimpleTagSupport {
     b.append( "\t\t</ul>\r\n" );
     b.append( "\t\t<!-- /.navbar-top-links -->\r\n" );
 
+    return b.toString();
+  }
+
+
+
+
+  /**
+   * Create a link for a feature.
+   * @param signInFeature
+   * @param contextPath
+   * @param locale
+   * @return
+   */
+  private String getFeatureLink( Feature feature, String contextPath, Locale locale ) {
+    StringBuffer b = new StringBuffer();
+    b.append( "<a href=\"" );
+    b.append( contextPath );
+    b.append( feature.getLink() );
+    b.append( "\">" );
+
+    if ( feature.getIcon() != null ) {
+      b.append( "<i class=\"fa fa-" );
+      b.append( feature.getIcon().toString() );
+      b.append( " fa-fw\"></i> " );
+    }
+
+    b.append( feature.getDisplayName( locale ) );
+    b.append( "</a>" );
     return b.toString();
   }
 
@@ -230,21 +300,13 @@ public class MainNav extends SimpleTagSupport {
       // TODO: Is the login allowed to see the feature?
       // getSystemDescription().getSecurityContext().loginHasPermission( login, "Ticket", Permission.READ );
 
-      b.append( "\t\t\t\t<li><a href=\"" );
-      b.append( contextPath );
-      b.append( feature.getLink() );
-      b.append( "\">" );
-
-      if ( feature.getIcon() != null ) {
-        b.append( "<i class=\"fa fa-" );
-        b.append( feature.getIcon().toString() );
-        b.append( " fa-fw\"></i> " );
-      }
-
-      b.append( feature.getDisplayName( locale ) );
-      b.append( "</a></li>\r\n" );
+      // TODO: if the feature has children, we need to indicate the menu option is a dropdown
+      b.append( "\t\t\t\t\t<li>" );
+      b.append( getFeatureLink( feature, contextPath, locale ) );
+      b.append( "</li>\r\n" );
 
       // TODO: Handle Sub menu items by looking at the children of each feature
+      // TODO: we have to 
       List<Feature> features2 = feature.getFeaturesBySection( MenuSection.LEFT );
       if ( features2.size() > 0 ) {
         for ( Feature feature2 : features2 ) {

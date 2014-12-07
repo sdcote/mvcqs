@@ -24,7 +24,11 @@ import coyote.commons.feature.ToDo;
 
 
 /**
+ * This is a grouping of security features.
  * 
+ * <p>Since this feature has a list of children, this feature is a composition, 
+ * and has no link of its own. It serves as an aggregation of other features.
+ * Usually only childless features have links.</p>
  */
 public class SecurityTheme extends Feature {
   SecurityTheme() {

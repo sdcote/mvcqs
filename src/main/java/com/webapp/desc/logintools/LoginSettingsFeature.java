@@ -13,6 +13,7 @@ package com.webapp.desc.logintools;
 
 import coyote.commons.Version;
 import coyote.commons.feature.Feature;
+import coyote.commons.feature.MenuIcon;
 import coyote.commons.feature.ToDo;
 
 
@@ -39,6 +40,7 @@ public class LoginSettingsFeature extends Feature {
     featureId = "165";
     description = "Allows the user to set application configuration attributes to their login. The user can configure how the system operates for them.";
     link = "/do/loginSetting";
+    setIcon( MenuIcon.COG );
 
     addToDo( new ToDo("Privacy settings are controlled from this feature/page.") );
 

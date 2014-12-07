@@ -62,8 +62,8 @@ public class WebApp extends SystemDescription {
 
   public static final String SIGNIN_PROPERTY = "signin.feature.name";
   public static final String SIGNOUT_PROPERTY = "signout.feature.name";
-  public static final String USER_PROFILE_PROPERTY = "userprofile.feature.name";
-  public static final String USER_SETTINGS_PROPERTY = "usersettings.feature.name";
+  public static final String LOGIN_PROFILE_PROPERTY = "loginprofile.feature.name";
+  public static final String LOGIN_SETTINGS_PROPERTY = "loginsettings.feature.name";
 
   /** The name of the cookie containing the security context's session identifier */
   public static final String COOKIE_SESSION_KEY = "mvcqsid";
