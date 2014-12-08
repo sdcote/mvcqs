@@ -175,7 +175,7 @@ public class MainNav extends SimpleTagSupport {
         Feature signInFeature = getSystemDescription().getFeature( signinName );
         if ( signInFeature != null ) {
           b.append( "\t\t\t\t\t<li>" );
-          b.append( getFeatureLink( signInFeature, contextPath, locale ) );
+          b.append( getFeatureLink( signInFeature, contextPath, locale, false ) );
           b.append( "</li>\r\n" );
         } else {
           LOG.error( "No feature named '" + signinName + "' defined in system description" );
@@ -194,7 +194,7 @@ public class MainNav extends SimpleTagSupport {
         Feature feature = getSystemDescription().getFeature( featureName );
         if ( feature != null ) {
           b.append( "\t\t\t\t<li>" );
-          b.append( getFeatureLink( feature, contextPath, locale ) );
+          b.append( getFeatureLink( feature, contextPath, locale, false ) );
           b.append( "</li>\r\n" );
         } else {
           LOG.error( "No feature named '" + featureName + "' defined in system description" );
@@ -209,7 +209,7 @@ public class MainNav extends SimpleTagSupport {
         Feature feature = getSystemDescription().getFeature( featureName );
         if ( feature != null ) {
           b.append( "\t\t\t\t<li>" );
-          b.append( getFeatureLink( feature, contextPath, locale ) );
+          b.append( getFeatureLink( feature, contextPath, locale, false ) );
           b.append( "</li>\r\n" );
         } else {
           LOG.error( "No feature named '" + featureName + "' defined in system description" );
@@ -227,7 +227,7 @@ public class MainNav extends SimpleTagSupport {
         Feature feature = getSystemDescription().getFeature( featureName );
         if ( feature != null ) {
           b.append( "\t\t\t\t<li>" );
-          b.append( getFeatureLink( feature, contextPath, locale ) );
+          b.append( getFeatureLink( feature, contextPath, locale, false ) );
           b.append( "</li>\r\n" );
         } else {
           LOG.error( "No feature named '" + featureName + "' defined in system description" );
@@ -254,16 +254,28 @@ public class MainNav extends SimpleTagSupport {
 
   /**
    * Create a link for a feature.
+   * 
+   * <p>Parent features do not have links to parts of the application; only 
+   * child features do. This means if a feature is marked as a parent, it is to 
+   * be displayed as the parent of a multi-level menu.</p>
+   * 
    * @param signInFeature
    * @param contextPath
    * @param locale
+   * @param parent 
    * @return
    */
-  private String getFeatureLink( Feature feature, String contextPath, Locale locale ) {
+  private String getFeatureLink( Feature feature, String contextPath, Locale locale, boolean parent ) {
     StringBuffer b = new StringBuffer();
+
     b.append( "<a href=\"" );
-    b.append( contextPath );
-    b.append( feature.getLink() );
+
+    if ( parent ) {
+      b.append( "#" );
+    } else {
+      b.append( contextPath );
+      b.append( feature.getLink() );
+    }
     b.append( "\">" );
 
     if ( feature.getIcon() != null ) {
@@ -273,6 +285,10 @@ public class MainNav extends SimpleTagSupport {
     }
 
     b.append( feature.getDisplayName( locale ) );
+
+    if ( parent ) {
+      b.append( "<span class=\"fa arrow\"></span>" );
+    }
     b.append( "</a>" );
     return b.toString();
   }
@@ -296,13 +312,14 @@ public class MainNav extends SimpleTagSupport {
 
     List<Feature> features = getSystemDescription().getFeaturesBySection( MenuSection.LEFT );
     for ( Feature feature : features ) {
+      boolean parent = feature.isParent();
 
       // TODO: Is the login allowed to see the feature?
       // getSystemDescription().getSecurityContext().loginHasPermission( login, "Ticket", Permission.READ );
 
       // TODO: if the feature has children, we need to indicate the menu option is a dropdown
       b.append( "\t\t\t\t\t<li>" );
-      b.append( getFeatureLink( feature, contextPath, locale ) );
+      b.append( getFeatureLink( feature, contextPath, locale, parent ) );
       b.append( "</li>\r\n" );
 
       // TODO: Handle Sub menu items by looking at the children of each feature
