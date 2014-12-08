@@ -39,7 +39,7 @@ public class LoginSettingsFeature extends Feature {
     name = "loginsettings";
     featureId = "165";
     description = "Allows the user to set application configuration attributes to their login. The user can configure how the system operates for them.";
-    link = "/do/loginSetting";
+    link = "/do/loginSettings";
     setIcon( MenuIcon.COG );
 
     addToDo( new ToDo("Privacy settings are controlled from this feature/page.") );
