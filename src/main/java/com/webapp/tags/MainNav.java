@@ -12,6 +12,7 @@
 package com.webapp.tags;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -28,9 +29,12 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.webapp.desc.WebApp;
 
+import coyote.commons.StringUtil;
 import coyote.commons.feature.Feature;
 import coyote.commons.feature.MenuSection;
 import coyote.commons.security.Login;
+import coyote.commons.security.Permission;
+import coyote.commons.security.SecurityPrincipal;
 
 
 /**
@@ -185,7 +189,16 @@ public class MainNav extends SimpleTagSupport {
       }
     } else {
       // since we have a login, we provide a different menu to the user
-      b.append( "\t\t\t</i><i class=\"fa fa-user fa-fw\"></i>  <i class=\"fa fa-caret-down\"></i>\r\n\t\t\t</a>\r\n" );
+    	SecurityPrincipal principal = login.getPrincipal();
+    	String loginName = principal.getName();
+    	if( StringUtil.isNotBlank(loginName)){
+    	      b.append( "\t\t\t" );
+    	      b.append(loginName);
+    	      b.append( "  <i class=\"fa fa-user fa-fw\"></i>  <i class=\"fa fa-caret-down\"></i>\r\n\t\t\t</a>\r\n" );
+    		
+    	} else {
+    	      b.append( "\t\t\t<i class=\"fa fa-user fa-fw\"></i>  <i class=\"fa fa-caret-down\"></i>\r\n\t\t\t</a>\r\n" );
+    	}
       b.append( "\t\t\t<ul class=\"dropdown-menu dropdown-user\">\r\n" );
 
       // Login profile feature - the login's home page
@@ -270,6 +283,7 @@ public class MainNav extends SimpleTagSupport {
 
     b.append( "<a href=\"" );
 
+    // parent features are represented as a menu node; not a link to a feature
     if ( parent ) {
       b.append( "#" );
     } else {
@@ -278,18 +292,22 @@ public class MainNav extends SimpleTagSupport {
     }
     b.append( "\">" );
 
+    // If there is an icon defined for the feature, use it to generate one in the UI
     if ( feature.getIcon() != null ) {
       b.append( "<i class=\"fa fa-" );
       b.append( feature.getIcon().toString() );
       b.append( " fa-fw\"></i> " );
     }
 
+    // Display then name of the feature
     b.append( feature.getDisplayName( locale ) );
 
+    // Parent features are shown as drop-downs in the UI
     if ( parent ) {
       b.append( "<span class=\"fa arrow\"></span>" );
     }
     b.append( "</a>" );
+
     return b.toString();
   }
 
@@ -297,54 +315,111 @@ public class MainNav extends SimpleTagSupport {
 
 
   /**
+   * THis generates the menu for the LEFT side nav bar.
+   * 
+   * <p>It supports three levels of sub-menus.</p>
+   * 
    * @param contextPath 
    * @param locale 
-   * @param session 
-   * @return
+   * @param session
+   *  
+   * @return The HTML representing the left menu bar
    */
-  private Object navSidebar( String contextPath, Locale locale, Login login ) {
-    StringBuffer b = new StringBuffer();
-    b.append( "\t<div class=\"navbar-default sidebar\" role=\"navigation\">\r\n" );
-    b.append( "\t\t<div class=\"sidebar-nav navbar-collapse\">\r\n" );
-    b.append( "\t\t\t<ul class=\"nav\" id=\"side-menu\">\r\n" );
+	private Object navSidebar(String contextPath, Locale locale, Login login) {
+		StringBuffer b = new StringBuffer();
+		b.append("\t<div class=\"navbar-default sidebar\" role=\"navigation\">\r\n");
+		b.append("\t\t<div class=\"sidebar-nav navbar-collapse\">\r\n");
+		b.append("\t\t\t<ul class=\"nav\" id=\"side-menu\">\r\n");
 
-    // each line item is a menu option
+		// Get a list of top level features from the system description
+		List<Feature> features1 = getFeatures(getSystemDescription(), MenuSection.LEFT, login);
+		for (Feature feature : features1) {
 
-    List<Feature> features = getSystemDescription().getFeaturesBySection( MenuSection.LEFT );
-    for ( Feature feature : features ) {
-      boolean parent = feature.isParent();
+			// Check to see if we are going to represent a multi-level menu
+			List<Feature> features2 = getFeatures(feature, MenuSection.LEFT, login);
+			boolean isParent = features2.size() > 0;
 
-      // TODO: Is the login allowed to see the feature?
-      // getSystemDescription().getSecurityContext().loginHasPermission( login, "Ticket", Permission.READ );
+			b.append("\t\t\t\t<li>");
+			b.append(getFeatureLink(feature, contextPath, locale, isParent));
+			if (!isParent) {
+				b.append("</li>");
+			}
+			b.append("\r\n");
 
-      // TODO: if the feature has children, we need to indicate the menu option is a dropdown
-      b.append( "\t\t\t\t\t<li>" );
-      b.append( getFeatureLink( feature, contextPath, locale, parent ) );
-      b.append( "</li>\r\n" );
+			// if there are second level features...
+			if (features2.size() > 0) {
+				b.append("\t\t\t\t\t<ul class=\"nav nav-second-level\">\r\n");
+				for (Feature feature2 : features2) {
 
-      // TODO: Handle Sub menu items by looking at the children of each feature
-      // TODO: we have to 
-      List<Feature> features2 = feature.getFeaturesBySection( MenuSection.LEFT );
-      if ( features2.size() > 0 ) {
-        for ( Feature feature2 : features2 ) {
+					List<Feature> features3 = getFeatures(feature2, MenuSection.LEFT, login);
+					boolean isLevel2Parent = features3.size() > 0;
 
-          // TODO: Handle 3rd level menus (but this is a low as we go)
-          List<Feature> features3 = feature2.getFeaturesBySection( MenuSection.LEFT );
-          if ( features3.size() > 0 ) {
-            for ( Feature feature3 : features3 ) {}
-          }
+					// gen the second level
+					b.append("\t\t\t\t\t\t<li>");
+					b.append(getFeatureLink(feature2, contextPath, locale, isLevel2Parent));
+					if (!isLevel2Parent) {
+						b.append("</li>");
+					}
+					b.append("\r\n");
 
-        }
-      }
+					// Handle 3rd level menus (but this is a low as we go)
+					if (features3.size() > 0) {
+						b.append("\t\t\t\t\t\t\t<ul class=\"nav nav-third-level\">\r\n");
+						for (Feature feature3 : features3) {
+							b.append("\t\t\t\t\t\t\t\t<li>");
+							b.append(getFeatureLink(feature3, contextPath, locale, false));
+							b.append("</li>\r\n");
+						}
+						b.append("\t\t\t\t\t\t\t</ul>\r\n");
+						b.append("\t\t\t\t\t\t\t<!-- /.nav-third-level -->\r\n");
+						b.append("\t\t\t\t\t\t</li>\r\n");
+					}
+				}
+				b.append("\t\t\t\t\t</ul>\r\n");
+				b.append("\t\t\t\t\t<!-- /.nav-second-level -->\r\n");
+				b.append("\t\t\t\t</li>\r\n");
 
-    }
+			}
+		}
 
-    b.append( "\t\t\t</ul>\r\n" );
-    b.append( "\t\t</div>\r\n" );
-    b.append( "\t\t<!-- /.sidebar-collapse -->\r\n" );
-    b.append( "\t</div>\r\n" );
-    b.append( "\t<!-- /.navbar-static-side -->\r\n" );
-    return b.toString();
-  }
+		b.append("\t\t\t</ul>\r\n");
+		b.append("\t\t</div>\r\n");
+		b.append("\t\t<!-- /.sidebar-collapse -->\r\n");
+		b.append("\t</div>\r\n");
+		b.append("\t<!-- /.navbar-static-side -->\r\n");
+		return b.toString();
+	}
+
+  
+
+
+  /**
+   * This retrieves a list of child features from the given feature which are to be displayed in the given menu section and is executable by the given login.
+   * 
+   * @param feature THe parent feature to query
+   * @param section the menu section the child features are to be placed
+   * @param login the login making the request
+   * 
+   * @return a list of child features meeting the given criteria; if none are found, the list will be empty. This method will not return {@code null}.
+   */
+	private List<Feature> getFeatures(Feature feature, MenuSection section, Login login) {
+		final List<Feature> retval = new ArrayList<Feature>();
+		List<Feature> features = feature.getFeaturesBySection(section);
+		for (Feature child : features) {
+			if( login != null ){
+			if( getSystemDescription().getSecurityContext().allows( login, Permission.EXECUTE, "FEATURE:"+child.getName() )){
+				retval.add(child);
+			} else {
+				LOG.info(login.getPrincipal().getName()+" does not have access to feature "+child.getName());
+				retval.add(child); // TODO: add it anyways...still working on the SecurityContext and permissions model
+			}
+			} else {
+				LOG.warn("There is no login!!!!!");
+				retval.add(child); // TODO: add it anyways...still working on the SecurityContext and permissions model
+			}
+		}
+
+		return retval;
+	}
 
 }

@@ -239,7 +239,7 @@ public abstract class Feature {
    * 
    * @param section The menu section to match
    * 
-   * @return a list of sequenced child features which match the given section 
+   * @return a list of sequenced child features which match the given section; will not return null, but an empty list if no features are found. 
    */
   public List<Feature> getFeaturesBySection( final MenuSection section ) {
     final List<Feature> retval = new ArrayList<Feature>();
