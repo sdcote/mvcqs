@@ -26,8 +26,9 @@ import coyote.commons.StringUtil;
 import coyote.commons.Version;
 import coyote.commons.feature.Feature;
 import coyote.commons.feature.SystemDescription;
-import coyote.commons.security.SecurityContext;
+import coyote.commons.feature.ToDo;
 import coyote.commons.security.Login;
+import coyote.commons.security.SecurityContext;
 import coyote.commons.security.Session;
 
 
@@ -105,6 +106,8 @@ public class WebApp extends SystemDescription {
     // This shows how to add your feature to the system
     Feature helloworld = new HelloWorldFeature();
     addFeature( helloworld );
+    
+    addToDo(new ToDo("Add efficient call to form data sanitization, preferably via standard API such as OWASP ESAPI"));
 
   }
 
