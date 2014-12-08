@@ -84,10 +84,30 @@ public class SecurityConfig {
     Login login = new Login( new GenericSecurityPrincipal("ADMIN"), new CredentialSet( "admin", "secret" ) );
     // TODO: Make these configurable from system properties
 
-    // add a role to the login
-    login.addRole( "ADMIN" );
+    // add some roles to the login
+    login.addRole( "ADMIN" ); // System administration permissions
+    login.addRole( "OPER" ); // System operations permissions
+    login.addRole( "USER" ); // Regular user permissions
 
     // Add the login to the context
+    context.add( login );
+    
+    
+    // Add the Operations role and login
+    role = new Role( "OPER" );
+    role.addPermission( new Permission( "OPER", Permission.ALL ) );
+    context.add( role );
+    login = new Login( new GenericSecurityPrincipal("OPER"), new CredentialSet( "oper", "secret" ) );
+    login.addRole( "OPER" );
+    context.add( login );
+
+    
+    // Add the normal user role and login
+    role = new Role( "USER" );
+    role.addPermission( new Permission( "USER", Permission.ALL ) );
+    context.add( role );
+    login = new Login( new GenericSecurityPrincipal("USER"), new CredentialSet( "user", "secret" ) );
+    login.addRole( "USER" );
     context.add( login );
 
     // Return the newly built security context
