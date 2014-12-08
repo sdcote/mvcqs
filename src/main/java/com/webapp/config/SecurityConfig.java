@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Configuration;
 import com.webapp.security.SecurityDataContext;
 
 import coyote.commons.security.CredentialSet;
+import coyote.commons.security.GenericSecurityPrincipal;
 import coyote.commons.security.Login;
 import coyote.commons.security.Permission;
 import coyote.commons.security.Role;
@@ -80,7 +81,7 @@ public class SecurityConfig {
     context.add( role );
 
     // Add some logins to the context
-    Login login = new Login( new CredentialSet( "admin", "secret" ) );
+    Login login = new Login( new GenericSecurityPrincipal("ADMIN"), new CredentialSet( "admin", "secret" ) );
     // TODO: Make these configurable from system properties
 
     // add a role to the login
