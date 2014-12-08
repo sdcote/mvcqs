@@ -491,4 +491,14 @@ public abstract class Feature {
     return b.toString();
   }
 
+
+
+
+  /**
+   * @return true if this feature has children false if this is a leaf node with no children
+   */
+  public boolean isParent() {
+    return children.size() > 0;
+  }
+
 }
