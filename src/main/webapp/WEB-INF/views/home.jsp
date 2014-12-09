@@ -48,9 +48,6 @@
 	<script src="<c:url value="/js/jquery.js"/>"></script>
 	<script src="<c:url value="/js/bootstrap.min.js"/>"></script>
 	<script src="<c:url value="/js/plugins/metisMenu/metisMenu.min.js"/>"></script>
-	<script src="<c:url value="/js/plugins/morris/raphael.min.js"/>"></script>
-	<script src="<c:url value="/js/plugins/morris/morris.min.js"/>"></script>
-	<script src="<c:url value="/js/plugins/morris/morris-data.js"/>"></script>
 	<script src="<c:url value="/js/sb-admin-2.js"/>"></script>
 </body>
 </html>
