@@ -38,8 +38,8 @@ ext {
 	junitVersion = '4.11'
 	esapiVersion = '2.0.1'
 	jacksonDatabindVersion = '2.+'
-	dataFrameVersion = '0.0.+'
-	coyoteVersion = '0.0.+'
+	dataFrameVersion = '0.0.5'
+	coyoteVersion = '0.1'
 }
 
 
