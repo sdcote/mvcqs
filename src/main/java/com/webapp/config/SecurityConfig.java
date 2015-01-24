@@ -61,7 +61,7 @@ public class SecurityConfig {
     }
 
     // Create a generic security context
-    SecurityDataContext context = new SecurityDataContext( "Demo" );
+    SecurityDataContext context = new SecurityDataContext( "mvcqs" );
 
     context.setDataSource( dataSource );
 
@@ -81,7 +81,7 @@ public class SecurityConfig {
     context.add( role );
 
     // Add some logins to the context
-    Login login = new Login( new GenericSecurityPrincipal("ADMIN"), new CredentialSet( "admin", "secret" ) );
+    Login login = new Login( "admin", "secret" );
     // TODO: Make these configurable from system properties
 
     // add some roles to the login
@@ -91,22 +91,20 @@ public class SecurityConfig {
 
     // Add the login to the context
     context.add( login );
-    
-    
+
     // Add the Operations role and login
     role = new Role( "OPER" );
     role.addPermission( new Permission( "OPER", Permission.ALL ) );
     context.add( role );
-    login = new Login( new GenericSecurityPrincipal("OPER"), new CredentialSet( "oper", "secret" ) );
+    login = new Login( "OPER", "secret" );
     login.addRole( "OPER" );
     context.add( login );
 
-    
     // Add the normal user role and login
     role = new Role( "USER" );
     role.addPermission( new Permission( "USER", Permission.ALL ) );
     context.add( role );
-    login = new Login( new GenericSecurityPrincipal("USER"), new CredentialSet( "user", "secret" ) );
+    login = new Login( "USER" , "secret" );
     login.addRole( "USER" );
     context.add( login );
 

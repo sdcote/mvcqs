@@ -65,9 +65,4 @@ public class SampleController {
 
 
 
-	@RequestMapping("profile")
-	public String loadProfilePage(HttpServletRequest request, Model model) {
-
-		return "profile";
-	}
 }

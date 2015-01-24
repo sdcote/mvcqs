@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -130,7 +131,7 @@ public class LoginController {
         Cookie loginCookie = new Cookie( WebApp.COOKIE_SESSION_KEY, loginSession.getId() );
         loginCookie.setMaxAge( 30 * 60 ); // TODO make this configurable
         response.addCookie( loginCookie );
-        
+
         // TODO Now we need to persist the session 
       }
 
@@ -165,11 +166,11 @@ public class LoginController {
    * @return the results of authentication.
    */
   private ResultCode authenticate( HttpServletRequest request, HttpSession session ) {
-    ResultCode retval = ResultCode.UNVERIFIED;
+    ResultCode retval = ResultCode.INVALID;
 
     // look for the credentials
-    String account = request.getParameter( ACCOUNT_PARAM_KEY );
-    String passwd = request.getParameter( PASSWORD_PARAM_KEY );
+    String account = request.getParameter( ACCOUNT_PARAM_KEY ); //TODO: SANITIZE INPUT!
+    String passwd = request.getParameter( PASSWORD_PARAM_KEY );  //TODO: SANITIZE INPUT!
 
     // Debugging information
     if ( StringUtil.isBlank( account ) ) {
@@ -180,7 +181,7 @@ public class LoginController {
     }
 
     // authenticate the credentials through the security context
-    Login login = webapp.getSecurityContext().getLogin( new CredentialSet( account, passwd ) );
+    Login login = webapp.getSecurityContext().getLogin( account, new CredentialSet( CredentialSet.PASSWORD, passwd, 1 ) );
 
     // If we retrieved a login, then the credentials are authentic
     if ( login != null ) {
@@ -190,6 +191,35 @@ public class LoginController {
     }
 
     return retval;
+  }
+
+
+
+
+  @RequestMapping(value = { "loginProfile" })
+  public String loginProfilePage( HttpServletRequest request, Model model ) {
+
+    // if no profile name, use the current profile
+
+    // if not logged in, send to login page
+
+    return "profile";
+  }
+
+
+
+
+  @RequestMapping(value = { "profile/{profileName}" })
+  public String loadProfilePage( HttpServletRequest request, Model model, @PathVariable
+  String profileName ) {
+
+    // if no profile name, use the current profile
+    // lookup login by its name
+    webapp.getSecurityContext().getLoginByName( profileName );
+
+    // if not logged in, send to login page
+
+    return "profile";
   }
 
 }
