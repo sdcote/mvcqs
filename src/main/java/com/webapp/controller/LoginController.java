@@ -100,15 +100,36 @@ public class LoginController {
 
 
   /**
+   * 
+   * @param model
+   * @param session
+   * 
+   * @return the view to display (logout)
+   */
+  @RequestMapping(value = { "/logout" }, method = { RequestMethod.GET, RequestMethod.HEAD })
+  public String doLogout( Model model, HttpSession session ) {
+
+    // remove the login from the containers session
+    session.setAttribute( WebApp.SESSION_LOGIN_KEY, null );
+
+    return "logout"; // TODO: for now this is all we do
+  }
+
+
+
+
+  /**
    * Handles the Login Form Submission. This is assumed to be executed via an 
    * AJAX request and returns an appropriate view.
    * 
    * <p>The above method generates a form and sends it to the browser. The 
    * JavaScript code in the login form posts credentials to this method via 
    * AJAX calls with the results of these calls being sent back to the login 
-   * page for presentation processing.</p?
+   * page for presentation processing.</p>
    * 
-   * @param login The LoginCommand containing the form data.
+   * @param request
+   * @param response
+   * @param session
    * 
    * @throws Exception
    */
@@ -117,13 +138,22 @@ public class LoginController {
   LoginResult login( HttpServletRequest request, HttpServletResponse response, HttpSession session ) throws Exception {
     LoginResult result = new LoginResult();
 
-    result.setResultCode( authenticate( request, session ) );
+    Login login = authenticate( request );
+
+    // If we retrieved a login, then the credentials are authentic
+    if ( login != null ) {
+      result.setResultCode( ResultCode.SUCCESS );
+      session.setAttribute( WebApp.SESSION_LOGIN_KEY, login );
+      LOG.info( "Authentication successful: " + login.toString() );
+    } else {
+      result.setResultCode( ResultCode.INVALID );
+      LOG.info( "Authentication failed" );
+    }
 
     if ( ResultCode.SUCCESS == result.getResultCode() ) {
       // do all the things!
-      String remember = request.getParameter( ACCOUNT_PARAM_KEY );
+      String remember = request.getParameter( ACCOUNT_PARAM_KEY ); // TODO: SANITIZE!
       if ( StringUtil.isNotBlank( remember ) ) {
-        Login login = (Login)session.getAttribute( WebApp.SESSION_LOGIN_KEY );
 
         Session loginSession = webapp.getSecurityContext().createSession( login );
         LOG.trace( "Remembering " + login + " with sessionId " + loginSession.getId() );
@@ -156,21 +186,19 @@ public class LoginController {
    * This method authenticates the credentials pass as part of the request.
    * 
    * <p>On successful authentication, a login-object is added to the 
-   * container's session for this request. THis login can be retrieved by 
+   * container's session for this request. This login can be retrieved by 
    * other components to retrieve identity and permissions related to the 
    * requester.</p> 
    * 
    * @param request the request from the browser
-   * @param session the session from the container
    * 
-   * @return the results of authentication.
+   * @return the login authenticated from the request
    */
-  private ResultCode authenticate( HttpServletRequest request, HttpSession session ) {
-    ResultCode retval = ResultCode.INVALID;
+  private Login authenticate( HttpServletRequest request ) {
 
     // look for the credentials
     String account = request.getParameter( ACCOUNT_PARAM_KEY ); //TODO: SANITIZE INPUT!
-    String passwd = request.getParameter( PASSWORD_PARAM_KEY );  //TODO: SANITIZE INPUT!
+    String passwd = request.getParameter( PASSWORD_PARAM_KEY ); //TODO: SANITIZE INPUT!
 
     // Debugging information
     if ( StringUtil.isBlank( account ) ) {
@@ -181,14 +209,7 @@ public class LoginController {
     }
 
     // authenticate the credentials through the security context
-    Login login = webapp.getSecurityContext().getLogin( account, new CredentialSet( CredentialSet.PASSWORD, passwd, 1 ) );
-
-    // If we retrieved a login, then the credentials are authentic
-    if ( login != null ) {
-      retval = ResultCode.SUCCESS;
-      session.setAttribute( WebApp.SESSION_LOGIN_KEY, login );
-      LOG.info( "Successful login: " + login.toString() );
-    }
+    Login retval = webapp.getSecurityContext().getLogin( account, new CredentialSet( CredentialSet.PASSWORD, passwd, 1 ) );
 
     return retval;
   }
