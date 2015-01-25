@@ -41,6 +41,7 @@ import coyote.commons.security.GenericSecurityPrincipal;
 import coyote.commons.security.Login;
 import coyote.commons.security.Role;
 import coyote.commons.security.SecurityContext;
+import coyote.commons.security.Session;
 
 
 /**
@@ -61,6 +62,54 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
   private DataSource dataSource = null;
   private static final Log LOG = LogFactory.getLog( SecurityDataContext.class );
   private JdbcTemplate jdbcTemplate = null;
+
+
+
+
+  /**
+   * @see coyote.commons.security.GenericSecurityContext#createSession(coyote.commons.security.Login)
+   */
+  @Override
+  public Session createSession( Login login ) {
+    // TODO Auto-generated method stub
+    return super.createSession( login );
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.security.GenericSecurityContext#createSession(java.lang.String, coyote.commons.security.Login)
+   */
+  @Override
+  public Session createSession( String id, Login login ) {
+    // TODO Auto-generated method stub
+    return super.createSession( id, login );
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.security.GenericSecurityContext#getLoginByName(java.lang.String)
+   */
+  @Override
+  public Login getLoginByName( String arg0 ) {
+    // TODO Auto-generated method stub
+    return super.getLoginByName( arg0 );
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.security.GenericSecurityContext#getLoginBySession(java.lang.String)
+   */
+  @Override
+  public Login getLoginBySession( String sessionId ) {
+    // TODO Auto-generated method stub
+    return super.getLoginBySession( sessionId );
+  }
 
 
 
@@ -108,24 +157,62 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
       LOG.info( "Creating SECURITY_LOGIN table" );
 
       // Create the table
-      String createLoginTable = "CREATE TABLE SECURITY_LOGIN ( LOGIN_ID BIGINT NOT NULL AUTO_INCREMENT, CONTEXT VARCHAR(64) NOT NULL, NAME VARCHAR(64) NOT NULL, PASSWORD VARCHAR(64) NOT NULL, PASSWORD_HINT VARCHAR(64), IS_SYSTEM BOOLEAN, IS_ENABLED BOOLEAN, IS_LOGGEDOUT BOOLEAN, REQUIRE_PASSWORD_CHANGE BOOLEAN, CURRENCY_UOM VARCHAR(64), LOCALE VARCHAR(64), TIMEZONE VARCHAR(64), DISABLED_DATETIME TIMESTAMP, PARTY_ID BIGINT );";
+      String createLoginTable = "CREATE TABLE SECURITY_LOGIN ( LOGIN BIGINT NOT NULL AUTO_INCREMENT, CONTEXT VARCHAR(64) NOT NULL, NAME VARCHAR(64) NOT NULL, PASSWORD VARCHAR(64) NOT NULL, PASSWORD_HINT VARCHAR(64), IS_SYSTEM BOOLEAN, IS_ENABLED BOOLEAN, IS_LOGGEDOUT BOOLEAN, REQUIRE_PASSWORD_CHANGE BOOLEAN, CURRENCY_UOM VARCHAR(64), LOCALE VARCHAR(64), TIMEZONE VARCHAR(64), DISABLED_DATETIME TIMESTAMP, PARTY BIGINT );";
       jdbcTemplate.execute( createLoginTable );
 
-      LOG.info( "Creating SECURITY_LOGIN key" );
       // Create the primary key
-      String createLoginkey = "ALTER TABLE SECURITY_LOGIN ADD CONSTRAINT pk_security_login PRIMARY KEY (CONTEXT,LOGIN_ID);";
+      String createLoginkey = "ALTER TABLE SECURITY_LOGIN ADD CONSTRAINT pk_security_login PRIMARY KEY (CONTEXT,LOGIN);";
       jdbcTemplate.execute( createLoginkey );
 
-      LOG.info( "Creating SECURITY_LOGIN index" );
       // Create the primary index
       String createLoginIndex = "CREATE UNIQUE INDEX IDX_SECURITY_LOGIN ON SECURITY_LOGIN(CONTEXT,NAME);";
       jdbcTemplate.execute( createLoginIndex );
-      LOG.info( "SECURITY_LOGIN table created successfully" );
-
     }
 
-    // Now read in the security context from the database
-    // TODO: Read in logins for the named security context...
+    if ( !tableset.contains( "SECURITY_ROLE" ) ) {
+      LOG.info( "Creating SECURITY_ROLE table" );
+      String createRoleTable = "CREATE TABLE SECURITY_ROLE ( CONTEXT VARCHAR(64) NOT NULL, ROLE VARCHAR(64) NOT NULL, DESCRIPTION VARCHAR(255) NOT NULL );";
+      jdbcTemplate.execute( createRoleTable );
+
+      String createRolekey = "ALTER TABLE SECURITY_ROLE ADD CONSTRAINT PK_SECURITY_ROLE PRIMARY KEY (CONTEXT, ROLE);";
+      jdbcTemplate.execute( createRolekey );
+    }
+
+    if ( !tableset.contains( "SECURITY_ROLE_PERMISSION" ) ) {
+      LOG.info( "Creating SECURITY_ROLE_PERMISSION table" );
+      String createRolePermTable = " CREATE TABLE SECURITY_ROLE_PERMISSION ( CONTEXT VARCHAR(64) NOT NULL, ROLE VARCHAR(64) NOT NULL, TARGET VARCHAR(255) NOT NULL, PERMISSION BIGINT );";
+      jdbcTemplate.execute( createRolePermTable );
+
+      String createLoginkey = "ALTER TABLE SECURITY_ROLE_PERMISSION ADD CONSTRAINT PK_SECURITY_ROLE_PERMISSION PRIMARY KEY (CONTEXT, ROLE, TARGET);";
+      jdbcTemplate.execute( createLoginkey );
+    }
+
+    if ( !tableset.contains( "SECURITY_LOGIN_ROLE" ) ) {
+      LOG.info( "Creating SECURITY_LOGIN_ROLE table" );
+      String createLoginRoleTable = "CREATE TABLE SECURITY_LOGIN_ROLE ( CONTEXT VARCHAR(64) NOT NULL, LOGIN BIGINT NOT NULL, ROLE VARCHAR(64) NOT NULL, FROM_DATE TIMESTAMP, THRU_DATE TIMESTAMP );";
+      jdbcTemplate.execute( createLoginRoleTable );
+
+      String createLoginRolekey = "ALTER TABLE SECURITY_LOGIN_ROLE ADD CONSTRAINT PK_SECURITY_LOGIN_ROLE PRIMARY KEY (CONTEXT, LOGIN, ROLE);";
+      jdbcTemplate.execute( createLoginRolekey );
+    }
+
+    if ( !tableset.contains( "SECURITY_LOGIN_PERMISSION" ) ) {
+      LOG.info( "Creating SECURITY_LOGIN_PERMISSION table" );
+      String createLoginPermTable = "CREATE TABLE SECURITY_LOGIN_PERMISSION ( CONTEXT VARCHAR(64) NOT NULL, LOGIN BIGINT NOT NULL, TARGET VARCHAR(255) NOT NULL, PERMISSION BIGINT );";
+      jdbcTemplate.execute( createLoginPermTable );
+
+      String createLoginPermKey = "ALTER TABLE SECURITY_LOGIN_PERMISSION ADD CONSTRAINT pk_security_login_permission PRIMARY KEY (CONTEXT, LOGIN, TARGET);";
+      jdbcTemplate.execute( createLoginPermKey );
+    }
+
+    if ( !tableset.contains( "SECURITY_LOGIN_REVOCATION" ) ) {
+      LOG.info( "Creating SECURITY_LOGIN_REVOCATION table" );
+      String createLoginRevTable = "CREATE TABLE SECURITY_LOGIN_REVOCATION ( CONTEXT VARCHAR(64) NOT NULL, LOGIN BIGINT NOT NULL, TARGET VARCHAR(255) NOT NULL, PERMISSION BIGINT );";
+      jdbcTemplate.execute( createLoginRevTable );
+
+      String createLoginRevKey = "ALTER TABLE SECURITY_LOGIN_REVOCATION ADD CONSTRAINT pk_security_login_revocation PRIMARY KEY (CONTEXT, LOGIN, TARGET);";
+      jdbcTemplate.execute( createLoginRevKey );
+    }
 
     LOG.info( "Security context initialized" );
   }
@@ -187,7 +274,7 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
   */
   private String createLogin( final Login login ) {
 
-    final String insertSql = "insert into SECURITY_LOGIN (CONTEXT,NAME,PASSWORD,PARTY_ID) values (?,?,?,?)";
+    final String insertSql = "insert into SECURITY_LOGIN (CONTEXT,NAME,PASSWORD,PARTY) values (?,?,?,?)";
 
     LOG.info( "Inserting new login (" + login.getPrincipal().getName() + ") into " + getName() );
 
@@ -276,8 +363,8 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
   @Override
   public Login getLogin( String name, CredentialSet creds ) {
 
-    LOG.info( "Searching for login '"+name+"' with a password of '"+ByteUtil.bytesToHex( creds.getValue( CredentialSet.PASSWORD ), null )+"'" );
-    
+    LOG.info( "Searching for login '" + name + "' with a password of '" + ByteUtil.bytesToHex( creds.getValue( CredentialSet.PASSWORD ), null ) + "'" );
+
     // Try the cache
     Login retval = super.getLogin( name, creds );;
 
@@ -295,7 +382,7 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
         LOG.info( "Did not find login '" + name + "' in database either" );
       }
     } else {
-      LOG.info( "Found login in cache -> "+retval );
+      LOG.info( "Found login in cache -> " + retval );
     }
 
     return retval;
@@ -377,8 +464,8 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
     public Login mapRow( final ResultSet rs, final int rowNum ) throws SQLException {
       final Login retval = new Login();
 
-      retval.setId( rs.getString( "LOGIN_ID" ) );
-      retval.setPrincipal( new GenericSecurityPrincipal( rs.getString( "PARTY_ID" ), rs.getString( "NAME" ) ) );
+      retval.setId( rs.getString( "LOGIN" ) );
+      retval.setPrincipal( new GenericSecurityPrincipal( rs.getString( "PARTY" ), rs.getString( "NAME" ) ) );
       String passwd = rs.getString( "PASSWORD" );
       if ( StringUtil.isNotBlank( passwd ) ) {
         CredentialSet creds = new CredentialSet();
