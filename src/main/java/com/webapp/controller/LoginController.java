@@ -112,7 +112,7 @@ public class LoginController {
     // remove the login from the containers session
     session.setAttribute( WebApp.SESSION_LOGIN_KEY, null );
 
-    return "logout"; // TODO: for now this is all we do
+    return "logout"; 
   }
 
 

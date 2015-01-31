@@ -21,8 +21,6 @@ import org.springframework.context.annotation.Configuration;
 
 import com.webapp.security.SecurityDataContext;
 
-import coyote.commons.security.CredentialSet;
-import coyote.commons.security.GenericSecurityPrincipal;
 import coyote.commons.security.Login;
 import coyote.commons.security.Permission;
 import coyote.commons.security.Role;
@@ -72,40 +70,41 @@ public class SecurityConfig {
     }
 
     // Make sure there is an admin role and user in the context
-    Role role = new Role( "ADMIN" );
+    Role adminRole = new Role( "ADMIN", "System Administrator" );
 
     // specify global "user" permissions for this role
-    role.addPermission( new Permission( "USER", Permission.ALL ) );
+    adminRole.addPermission( new Permission( "ADMIN", Permission.ALL ) );
 
     // add the role to the context
-    context.add( role );
+    context.add( adminRole );
 
-    // Add some logins to the context
-    Login login = new Login( "admin", "secret" );
-    // TODO: Make these configurable from system properties
-
-    // add some roles to the login
-    login.addRole( "ADMIN" ); // System administration permissions
-    login.addRole( "OPER" ); // System operations permissions
-    login.addRole( "USER" ); // Regular user permissions
-
-    // Add the login to the context
-    context.add( login );
-
-    // Add the Operations role and login
-    role = new Role( "OPER" );
-    role.addPermission( new Permission( "OPER", Permission.ALL ) );
-    context.add( role );
-    login = new Login( "OPER", "secret" );
-    login.addRole( "OPER" );
-    context.add( login );
+    // Add the Operations role
+    Role operatorRole = new Role( "OPER", "System Operator" );
+    operatorRole.addPermission( new Permission( "OPER", Permission.ALL ) );
+    context.add( operatorRole );
 
     // Add the normal user role and login
-    role = new Role( "USER" );
-    role.addPermission( new Permission( "USER", Permission.ALL ) );
-    context.add( role );
-    login = new Login( "USER" , "secret" );
-    login.addRole( "USER" );
+    Role userRole = new Role( "USER", "System User" );
+    userRole.addPermission( new Permission( "DOCUMENT", Permission.READ ) );
+    userRole.addPermission( new Permission( "TICKET", Permission.READ | Permission.CREATE ) );
+    context.add( userRole );
+    
+    // Once we define roles in the context, we can generate some logins which 
+    // use those roles for authorization
+
+    // Create an administrator
+    Login login = new Login( "admin", "secret" );
+    login.addRole( adminRole ); // System administration role
+    context.add( login );
+
+    // Create an operator login
+    login = new Login( "OPER", "secret" );
+    login.addRole( operatorRole );
+    context.add( login );
+
+    // Create a user login
+    login = new Login( "USER", "secret" );
+    login.addRole( userRole );
     context.add( login );
 
     // Return the newly built security context

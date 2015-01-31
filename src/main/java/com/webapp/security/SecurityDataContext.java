@@ -39,6 +39,7 @@ import coyote.commons.security.CredentialSet;
 import coyote.commons.security.GenericSecurityContext;
 import coyote.commons.security.GenericSecurityPrincipal;
 import coyote.commons.security.Login;
+import coyote.commons.security.Permission;
 import coyote.commons.security.Role;
 import coyote.commons.security.SecurityContext;
 import coyote.commons.security.Session;
@@ -63,53 +64,7 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
   private static final Log LOG = LogFactory.getLog( SecurityDataContext.class );
   private JdbcTemplate jdbcTemplate = null;
 
-
-
-
-  /**
-   * @see coyote.commons.security.GenericSecurityContext#createSession(coyote.commons.security.Login)
-   */
-  @Override
-  public Session createSession( Login login ) {
-    // TODO Auto-generated method stub
-    return super.createSession( login );
-  }
-
-
-
-
-  /**
-   * @see coyote.commons.security.GenericSecurityContext#createSession(java.lang.String, coyote.commons.security.Login)
-   */
-  @Override
-  public Session createSession( String id, Login login ) {
-    // TODO Auto-generated method stub
-    return super.createSession( id, login );
-  }
-
-
-
-
-  /**
-   * @see coyote.commons.security.GenericSecurityContext#getLoginByName(java.lang.String)
-   */
-  @Override
-  public Login getLoginByName( String arg0 ) {
-    // TODO Auto-generated method stub
-    return super.getLoginByName( arg0 );
-  }
-
-
-
-
-  /**
-   * @see coyote.commons.security.GenericSecurityContext#getLoginBySession(java.lang.String)
-   */
-  @Override
-  public Login getLoginBySession( String sessionId ) {
-    // TODO Auto-generated method stub
-    return super.getLoginBySession( sessionId );
-  }
+  private static final Role NO_ROLE = new Role( "NONE", "NO ROLE" );
 
 
 
@@ -221,21 +176,73 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
 
 
   /**
+   * @see coyote.commons.security.GenericSecurityContext#createSession(coyote.commons.security.Login)
+   */
+  @Override
+  public Session createSession( Login login ) {
+    // TODO Auto-generated method stub
+    return super.createSession( login );
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.security.GenericSecurityContext#createSession(java.lang.String, coyote.commons.security.Login)
+   */
+  @Override
+  public Session createSession( String id, Login login ) {
+    // TODO Auto-generated method stub
+    return super.createSession( id, login );
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.security.GenericSecurityContext#getLoginByName(java.lang.String)
+   */
+  @Override
+  public Login getLoginByName( String loginName ) {
+    // TODO Auto-generated method stub
+    return super.getLoginByName( loginName );
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.security.GenericSecurityContext#getLoginBySession(java.lang.String)
+   */
+  @Override
+  public Login getLoginBySession( String sessionId ) {
+    // TODO Auto-generated method stub
+    return super.getLoginBySession( sessionId );
+  }
+
+
+
+
+  /**
   * @see coyote.commons.security.GenericContext#add(coyote.commons.security.Login)
   */
   @Override
   public void add( Login login ) {
 
+    // Make sure we have a login
     if ( login != null ) {
 
+      // Make sure the login has a principal
       if ( login.getPrincipal() != null ) {
         CredentialSet credentials = login.getCredentials();
 
+        // Make sure there are credentials associated with the login
         if ( credentials != null ) {
 
           // If there is a login with these credentials, generate a warning 
           if ( credentials != null ) {
 
+            // get the login name (the name of the principal)
             String principalName = login.getPrincipal().getName();
 
             // First we should see if there is already a login with this name 
@@ -248,8 +255,13 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
               // add the login to the database
               String loginid = createLogin( login );
 
-              // add the login into the cache
-              super.add( login );
+              // if there is a login id, the database insert was successful
+              if ( loginid != null ) {
+                // add the login into the cache
+                super.add( login );
+              } else {
+                LOG.error( "Could not add the login to the context" );
+              }
             }
           }
         } else {
@@ -305,6 +317,7 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
           }, keyHolder );
         } catch ( DataAccessException e ) {
           LOG.error( "Could not create login: " + e.getMessage() );
+          return null;
         }
 
         // Return the ID of the login
@@ -330,6 +343,7 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
   * @return
   */
   private Login retrieveLogin( String principal ) {
+    Login retval = null;
 
     if ( principal != null ) {
 
@@ -348,16 +362,138 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
         if ( work.size() > 1 ) {
           LOG.fatal( "There are more than one security principals with the name of '" + principal + "' in the '" + getName() + "' security context; returning the first record" );
         }
-        return work.get( 0 );
+        retval = work.get( 0 );
       }
+
+      // populate the login with roles and permissions;
+      retval = populateLogin( retval );
     }
-    return null;
+    return retval;
   }
 
 
 
 
   /**
+   * Populate the given login with roles and permissions.
+   * 
+   * <p>For most applications, it is enough to retrieve a login as all many 
+   * components need is authentication. When the application wants to perform 
+   * authorizations, however, there is a need to retrieve roles and permissions
+   * and place them in the login for future authorization calls. This can be an 
+   * expensive operation and consumes quite a bit of memory so it is best to 
+   * only populate the logins with roles and permissions only when absolutely 
+   * necessary.</p>
+   * 
+   * <p>If the given login is null, then a null will be returned.</p>
+   * 
+   * @param login
+   * 
+   * @return
+   * 
+   * @see #allows(Login, long, String)
+   */
+  private Login populateLogin( Login login ) {
+    Login retval = null;
+
+    if ( login != null ) {
+      retval = login;
+
+      try {
+        long loginId = Long.parseLong( retval.getId() );
+
+        // Get roles
+        retval.addRoles( retrieveLoginRoles( loginId ) );
+
+        // retrieve permissions for the login
+        retval.addPermissions( retrieveLoginPermissions( loginId ) );
+
+        // retrieve revocations for the login
+        retval.revokePermissions( retrieveLoginRevocations( loginId ) );
+      } catch ( NumberFormatException e ) {
+        LOG.error( "Login ID '" + retval.getId() + "' was not valid", e );
+      }
+
+      // Even if there are no roles or permissions, we should place a 'nothing' 
+      // role object in there so we don't get called again
+      if ( !retval.hasRoles() ) {
+        retval.addRole( NO_ROLE );
+      }
+    }
+
+    return retval;
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.security.GenericSecurityContext#allows(coyote.commons.security.Login, long, java.lang.String)
+   */
+  @Override
+  public boolean allows( Login login, long actions, String target ) {
+    // we need to make sure the login is populated from the database first, see 
+    // if it has any roles or permissions
+    if ( login.getRoles() == null || login.getRoles().size() == 0 || login.getPermissions() == null || login.getPermissions().size() == 0 ) {
+      // populate it
+      populateLogin( login );
+    }
+    return super.allows( login, actions, target );
+  }
+
+
+
+
+  private List<Permission> retrieveRolePermissions( String role ) {
+    List<Permission> retval = new ArrayList<Permission>();
+    if ( role != null ) {
+      final String SQL = "SELECT * FROM SECURITY_ROLE_PERMISSION WHERE CONTEXT = ? AND ROLE = ?";
+      LOG.debug( SQL );
+      retval = jdbcTemplate.query( SQL, new Object[] { getName().toLowerCase(), role.toLowerCase() }, new PermissionMapper() );
+    }
+    return retval;
+  }
+
+
+
+
+  private List<Role> retrieveLoginRoles( long loginId ) {
+    List<Role> retval = new ArrayList<Role>();
+    final String SQL = "SELECT * FROM SECURITY_LOGIN_ROLE WHERE CONTEXT = ? AND LOGIN = ?";
+    LOG.debug( SQL );
+    retval = jdbcTemplate.query( SQL, new Object[] { getName().toLowerCase(), loginId }, new RoleMapper() );
+
+    return retval;
+  }
+
+
+
+
+  private List<Permission> retrieveLoginPermissions( long loginId ) {
+    List<Permission> retval = new ArrayList<Permission>();
+    final String SQL = "SELECT * FROM SECURITY_LOGIN_PERMISSION WHERE CONTEXT = ? AND LOGIN = ?";
+    LOG.debug( SQL );
+    retval = jdbcTemplate.query( SQL, new Object[] { getName().toLowerCase(), loginId }, new PermissionMapper() );
+    return retval;
+  }
+
+
+
+
+  private List<Permission> retrieveLoginRevocations( long loginId ) {
+    List<Permission> retval = new ArrayList<Permission>();
+    final String SQL = "SELECT * FROM SECURITY_LOGIN_REVOCATION WHERE CONTEXT = ? AND LOGIN = ?";
+    LOG.debug( SQL );
+    retval = jdbcTemplate.query( SQL, new Object[] { getName().toLowerCase(), loginId }, new PermissionMapper() );
+    return retval;
+  }
+
+
+
+
+  /**
+   * This is the standard login retrieval point for logins.
+   * 
    * @see coyote.commons.security.GenericSecurityContext#getLogin(java.lang.String, coyote.commons.security.CredentialSet)
    */
   @Override
@@ -399,6 +535,8 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
   */
   private Login retrieveLogin( String principal, CredentialSet credentials ) {
 
+    Login retval = null;
+
     if ( principal != null ) {
 
       byte[] value = credentials.getValue( CredentialSet.PASSWORD );
@@ -419,13 +557,17 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
           if ( work.size() > 1 ) {
             LOG.fatal( "There are more than one security principals with the name of '" + principal + "' in the '" + getName() + "' security context; returning the first record" );
           }
-          return work.get( 0 );
+          retval = work.get( 0 );
         }
+
+        // populate the login with roles and permissions;
+        retval = populateLogin( retval );
+
       } else {
         LOG.warn( "No password found in credentials" );
       }
     }
-    return null;
+    return retval;
   }
 
 
@@ -450,8 +592,107 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
   */
   @Override
   public void add( Role role ) {
-    // TODO Add the role to the database
+    if ( role != null ) {
+      if ( role.getName() != null ) {
+        String name = role.getName();
+        Role existing = retrieveRole( name );
+
+        if ( existing != null ) {
+          LOG.warn( "A role with the name '" + name + "' already exists in the context '" + getName() + "' - role was not added" );
+        } else {
+          if ( createRole( role ) ) {
+            super.add( role );
+            LOG.info( "Role created successfully" );
+          } else {
+            LOG.error( "Could not create role in context" );
+          }
+
+        }
+      } else {
+        LOG.warn( "Ignoring attempt to add role without a name" );
+      }
+    } else {
+      LOG.warn( "Ignoring attempt to add a null role reference" );
+    }
     super.add( role );
+  }
+
+
+
+
+  /**
+   * @param name
+   * @return
+   */
+  private Role retrieveRole( String name ) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+
+
+
+  /**
+   * @param role
+   */
+  private boolean createRole( final Role role ) {
+    if ( role != null ) {
+      final String insertRoleSql = "insert into SECURITY_ROLE (CONTEXT, ROLE, DESCRIPTION) values (?,?,?)";
+      final String insertRolePermSql = "insert into SECURITY_ROLE_PERMISSION (CONTEXT, ROLE, TARGET, PERMISSION) values (?,?,?,?)";
+
+      LOG.info( "Inserting new role (" + role.getName() + "-" + role.getDescription() + ") into " + getName() + " context" );
+
+      // If there is a value for the password...
+      if ( role.getName() != null && role.getName().trim().length() > 0 ) {
+
+        try {
+          jdbcTemplate.update( new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement( Connection connection ) throws SQLException {
+
+              PreparedStatement ps = connection.prepareStatement( insertRoleSql.toString(), Statement.RETURN_GENERATED_KEYS );
+              ps.setString( 1, getName().toLowerCase() ); //context
+              ps.setString( 2, role.getName().toLowerCase() ); // name
+              ps.setString( 3, role.getDescription() ); // description
+              return ps;
+            }
+          } );
+        } catch ( DataAccessException e ) {
+          LOG.error( "Could not create role: " + e.getMessage() );
+          return false;
+        }
+
+        // now we have to insert any permissions in the role
+
+        List<Permission> perms = role.getPermissions();
+        for ( final Permission perm : perms ) {
+
+          try {
+            jdbcTemplate.update( new PreparedStatementCreator() {
+              public PreparedStatement createPreparedStatement( Connection connection ) throws SQLException {
+
+                PreparedStatement ps = connection.prepareStatement( insertRolePermSql.toString(), Statement.RETURN_GENERATED_KEYS );
+                ps.setString( 1, getName().toLowerCase() ); //context
+                ps.setString( 2, role.getName().toLowerCase() ); // name
+                ps.setString( 3, perm.getTarget() ); // target of the permission
+                ps.setLong( 4, perm.getAction() );
+                return ps;
+              }
+            } );
+          } catch ( DataAccessException e ) {
+            LOG.error( "Could not record permission target '" + perm.getTarget() + "' for role '" + role.getName() + "' : " + e.getMessage() );
+            return false;
+          }
+
+        }
+
+        return true;
+      } else {
+        LOG.error( "Empty role name - role not added" );
+      }
+    } else {
+      LOG.error( "Null role cannot be added to context" );
+    }
+    return false;
   }
 
   /**
@@ -475,6 +716,30 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
         LOG.warn( "Retrieved a login (" + retval.getPrincipal().getName() + ") with no credentials" );
       }
 
+      return retval;
+    }
+  }
+
+  /**
+   * Map a resultset row into a permission
+   */
+  public final class PermissionMapper implements RowMapper<Permission> {
+
+    @Override
+    public Permission mapRow( final ResultSet rs, final int rowNum ) throws SQLException {
+      final Permission retval = new Permission( rs.getString( "TARGET" ), rs.getLong( "PERMISSION" ) );
+      return retval;
+    }
+  }
+
+  /**
+   * Map a resultset row to a Role object.
+   */
+  public final class RoleMapper implements RowMapper<Role> {
+
+    @Override
+    public Role mapRow( final ResultSet rs, final int rowNum ) throws SQLException {
+      final Role retval = new Role( rs.getString( "ROLE" ), rs.getString( "DESCRIPTION" ) );
       return retval;
     }
   }
