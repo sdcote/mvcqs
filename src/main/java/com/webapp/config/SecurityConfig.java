@@ -70,43 +70,55 @@ public class SecurityConfig {
     }
 
     // Make sure there is an admin role and user in the context
-    Role adminRole = new Role( "ADMIN", "System Administrator" );
+    if ( context.getRole( "ADMIN" ) == null ) {
+      Role adminRole = new Role( "ADMIN", "System Administrator" );
 
-    // specify global "user" permissions for this role
-    adminRole.addPermission( new Permission( "ADMIN", Permission.ALL ) );
+      // specify global "user" permissions for this role
+      adminRole.addPermission( new Permission( "ADMIN", Permission.ALL ) );
 
-    // add the role to the context
-    context.add( adminRole );
+      // add the role to the context
+      context.add( adminRole );
+    }
 
-    // Add the Operations role
-    Role operatorRole = new Role( "OPER", "System Operator" );
-    operatorRole.addPermission( new Permission( "OPER", Permission.ALL ) );
-    context.add( operatorRole );
+    // Add the Operations role if necessary
+    if ( context.getRole( "OPER" ) == null ) {
+      Role operatorRole = new Role( "OPER", "System Operator" );
+      operatorRole.addPermission( new Permission( "OPER", Permission.ALL ) );
+      context.add( operatorRole );
+    }
 
-    // Add the normal user role and login
-    Role userRole = new Role( "USER", "System User" );
-    userRole.addPermission( new Permission( "DOCUMENT", Permission.READ ) );
-    userRole.addPermission( new Permission( "TICKET", Permission.READ | Permission.CREATE ) );
-    context.add( userRole );
-    
+    // Add the normal user role and login if necessary
+    if ( context.getRole( "USER" ) == null ) {
+      Role userRole = new Role( "USER", "System User" );
+      userRole.addPermission( new Permission( "DOCUMENT", Permission.READ ) );
+      userRole.addPermission( new Permission( "TICKET", Permission.READ | Permission.CREATE ) );
+      context.add( userRole );
+    }
+
     // Once we define roles in the context, we can generate some logins which 
     // use those roles for authorization
 
     // Create an administrator
-    Login login = new Login( "admin", "secret" );
-    login.addRole( adminRole ); // System administration role
-    context.add( login );
+    if ( context.getLoginByName( "admin" ) == null ) {
+      Login login = new Login( "admin", "secret" );
+      login.addRole( context.getRole( "ADMIN" ) ); // System administration role
+      context.add( login );
+    }
 
     // Create an operator login
-    login = new Login( "OPER", "secret" );
-    login.addRole( operatorRole );
-    context.add( login );
+    if ( context.getLoginByName( "oper" ) == null ) {
+      Login login = new Login( "OPER", "secret" );
+      login.addRole( context.getRole( "OPER" ) );
+      context.add( login );
+    }
 
     // Create a user login
-    login = new Login( "USER", "secret" );
-    login.addRole( userRole );
-    context.add( login );
-
+    if ( context.getLoginByName( "user" ) == null ) {
+      Login login = new Login( "USER", "secret" );
+      login.addRole( context.getRole( "USER" ) );
+      context.add( login );
+    }
+    
     // Return the newly built security context
     return context;
   }

@@ -103,11 +103,6 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
       tableset.add( rs.getString( 3 ) );
     }
 
-    // Check to see if the needed tables exist and create them if necessary
-    if ( !tableset.contains( "SECURITY_CONTEXT" ) ) {
-      LOG.info( "Creating SECURITY_CONTEXT table" );
-    }
-
     if ( !tableset.contains( "SECURITY_LOGIN" ) ) {
       LOG.info( "Creating SECURITY_LOGIN table" );
 
@@ -204,8 +199,18 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
    */
   @Override
   public Login getLoginByName( String loginName ) {
-    // TODO Auto-generated method stub
-    return super.getLoginByName( loginName );
+    Login retval = null;
+
+    // first check the cache
+    retval = super.getLoginByName( loginName );
+
+    // if not in the cache...check the data store
+    if ( retval == null ) {
+      retval = this.retrieveLogin( loginName );
+    }
+
+    // return what we found
+    return retval;
   }
 
 
@@ -346,8 +351,6 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
     Login retval = null;
 
     if ( principal != null ) {
-
-      LOG.info( "Searching for login name of '" + principal + "' " );
 
       // do the database lookup
       List<Login> work = new ArrayList<Login>();
@@ -499,8 +502,6 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
   @Override
   public Login getLogin( String name, CredentialSet creds ) {
 
-    LOG.info( "Searching for login '" + name + "' with a password of '" + ByteUtil.bytesToHex( creds.getValue( CredentialSet.PASSWORD ), null ) + "'" );
-
     // Try the cache
     Login retval = super.getLogin( name, creds );;
 
@@ -542,7 +543,6 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
       byte[] value = credentials.getValue( CredentialSet.PASSWORD );
       if ( value != null ) {
         String dbValue = ByteUtil.bytesToHex( value, null );
-        LOG.info( "Searching for login name of '" + principal + "' with credentials of '" + dbValue + "'" );
 
         // do the database lookup
         List<Login> work = new ArrayList<Login>();
@@ -595,14 +595,13 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
     if ( role != null ) {
       if ( role.getName() != null ) {
         String name = role.getName();
-        Role existing = retrieveRole( name );
+        Role existing = getRole( name );
 
         if ( existing != null ) {
           LOG.warn( "A role with the name '" + name + "' already exists in the context '" + getName() + "' - role was not added" );
         } else {
           if ( createRole( role ) ) {
             super.add( role );
-            LOG.info( "Role created successfully" );
           } else {
             LOG.error( "Could not create role in context" );
           }
@@ -614,7 +613,33 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
     } else {
       LOG.warn( "Ignoring attempt to add a null role reference" );
     }
-    super.add( role );
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.security.GenericSecurityContext#getRole(java.lang.String)
+   */
+  @Override
+  public Role getRole( String name ) {
+    // first try the cache
+    Role retval = super.getRole( name );
+
+    // if not in the cache...
+    if ( retval == null ) {
+      // .. retrieve from the database
+      retval = retrieveRole( name );
+
+      // If we retrieved a role from the database
+      if ( retval != null ) {
+        // add it to the cache
+        super.add( retval );
+      }
+    }
+
+    // return what we found
+    return retval;
   }
 
 
@@ -625,8 +650,25 @@ public class SecurityDataContext extends GenericSecurityContext implements Secur
    * @return
    */
   private Role retrieveRole( String name ) {
-    // TODO Auto-generated method stub
-    return null;
+
+    Role retval = null;
+
+    // do the database lookup
+    List<Role> work = new ArrayList<Role>();
+
+    final String SQL = "SELECT * FROM SECURITY_ROLE WHERE CONTEXT = ? AND ROLE = ?";
+
+    LOG.debug( SQL );
+
+    work = jdbcTemplate.query( SQL, new Object[] { getName().toLowerCase(), name.toLowerCase() }, new RoleMapper() );
+
+    if ( work.size() > 0 ) {
+      if ( work.size() > 1 ) {
+        LOG.fatal( "There are more than one security roles with the name of '" + name + "' in the '" + getName() + "' security context; returning the first record" );
+      }
+      retval = work.get( 0 );
+    }
+    return retval;
   }
 
 
