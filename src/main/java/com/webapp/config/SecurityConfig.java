@@ -118,7 +118,7 @@ public class SecurityConfig {
       login.addRole( context.getRole( "USER" ) );
       context.add( login );
     }
-    
+
     // Return the newly built security context
     return context;
   }

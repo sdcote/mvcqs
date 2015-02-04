@@ -93,7 +93,7 @@ public class LoginController {
 
     // send the prepared Model and View
 
-    return "login"; // TODO: for now this is all we do
+    return "login"; 
   }
 
 

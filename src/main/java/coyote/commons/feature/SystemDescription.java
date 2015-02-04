@@ -11,8 +11,6 @@
  */
 package coyote.commons.feature;
 
-
-
 /**
  * This is the root of all features and provides the starting point for 
  * discovering everything about how the functionality of the system is 

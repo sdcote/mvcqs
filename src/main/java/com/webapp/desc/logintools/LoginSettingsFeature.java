@@ -42,7 +42,7 @@ public class LoginSettingsFeature extends Feature {
     link = "/do/loginSettings";
     setIcon( MenuIcon.COG );
 
-    addToDo( new ToDo("Privacy settings are controlled from this feature/page.") );
+    addToDo( new ToDo( "Privacy settings are controlled from this feature/page." ) );
 
   }
 }

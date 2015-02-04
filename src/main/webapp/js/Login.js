@@ -4,7 +4,7 @@ $(document).ready(function() {
 		event.preventDefault();
 	});
 	// Added for Forgot UserName Feature
-	$('#forgotUserLink').click(function(event){
+	$('#forgotUserLink').click(function(event) {
 		EmailUserName.displayDialog();
 		event.preventDefault();
 	});
@@ -36,7 +36,7 @@ $(document).ready(function() {
 	});
 
 	$('#loginForm').submit(function() {
-		//Make certain that the form doesn't submit normally
+		// Make certain that the form doesn't submit normally
 		return false;
 	});
 
@@ -53,27 +53,29 @@ var Login = {
 			$('#loginForce').val(false);
 		}
 		$.ajax({
-			type: 'POST',
-			cache: false,
-			async: true,
-			dataType: 'json',
-			url: $form.attr('action'),
-			data: $form.serialize(),
-			context: Login,
+			type : 'POST',
+			cache : false,
+			async : true,
+			dataType : 'json',
+			url : $form.attr('action'),
+			data : $form.serialize(),
+			context : Login,
 
-			success: function (data) {
+			success : function(data) {
 				this.loginResult(data);
 			},
 
-			error: function (xmlHttpRequest, textStatus, errorThrown) {
+			error : function(xmlHttpRequest, textStatus, errorThrown) {
 				Util.handleAjaxError(xmlHttpRequest, textStatus, errorThrown);
 			}
 		});
 	},
 
 	loginResult : function(data) {
-		if (('INVALID' === data.resultCode) || ('UNAUTHORIZED' === data.resultCode) || ('UNVERIFIED' === data.resultCode)) {
-			//Determine the text based on the error code
+		if (('INVALID' === data.resultCode)
+				|| ('UNAUTHORIZED' === data.resultCode)
+				|| ('UNVERIFIED' === data.resultCode)) {
+			// Determine the text based on the error code
 			var text = '';
 			if ('INVALID' === data.resultCode) {
 				text = 'The user name and password entered do not match any existing users in the system.';
@@ -83,57 +85,53 @@ var Login = {
 				text = 'You are currently blocked from login until you have validated your email address.';
 			}
 
-			//Display the error dialog
+			// Display the error dialog
 			Dialog.error({
-				dialogControls : [
-					{
-						type : 'button',
-						text : 'OK',
-						onClick : function(event) {
-							var $dialog = Dialog.getDialog($(event.target));
-							$dialog.dialog('close');
-							$dialog.dialog('destroy');
+				dialogControls : [ {
+					type : 'button',
+					text : 'OK',
+					onClick : function(event) {
+						var $dialog = Dialog.getDialog($(event.target));
+						$dialog.dialog('close');
+						$dialog.dialog('destroy');
 
-							$('#loginUserName').focus();
-							return false;
-						}
+						$('#loginUserName').focus();
+						return false;
 					}
-				],
-				content: text
+				} ],
+				content : text
 			});
 		} else if ('CONCURRENT' === data.resultCode) {
 			var text = '<p>You are attempting to log in from more than one location.</p>'
 					+ '<p>Please click <strong>Proceed</strong> to log in at this location and have the system automatically log you out of the other location.</p>'
 					+ '<p>If you want to remain logged in at the other location, click <strong>Cancel</strong> to abandon this login attempt.</p>';
 			Dialog.warning({
-				dialogControls : [
-					{
-						type : 'button',
-						text : 'Cancel',
-						onClick : function(event) {
-							var $dialog = Dialog.getDialog($(event.target));
-							$dialog.dialog('close');
-							$dialog.dialog('destroy');
+				dialogControls : [ {
+					type : 'button',
+					text : 'Cancel',
+					onClick : function(event) {
+						var $dialog = Dialog.getDialog($(event.target));
+						$dialog.dialog('close');
+						$dialog.dialog('destroy');
 
-							$('#loginUserName').focus();
-							return false;
-						}
-					},
-
-					{
-						type : 'button',
-						text : 'Proceed',
-						onClick : function(event) {
-							var $dialog = Dialog.getDialog($(event.target));
-							$dialog.dialog('close');
-							$dialog.dialog('destroy');
-
-							Login.login(true);
-							return false;
-						}
+						$('#loginUserName').focus();
+						return false;
 					}
-				],
-				content: text
+				},
+
+				{
+					type : 'button',
+					text : 'Proceed',
+					onClick : function(event) {
+						var $dialog = Dialog.getDialog($(event.target));
+						$dialog.dialog('close');
+						$dialog.dialog('destroy');
+
+						Login.login(true);
+						return false;
+					}
+				} ],
+				content : text
 			});
 		} else if ('SUCCESS' === data.resultCode) {
 			window.location = data.redirect;
@@ -148,42 +146,39 @@ var Login = {
 		var that = this;
 		Dialog.create({
 			title : 'Create a New Account',
-			container: $('#registrationDialog'),
+			container : $('#registrationDialog'),
 			width : 680,
-			dialogControls : [
-				{
-					type : 'button',
-					text : 'Cancel',
-					onClick : function(event) {
-						$('#redCode1').val('');
-						$('#redCode2').val('');
-						$('#redCode3').val('');
+			dialogControls : [ {
+				type : 'button',
+				text : 'Cancel',
+				onClick : function(event) {
+					$('#redCode1').val('');
+					$('#redCode2').val('');
+					$('#redCode3').val('');
 
-						var $dialog = Dialog.getDialog($(event.target));
-						$dialog.dialog('close');
-						$dialog.dialog('destroy');
-						return false;
-					}
+					var $dialog = Dialog.getDialog($(event.target));
+					$dialog.dialog('close');
+					$dialog.dialog('destroy');
+					return false;
 				}
-			]
+			} ]
 		});
 	},
 };
 
-
 /**
- * Splits the value from the first field into all the fields.
- * If the first character in a field will be a '-' it is left out.
- * This is to allow users to paste entire Master/Redemption Codes into the first field.
+ * Splits the value from the first field into all the fields. If the first
+ * character in a field will be a '-' it is left out. This is to allow users to
+ * paste entire Master/Redemption Codes into the first field.
  */
 function checkFieldLength(fields, fieldLength) {
 	var inputString = $.trim($(fields[0]).val());
-	var i=0;
+	var i = 0;
 	while (i < fields.length && inputString.length > 0) {
 		if (inputString.length > fieldLength) {
-			$(fields[i]).val(inputString.substring(0,fieldLength));
-			if(inputString.charAt(fieldLength)=='-'){
-				inputString = inputString.substring(fieldLength+1);
+			$(fields[i]).val(inputString.substring(0, fieldLength));
+			if (inputString.charAt(fieldLength) == '-') {
+				inputString = inputString.substring(fieldLength + 1);
 			} else {
 				inputString = inputString.substring(fieldLength);
 			}
@@ -194,9 +189,10 @@ function checkFieldLength(fields, fieldLength) {
 		}
 	}
 	if (i == fields.length) {
-		$(fields[i-1]).focus();
-	} else if($(fields[i]).val().length == fieldLength && (i<fields.length-1)){
-		$(fields[i+1]).focus();
+		$(fields[i - 1]).focus();
+	} else if ($(fields[i]).val().length == fieldLength
+			&& (i < fields.length - 1)) {
+		$(fields[i + 1]).focus();
 	} else {
 		$(fields[i]).focus();
 	}
@@ -209,22 +205,24 @@ var ResetPassword = {
 		var userName = $.trim($('#loginUserName').val());
 
 		if (userName.length === 0) {
-			Dialog.error({
-				content: 'Your username must be provided before attempting to change your password.'
-			});
+			Dialog
+					.error({
+						content : 'Your username must be provided before attempting to change your password.'
+					});
 		} else {
 			$.ajax({
-				type: 'POST',
-				dataType: 'html',
-				async: false,
-				url: 'resetPasswordDisplay.do',
-				data: 'userName=' + userName,
-				success: function (data) {
+				type : 'POST',
+				dataType : 'html',
+				async : false,
+				url : 'resetPassword.do',
+				data : 'userName=' + userName,
+				success : function(data) {
 					ResetPassword.openDialog(data);
 				},
 
-				error: function (xmlHttpRequest, textStatus, errorThrown) {
-					Util.handleAjaxError(xmlHttpRequest, textStatus, errorThrown);
+				error : function(xmlHttpRequest, textStatus, errorThrown) {
+					Util.handleAjaxError(xmlHttpRequest, textStatus,
+							errorThrown);
 				}
 			});
 		}
@@ -234,45 +232,43 @@ var ResetPassword = {
 		$('body').append(data);
 		$dialog = Dialog.create({
 			title : 'Reset Password',
-			container: $('#resetPasswordDialog'),
+			container : $('#resetPasswordDialog'),
 			width : 680,
-			dialogControls : [
-				{
-					type : 'button',
-					text : 'Cancel',
-					onClick : function(event) {
-						ResetPassword.close();
-						return false;
-					}
-				},
-
-				{
-					type : 'button',
-					text : 'Reset Password',
-					onClick : function(event) {
-						// actual functionality here
-						ResetPassword.resetPassword();
-						return false;
-					}
+			dialogControls : [ {
+				type : 'button',
+				text : 'Cancel',
+				onClick : function(event) {
+					ResetPassword.close();
+					return false;
 				}
-			]
+			},
+
+			{
+				type : 'button',
+				text : 'Reset Password',
+				onClick : function(event) {
+					// actual functionality here
+					ResetPassword.resetPassword();
+					return false;
+				}
+			} ]
 		});
 	},
 
 	resetPassword : function() {
 		var $form = $('#resetPasswordForm');
 		$.ajax({
-			type: 'POST',
-			async: false,
-			dataType: 'json',
-			url: $form.attr('action'),
-			data: $form.serialize(),
+			type : 'POST',
+			async : false,
+			dataType : 'json',
+			url : $form.attr('action'),
+			data : $form.serialize(),
 
-			success: function (data) {
+			success : function(data) {
 				ResetPassword.resetPasswordResult(data);
 			},
 
-			error: function (xmlHttpRequest, textStatus, errorThrown) {
+			error : function(xmlHttpRequest, textStatus, errorThrown) {
 				Util.handleAjaxError(xmlHttpRequest, textStatus, errorThrown);
 			}
 		});
@@ -280,11 +276,13 @@ var ResetPassword = {
 
 	resetPasswordResult : function(data) {
 		if (data.hasErrors) {
-			Dialog.validationErrors('Your password was not reset for the following reasons:', data);
+			Dialog.validationErrors(
+					'Your password was not reset for the following reasons:',
+					data);
 		} else {
 			Dialog.info({
-				title: "Password Change Successful",
-				content: "Your password has been changed."
+				title : "Password Change Successful",
+				content : "Your password has been changed."
 			});
 
 			ResetPassword.close();
@@ -300,17 +298,16 @@ var ResetPassword = {
 	}
 };
 
-
 var InitialPasswordChange = {
 	$dialog : null,
 
 	display : function() {
 		$.ajax({
-			type: 'POST',
-			dataType: 'html',
-			async: false,
-			url: 'initialPasswordChangeDisplay.do',
-			success: function (data) {
+			type : 'POST',
+			dataType : 'html',
+			async : false,
+			url : 'initialPasswordChange.do',
+			success : function(data) {
 				InitialPasswordChange.openDialog(data);
 			}
 		});
@@ -320,59 +317,59 @@ var InitialPasswordChange = {
 		$('body').append(data);
 		$dialog = Dialog.create({
 			title : 'Set Password',
-			container: $('#initialPasswordChangeDialog'),
+			container : $('#initialPasswordChangeDialog'),
 			width : 600,
-			dialogControls : [
-				{
-					type : 'button',
-					text : 'Cancel',
-					onClick : function(event) {
-						window.location = "/mvcqs/logout.do";
-						return false;
-					}
-				},
-
-				{
-					type : 'button',
-					text : 'Set Password',
-					onClick : function(event) {
-						InitialPasswordChange.validate();
-						return false;
-					}
+			dialogControls : [ {
+				type : 'button',
+				text : 'Cancel',
+				onClick : function(event) {
+					window.location = "/mvcqs/logout.do";
+					return false;
 				}
-			]
+			},
+
+			{
+				type : 'button',
+				text : 'Set Password',
+				onClick : function(event) {
+					InitialPasswordChange.validate();
+					return false;
+				}
+			} ]
 		});
 	},
 
 	validate : function() {
 		var $form = $('#initialPasswordChangeForm');
-		$.ajax({
-			type: 'POST',
-			async: false,
-			dataType: 'json',
-			url: $('#initialPasswordChangeValidationAction').val(),
-			data: $form.serialize(),
-			success: function (data) {
-				if (data.hasErrors) {
-					Dialog.validationErrors('Your password was not set for the following reasons:', data);
-				} else {
-					$('#initialPasswordChangeDialog').dialog('close');
-					InitialPasswordChange.showEula();
-				}
-			},
-			error: function (xmlHttpRequest, textStatus, errorThrown) {
-				Util.handleAjaxError(xmlHttpRequest, textStatus, errorThrown);
-			}
-		});
+		$
+				.ajax({
+					type : 'POST',
+					async : false,
+					dataType : 'json',
+					url : $('#initialPasswordChangeValidationAction').val(),
+					data : $form.serialize(),
+					success : function(data) {
+						if (data.hasErrors) {
+							Dialog.validationErrors( 'Your password was not set for the following reasons:', data);
+						} else {
+							$('#initialPasswordChangeDialog').dialog('close');
+							InitialPasswordChange.showEula();
+						}
+					},
+					error : function(xmlHttpRequest, textStatus, errorThrown) {
+						Util.handleAjaxError(xmlHttpRequest, textStatus,
+								errorThrown);
+					}
+				});
 	},
 
 	showEula : function() {
 		$.ajax({
-			type: 'GET',
-			dataType: 'html',
-			async: false,
-			url: 'eula.mvcsDialog.do',
-			success: function (data) {
+			type : 'GET',
+			dataType : 'html',
+			async : false,
+			url : 'eula.do',
+			success : function(data) {
 				InitialPasswordChange.openEulaDialog(data);
 			}
 		});
@@ -382,47 +379,44 @@ var InitialPasswordChange = {
 		$('body').append(data);
 		$dialog = Dialog.create({
 			title : 'Terms of Service',
-			container: $('#eulaDialog'),
+			container : $('#eulaDialog'),
 			width : 640,
-			height: 520,
-			dialogClass: 'formDialog eulaDialog',
-			dialogControls : [
-				{
-					type : 'button',
-					text : 'No, I Decline',
-					onClick : function(event) {
-						window.location = "/mvcqs/logout.do";
-						return false;
-					}
-				},
-
-				{
-					type : 'button',
-					text : 'Yes, I Accept',
-					onClick : function(event) {
-						InitialPasswordChange.setPassword();
-						return false;
-					}
+			height : 520,
+			dialogClass : 'formDialog eulaDialog',
+			dialogControls : [ {
+				type : 'button',
+				text : 'No, I Decline',
+				onClick : function(event) {
+					window.location = "/mvcqs/logout.do";
+					return false;
 				}
-			]
+			},
+
+			{
+				type : 'button',
+				text : 'Yes, I Accept',
+				onClick : function(event) {
+					InitialPasswordChange.setPassword();
+					return false;
+				}
+			} ]
 		});
 	},
-
 
 	setPassword : function() {
 		var $form = $('#initialPasswordChangeForm');
 		$.ajax({
-			type: 'POST',
-			async: false,
-			dataType: 'json',
-			url: $form.attr('action'),
-			data: $form.serialize(),
+			type : 'POST',
+			async : false,
+			dataType : 'json',
+			url : $form.attr('action'),
+			data : $form.serialize(),
 
-			success: function (data) {
+			success : function(data) {
 				InitialPasswordChange.setPasswordResult(data);
 			},
 
-			error: function (xmlHttpRequest, textStatus, errorThrown) {
+			error : function(xmlHttpRequest, textStatus, errorThrown) {
 				Util.handleAjaxError(xmlHttpRequest, textStatus, errorThrown);
 			}
 		});
@@ -430,21 +424,19 @@ var InitialPasswordChange = {
 
 	setPasswordResult : function(data) {
 		if (data.hasErrors) {
-			Dialog.validationErrors('Your password was not set for the following reasons:', data);
+			Dialog.validationErrors('Your password was not set for the following reasons:',data);
 		} else {
 			Dialog.info({
-				title: "Password Change Successful",
-				content: "Your password has been changed.",
-				dialogControls : [
-					{
-						type : 'button',
-						text : 'OK',
-						onClick : function(event) {
-							window.location = "/mvcqs/home.do"
-							return false;
-						}
+				title : "Password Change Successful",
+				content : "Your password has been changed.",
+				dialogControls : [ {
+					type : 'button',
+					text : 'OK',
+					onClick : function(event) {
+						window.location = "/mvcqs/home.do"
+						return false;
 					}
-				]
+				} ]
 			});
 		}
 	},
@@ -460,75 +452,74 @@ var InitialPasswordChange = {
 // Forgot Username feature
 var EmailUserName = {
 	$dialog : null,
-	displayDialog : function(){
+	displayDialog : function() {
 		$.ajax({
-			type: 'GET',
-			dataType: 'html',
-			async: false,
-			url: 'emailUserNameDisplay.do',
-			data: 'emailUserDialog',
-			success: function (data) {
+			type : 'GET',
+			dataType : 'html',
+			async : false,
+			url : 'emailUserName.do',
+			data : 'emailUserDialog',
+			success : function(data) {
 				EmailUserName.openDialog(data);
 			},
 
-			error: function (xmlHttpRequest, textStatus, errorThrown) {
+			error : function(xmlHttpRequest, textStatus, errorThrown) {
 				Util.handleAjaxError(xmlHttpRequest, textStatus, errorThrown);
 			}
 		});
 	},
 
-	openDialog : function(data){
+	openDialog : function(data) {
 		$('body').append(data);
 		$dialog = Dialog.create({
 			title : 'Forgot Username',
-			container: $('#emailUserNameDialog'),
+			container : $('#emailUserNameDialog'),
 			width : 600,
-			dialogControls : [
-				{
-					type : 'button',
-					text : 'Cancel',
-					onClick : function(event) {
-						EmailUserName.close();
-						return false;
-					}
-				},
-
-				{
-					type : 'button',
-					text : 'Submit',
-					onClick : function(event) {
-						// actual functionality here
-						EmailUserName.submitEmail(event);
-						return false;
-					}
+			dialogControls : [ {
+				type : 'button',
+				text : 'Cancel',
+				onClick : function(event) {
+					EmailUserName.close();
+					return false;
 				}
-			]
+			},
+
+			{
+				type : 'button',
+				text : 'Submit',
+				onClick : function(event) {
+					// actual functionality here
+					EmailUserName.submitEmail(event);
+					return false;
+				}
+			} ]
 		});
 		$('#emailUserNameDialog input').bind('keydown', function(event) {
-			// It seems that forms with a SINGLE visible input cause a regular form
-			// submission on 'enter' keydown, this causes a page reload or download
-			// to prevent this we'll prevent the default action, but allow the event to propagate
-			if(event.keyCode == 13) {
+			// It seems that forms with a SINGLE visible input cause a regular
+			// form submission on 'enter' keydown, this causes a page reload or
+			// download to prevent this we'll prevent the default action, but 
+			// allow the event to propagate
+			if (event.keyCode == 13) {
 				event.preventDefault();
 				EmailUserName.submitEmail(event);
 			}
 		});
 	},
 
-	submitEmail : function (event){
+	submitEmail : function(event) {
 		var $form = $('#emailUserForm');
 		$.ajax({
-			type: 'POST',
-			async: false,
-			dataType: 'json',
-			url: $form.attr('action'),
-			data: $form.serialize(),
+			type : 'POST',
+			async : false,
+			dataType : 'json',
+			url : $form.attr('action'),
+			data : $form.serialize(),
 
-			success: function (data) {
+			success : function(data) {
 				EmailUserName.submitEmailResults(data);
 			},
 
-			error: function (xmlHttpRequest, textStatus, errorThrown) {
+			error : function(xmlHttpRequest, textStatus, errorThrown) {
 				Util.handleAjaxError(xmlHttpRequest, textStatus, errorThrown);
 			}
 		});
@@ -536,12 +527,13 @@ var EmailUserName = {
 
 	submitEmailResults : function(data) {
 		if (data.hasErrors) {
-			Dialog.validationErrors('',data);
+			Dialog.validationErrors('', data);
 		} else {
-			Dialog.info({
-				title: "Username Emailed",
-				content: "Your username will be sent to the email address you have provided. If you do not receive an email please contact Technical Support."
-			});
+			Dialog
+					.info({
+						title : "Username Emailed",
+						content : "Your username will be sent to the email address you have provided. If you do not receive an email please contact Technical Support."
+					});
 
 			EmailUserName.close();
 		}

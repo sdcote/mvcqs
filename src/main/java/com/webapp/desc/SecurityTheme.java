@@ -42,8 +42,7 @@ public class SecurityTheme extends Feature {
     addToDo( new ToDo( "Configure concurrent logins by login" ) );
     addToDo( new ToDo( "Configure system-wide concurrent logins" ) );
     addToDo( new ToDo( "System-wide concurrent logins can be disabled for particular logins" ) );
-    
-    
+
     addFeature( new LoginFeature() );
     addFeature( new LogoutFeature() );
     addFeature( new LoginProfileFeature() );

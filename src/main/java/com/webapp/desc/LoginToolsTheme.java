@@ -29,8 +29,7 @@ public class LoginToolsTheme extends Feature {
     version = new Version( 1, 0, 0, Version.DEVELOPMENT );
     name = "profile";
     description = "Manage settings related to the user login of the system.";
-    
-    
+
     addFeature( new LoginSettingsFeature() );
     //addFeature( new LoginMessageInboxFeature() ); // Message Inbox
     //addFeature( new LoginMessageSendFeature() ); // Send Messages

@@ -43,25 +43,21 @@ public class HelloWorldFeature extends Feature {
 
     // add this feature to the left side menu
     addLocation( new MenuLocation( MenuSection.LEFT, 1 ) );
-    
-    
-    
-		// Test multi-level menus
-		Feature level2 = new MockFeature("Level2.1", MenuIcon.COGS, new MenuLocation(MenuSection.LEFT));
-		addFeature(level2);
-		level2 = new MockFeature("Level2.2", MenuIcon.COGS, new MenuLocation(MenuSection.LEFT));
-		addFeature(level2);
-		level2 = new MockFeature("Level2.3", MenuIcon.COGS, new MenuLocation(MenuSection.LEFT));
-		addFeature(level2);
-		
-		Feature level3 = new MockFeature("Level3.1", MenuIcon.COGS, new MenuLocation(MenuSection.LEFT));
-		level2.addFeature(level3);
-		level3 = new MockFeature("Level3.2", MenuIcon.COGS, new MenuLocation(MenuSection.LEFT));
-		level2.addFeature(level3);
-		level3 = new MockFeature("Level3.3", MenuIcon.COGS, new MenuLocation(MenuSection.LEFT));
-		level2.addFeature(level3);
 
-		
-    
+    // Test multi-level menus
+    Feature level2 = new MockFeature( "Level2.1", MenuIcon.COGS, new MenuLocation( MenuSection.LEFT ) );
+    addFeature( level2 );
+    level2 = new MockFeature( "Level2.2", MenuIcon.COGS, new MenuLocation( MenuSection.LEFT ) );
+    addFeature( level2 );
+    level2 = new MockFeature( "Level2.3", MenuIcon.COGS, new MenuLocation( MenuSection.LEFT ) );
+    addFeature( level2 );
+
+    Feature level3 = new MockFeature( "Level3.1", MenuIcon.COGS, new MenuLocation( MenuSection.LEFT ) );
+    level2.addFeature( level3 );
+    level3 = new MockFeature( "Level3.2", MenuIcon.COGS, new MenuLocation( MenuSection.LEFT ) );
+    level2.addFeature( level3 );
+    level3 = new MockFeature( "Level3.3", MenuIcon.COGS, new MenuLocation( MenuSection.LEFT ) );
+    level2.addFeature( level3 );
+
   }
 }

@@ -11,6 +11,7 @@
 
     <title>Login</title>
 	<link rel="icon" type="image/x-icon" href="<c:url value="/img/favicon.ico"/>">
+
     <link href="<c:url value="/css/bootstrap.min.css"/>" rel="stylesheet">
     <link href="<c:url value="/css/jquery-ui.min.css"/>" rel="stylesheet">
     <link href="<c:url value="/css/plugins/metisMenu/metisMenu.min.css"/>" rel="stylesheet">
@@ -28,28 +29,21 @@
 
 <body>
 
+
+<!-- Small modal -->
+
     <div class="container">
         <div class="row">
             <div class="col-md-4 col-md-offset-4">
                 <div class="login-panel panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Please Sign In</h3>
+                        <h3 class="panel-title">You have been logged out</h3>
                     </div>
                     <div class="panel-body">
                         <form id="loginForm" action="<c:url value="/do/login"/>" method="post">
                         
                             <fieldset>
-                                <div class="form-group">
-                                    <input class="form-control" placeholder="E-mail" name="account" type="email" autofocus>
-                                </div>
-                                <div class="form-group">
-                                    <input class="form-control" placeholder="Password" name="password" type="password" value="">
-                                </div>
-                                <div class="checkbox">
-                                    <label>
-                                        <input name="remember" type="checkbox" value="true">Remember Me
-                                    </label>
-                                </div>
+                                <button type="button" class="btn btn-primary" id="homeLink">Home</button>
                                 <button type="button" class="btn btn-primary" id="loginLink">Log In</button>
                             </fieldset>
                         </form>
