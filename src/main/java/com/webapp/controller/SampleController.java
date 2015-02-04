@@ -12,6 +12,7 @@
 package com.webapp.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,8 +55,9 @@ public class SampleController {
 	 * @return
 	 */
 	@RequestMapping("home")
-	public String loadHomePage(HttpServletRequest request, Model model) {
-
+	public String loadHomePage(HttpServletRequest request, final HttpServletResponse response, Model model) {
+	  response.setHeader( "Cache-Control", "max-age=0, no-cache, no-store" );
+	  
 		// Get the title of the application in the request's locale
 		model.addAttribute("title", webapp.getMessage("webapp.subtitle", null, request.getLocale()));
 

@@ -264,7 +264,7 @@ public class MainNav extends SimpleTagSupport {
 
 
 	/**
-	 * THis generates the menu for the LEFT side nav bar.
+	 * This generates the menu for the LEFT side nav bar.
 	 * 
 	 * <p>It supports three levels of sub-menus.</p>
 	 * 

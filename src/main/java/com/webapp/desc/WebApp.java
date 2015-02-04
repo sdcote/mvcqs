@@ -106,8 +106,8 @@ public class WebApp extends SystemDescription {
     // This shows how to add your feature to the system
     Feature helloworld = new HelloWorldFeature();
     addFeature( helloworld );
-    
-    addToDo(new ToDo("Add efficient call to form data sanitization, preferably via standard API such as OWASP ESAPI"));
+
+    addToDo( new ToDo( "Add efficient call to form data sanitization, preferably via standard API such as OWASP ESAPI" ) );
 
   }
 

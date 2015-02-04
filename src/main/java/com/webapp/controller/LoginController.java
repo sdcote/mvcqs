@@ -107,12 +107,22 @@ public class LoginController {
    * @return the view to display (logout)
    */
   @RequestMapping(value = { "/logout" }, method = { RequestMethod.GET, RequestMethod.HEAD })
-  public String doLogout( Model model, HttpSession session ) {
+  public String doLogout( Model model, HttpServletRequest request ) {
+
+    Login login = WebApp.getLogin( request );
+
+    LOG.info( "Logging out " + login );
+
+    HttpSession session = request.getSession();
 
     // remove the login from the containers session
     session.setAttribute( WebApp.SESSION_LOGIN_KEY, null );
 
-    return "logout"; 
+    session.invalidate();
+
+    LOG.info( "Result: " + WebApp.getLogin( request ) );
+
+    return "home";
   }
 
 
