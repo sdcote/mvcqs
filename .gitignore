@@ -1,8 +1,56 @@
-build
-.gradle
+# Directory Artifacts #
+#######################
+build/
+bin/
+.gradle/
+
+
+# Compiled Artifacts #
+######################
+*.class
+*.dll
+
+
+# Eclipse IDE Artifacts #
+#########################
 .classpath
 .project
-.settings
-bin
-webapp.log
-webappdb.mv.db
+.settings/
+.metadata/
+
+
+# Mobile Tools for Java (J2ME) #
+################################
+.mtj.tmp/
+
+
+# Notes and temporary documentation #
+#####################################
+notes
+
+
+# Testing Results #
+###################
+*.log
+*.db
+
+
+# Package Files #
+#################
+*.jar
+*.7z
+*.gz
+*.tgz
+*.iso
+*.war
+*.ear
+!gradle/wrapper/*jar
+
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+gradle.properties
+
+
+
