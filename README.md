@@ -29,7 +29,7 @@ src - all source code
 To build a deployable web app archive (.war):
 ---------------------------------------------
 ./gradlew build
-See build/libs/webapp-tmpl.war
+See build/libs/mvcqs.war
 
 To run the web app:
 -------------------
